@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1075413684358",
+    "project_id": "objectorientedchatbot",
+    "storage_bucket": "objectorientedchatbot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075413684358:android:91b323498e462162240107",
+        "android_client_info": {
+          "package_name": "com.example.chatbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmaYM7SAL5lCeq5USVks6rbCBndnNZhJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075413684358:android:0577f47f11a32c45240107",
+        "android_client_info": {
+          "package_name": "com.example.objectorientedchatbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmaYM7SAL5lCeq5USVks6rbCBndnNZhJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
