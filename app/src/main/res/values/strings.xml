@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ChatBot</string>
+    <string name="password_minimum_length">Password must have at least 10 characters\n</string>
+    <string name="password_contains_digits">Password must contain at least 1 digit\n</string>
+    <string name="password_contains_upper_case">Password must contain at least 1 Upper Case</string>
+    <string name="password_contains_special_characters">Password can contain special characters</string>
+    <string name="password_is_long_enough">Password has at least 15 characters</string>
 </resources>
