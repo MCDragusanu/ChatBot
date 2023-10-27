@@ -26,4 +26,8 @@ class LoginScreenViewModelImpl:LoginScreenViewModel() {
     override fun onLoginIsPressed(onCompletedLogin: (String) -> Unit) {
         TODO("Not yet implemented")
     }
+
+    override fun onError(exception: Exception) {
+        TODO("Not yet implemented")
+    }
 }

@@ -6,17 +6,17 @@ import com.example.chatbot.common.TextFieldState
 import com.example.chatbot.common.UIState
 import kotlinx.coroutines.flow.StateFlow
 
-object LoginScreenImpl:LoginScreen {
+object LoginScreenImpl:LoginScreen() {
     @Composable
     override fun Main(viewModel: LoginScreenViewModel, onLoginCompleted: (String) -> Unit, onRegister: () -> Unit) {
         TODO("Not yet implemented")
     }
     @Composable
-    override fun EmailButton(modifier: Modifier, state: StateFlow<TextFieldState>, onValueChanged: (String) -> Unit) {
+    override fun EmailTextField(modifier: Modifier, state: StateFlow<TextFieldState>, onValueChanged: (String) -> Unit) {
         TODO("Not yet implemented")
     }
     @Composable
-    override fun PasswordButton(
+    override fun PasswordTextField(
         modifier: Modifier,
         state: StateFlow<TextFieldState>,
         onValueChanged: (String) -> Unit
@@ -25,6 +25,20 @@ object LoginScreenImpl:LoginScreen {
     }
     @Composable
     override fun LoginButton(modifier: Modifier, state: StateFlow<UIState>, onClick: () -> Unit) {
+        TODO("Not yet implemented")
+    }
+
+    @Composable
+    override fun ForgotPasswordButton(modifier: Modifier, onClick: () -> Unit) {
+        TODO("Not yet implemented")
+    }
+@Composable
+    override fun ForgotPasswordDialog(
+        modifier: Modifier,
+        emailFieldState: StateFlow<TextFieldState>,
+        sendResetPasswordEmailButtonState: StateFlow<UIState>,
+        onSendEmail:(String)->Unit
+    ) {
         TODO("Not yet implemented")
     }
 }

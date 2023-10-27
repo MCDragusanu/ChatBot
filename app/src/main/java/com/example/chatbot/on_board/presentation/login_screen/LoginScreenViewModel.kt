@@ -17,6 +17,12 @@ import kotlinx.coroutines.flow.consumeAsFlow
  * as the handling of login-related actions and displaying SnackBar events. It also provides a mechanism to set the `OnBoardModule`
  * for authentication and user management.
  */
+/**
+ * An abstract ViewModel class that manages the state and logic of a login screen.
+ *
+ * This class provides functionality to handle user input in email and password fields,
+ * send password reset emails, display SnackBar events, and manage the authentication module.
+ */
 abstract class LoginScreenViewModel : ViewModel() {
 
     // Mutable StateFlows to manage the state of email and password input fields.
@@ -30,8 +36,17 @@ abstract class LoginScreenViewModel : ViewModel() {
     protected val _snackbarChannel = Channel<SnackbarEvent>()
     val snackbarChannel = _snackbarChannel.consumeAsFlow()
 
+    // StateFlow to manage the state of the login button.
     protected val _loginBtnState = MutableStateFlow(UIState.Enabled)
     val loginBtnState = _loginBtnState.asStateFlow()
+
+    // Mutable StateFlow to manage the state of the password reset email field.
+    protected val _passwordResetEmailField = MutableStateFlow(TextFieldState())
+    val passwordResetEmailField = _passwordResetEmailField.asStateFlow()
+
+    // StateFlow to manage the state of the password reset button.
+    protected val _passwordResetButton = MutableStateFlow(UIState.Enabled)
+    val passwordResetButton = _passwordResetButton.asStateFlow()
 
     // Reference to the OnBoardModule, which provides authentication and user management functionality.
     protected lateinit var module: OnBoardModule
@@ -89,4 +104,11 @@ abstract class LoginScreenViewModel : ViewModel() {
      *                        passing the user's unique identifier.
      */
     abstract fun onLoginIsPressed(onCompletedLogin: (String) -> Unit)
+
+    /**
+     * Handles errors that may occur during the authentication process.
+     *
+     * @param exception The exception representing the error.
+     */
+    abstract protected fun onError(exception: Exception)
 }

@@ -13,12 +13,12 @@ import java.lang.Exception
 class AuthServiceTestImpl:AuthService() {
     private val randomUIDGenerator = UIDGeneratorImpl()
     override suspend fun loginUser(email: String, password: String): AuthResult {
-        delay(10000)
+        delay(1000)
         return AuthResult.Completed(randomUIDGenerator.generateString())
     }
 
     override suspend fun registerUser(email: String, password: String): AuthResult {
-        delay(10000)
+        delay(1000)
         return AuthResult.Completed(randomUIDGenerator.generateString())
     }
 

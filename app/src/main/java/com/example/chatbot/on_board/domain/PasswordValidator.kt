@@ -8,9 +8,23 @@ interface PasswordValidator {
      * Validates a password against a set of specific password requirements.
      *
      * @param password The password to be validated.
-     * @return A list of [PasswordRequirements] objects that indicate whether each requirement is met.
+     * @return A list of [PasswordRequirements] objects that contains all the requirements satisfied by the password.
      */
     fun check(password: String): List<PasswordRequirements>
+
+    /**
+     * Checks whether the password is strong enough or not.
+     *
+     * @param satisfiedCriteria The list of matched requirements.
+     * @return True if it is strong enough , False otherwise.
+     */
+    fun isStrongEnough(satisfiedCriteria:List<PasswordRequirements>):Boolean {
+        //a minimum weigth that the password must have
+        val thresholdWeight = 0.66
+        // the sum of all the weights
+        val current = satisfiedCriteria.sumOf { it.weight }
+        return current > thresholdWeight
+    }
 
     /**
      * A sealed class representing specific password requirements with associated weight, condition message, and validation logic.
@@ -63,7 +77,7 @@ interface PasswordValidator {
         /**
          * Represents the requirement for having enough characters in the password.
          */
-        object HasEnoughCharacters : PasswordRequirements(
+        object isLongEnough : PasswordRequirements(
             weight = 0.12,
             conditionMessage = R.string.password_is_long_enough,
             validation = { it.length >= 15 }
