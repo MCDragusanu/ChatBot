@@ -1,4 +1,3 @@
 package com.example.chatbot.common
 
-open class Destination(val dest:String) {
-}
+open class Destination(val dest:String)

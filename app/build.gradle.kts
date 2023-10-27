@@ -56,7 +56,11 @@ android {
 
 dependencies {
 
-    //Firebase
+    // Firebase Firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    //
+
+    //Firebase Auth
     implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     //
@@ -72,6 +76,7 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    implementation("com.google.firebase:firebase-auth-ktx:22.2.0")
     //
 
     //Room Database

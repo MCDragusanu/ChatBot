@@ -1,15 +1,38 @@
 package com.example.chatbot.firestore
 
+import com.example.chatbot.firestore.APIKeyFetcher.Companion.COLLECTION_NAME
+import com.example.chatbot.firestore.APIKeyFetcher.Companion.OPEN_AI_DOCUMENT_NAME
+import com.example.chatbot.firestore.APIKeyFetcher.Companion.OPEN_AI_KEY_FIELD
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
+
+
 /**
 * An implementation of the [APIKeyFetcher] interface that retrieves API keys from Firestore Storage.
 */
 class FirestoreKeyFetcher : APIKeyFetcher {
 
-    override suspend fun getAPIKey(name: String): Result<String> {
-        // TODO: Implement the logic to retrieve the API key from Firestore Storage.
-        // You should replace this placeholder with your actual implementation.
-        // You may use Firestore or any other suitable method to obtain the API key.
-        // Make sure to return a Result with the key on success or an error message on failure.
-        TODO("Not yet implemented")
+    private val collectionRef =
+        Firebase.firestore.collection(APIKeyFetcher.COLLECTION_NAME) // this object contains methods to interact with the database
+
+    // to access any document inside the collection
+    // val task = collectionRef.document(your document name).get() // you store the request inside 'task variable'
+    // task.await() // with this you say - wait until the request is finished -; if not used, the following lines will be executed without waiting for completion
+    // if(task.isSuccessful)
+    //     val key = task.result.get( your field name) as String? // you get the field that has the name you want and interpret it as a possibly null string
+    //     write then the logic to handle the case when the key is null or not
+    //     use return Result.success(key) if key is not null
+    //     use return Result.failure(NullPointerException("$fieldName content not found or is null")) if the key is null //
+    // else
+    //     return Result.failure(task.exception ?:Exception("Unknown error has occurred while retrieving field $fieldName from document $documentName")) if the task is not successful
+    // leftArg ?: rightArg is short for if(leftArg  == null ) rightArg
+override suspend fun getAPIKey(documentName: String, fieldName: String ): Result<String> {
+
+        //https://firebase.google.com/docs/firestore/manage-data/add-data#kotlin+ktx_1
+        // resources on how it works and how to use
+        // make sure you check the code snippet ofr android and KotlinX
+        TODO("Not Yet Implemented")
+
     }
 }

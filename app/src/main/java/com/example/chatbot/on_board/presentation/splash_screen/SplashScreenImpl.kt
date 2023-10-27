@@ -7,8 +7,8 @@ object SplashScreenImpl:SplashScreen() {
     @Composable
     override fun Main(
         splashScreenViewModel: SplashScreenViewModel,
-        onShowLoginScreen: () -> Unit,
-        onStartMainActivity: (String) -> Unit
+        onUserNotFound: () -> Unit,
+        onUserIsSignedIn: (String) -> Unit
     ) {
         TODO("Not yet implemented")
     }

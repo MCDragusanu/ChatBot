@@ -33,8 +33,8 @@ sealed class AuthResult(private val userUid: String?, private val error: AuthErr
      * @return This [AuthResult] instance.
      */
     fun onSuccess(action: (String) -> Unit): AuthResult {
-        if (this is Completed && this.userUid != null) {
-            action(this.userUid)
+        if (this is Completed) {
+            action(this.userUid?:throw NullPointerException("User UID is null"))
         }
         return this
     }
@@ -46,8 +46,8 @@ sealed class AuthResult(private val userUid: String?, private val error: AuthErr
      * @return This [AuthResult] instance.
      */
     fun onFailure(action: (AuthError) -> Unit): AuthResult {
-        if (this is Failed && this.error != null) {
-            action(this.error)
+        if (this is Failed ) {
+            action(this.error?: throw NullPointerException("Error is null"))
         }
         return this
     }

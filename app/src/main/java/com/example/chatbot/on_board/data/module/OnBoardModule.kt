@@ -1,5 +1,8 @@
 package com.example.chatbot.on_board.data.module
 
+import com.example.chatbot.account_manager.AccountManagerImpl
+import com.example.chatbot.account_manager.AccountManager
+import com.example.chatbot.account_manager.AccountManagerTestImpl
 import com.example.chatbot.on_board.data.auth.AuthService
 import com.example.chatbot.on_board.data.auth.AuthServiceImpl
 import com.example.chatbot.on_board.data.auth.AuthServiceTestImpl
@@ -16,7 +19,7 @@ import com.example.chatbot.uid_generator.UIDGeneratorImpl
  * @property authService The authentication service used for user login and registration.
  * @property uidGenerator The user ID generator used for creating unique user identifiers.
  */
-class OnBoardModule private constructor(private val authService: AuthService, private val uidGenerator: UIDGenerator) {
+class OnBoardModule private constructor(private val authService: AuthService, private val accountManager : AccountManager, private val uidGenerator: UIDGenerator) {
 
     companion object {
         private var instance: OnBoardModule? = null
@@ -33,6 +36,7 @@ class OnBoardModule private constructor(private val authService: AuthService, pr
                 //Creating a new instance of this module
                 val newModule = OnBoardModule(
                     authService = if (isInTestMode) AuthServiceTestImpl() else AuthServiceImpl(),
+                    accountManager = if(isInTestMode) AccountManagerTestImpl() else AccountManagerImpl(),
                     uidGenerator = UIDGeneratorImpl()
                 )
                 //saving the new instance in the instance variable

@@ -14,3 +14,4 @@ data class TextFieldState(
     val errorCode: Int? = null,
     val state: UIState = UIState.Enabled
 )
+

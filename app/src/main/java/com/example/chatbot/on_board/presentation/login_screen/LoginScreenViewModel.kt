@@ -98,6 +98,13 @@ abstract class LoginScreenViewModel : ViewModel() {
     protected abstract fun inputIsValid(email: String, password: String): Boolean
 
     /**
+     * Handles errors that may occur during the authentication process.
+     *
+     * @param exception The exception representing the error.
+     */
+    protected abstract fun onError(exception: Exception)
+
+    /**
      * Handles the user's action when the login button is pressed.
      *
      * @param onCompletedLogin A callback function to be invoked when the login operation is successfully completed,
@@ -105,10 +112,5 @@ abstract class LoginScreenViewModel : ViewModel() {
      */
     abstract fun onLoginIsPressed(onCompletedLogin: (String) -> Unit)
 
-    /**
-     * Handles errors that may occur during the authentication process.
-     *
-     * @param exception The exception representing the error.
-     */
-    abstract protected fun onError(exception: Exception)
+
 }

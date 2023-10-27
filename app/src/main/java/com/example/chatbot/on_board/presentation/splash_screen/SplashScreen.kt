@@ -15,11 +15,11 @@ abstract class SplashScreen : Destination("SplashScreen") {
      * Composable function for the main splash screen view.
      *
      * @param splashScreenViewModel The ViewModel for managing the splash screen.
-     * @param onShowLoginScreen A callback function to navigate to the login screen or perform login-related actions.
-     * @param onStartMainActivity A callback function to start the main activity with the user's unique identifier.
+     * @param onUserNotFound A callback function to navigate to the login screen or perform login-related actions.
+     * @param onUserIsSignedIn A callback function to start the main activity with the user's unique identifier.
      */
     @Composable
-    abstract fun Main(splashScreenViewModel: SplashScreenViewModel, onShowLoginScreen: () -> Unit, onStartMainActivity: (String) -> Unit)
+    abstract fun Main(splashScreenViewModel: SplashScreenViewModel, onUserNotFound: () -> Unit, onUserIsSignedIn: (String) -> Unit)
 
     /**
      * Composable function for the logo image.

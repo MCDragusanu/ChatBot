@@ -23,6 +23,6 @@ class AuthServiceTestImpl:AuthService() {
     }
 
     override fun translateError(exception: Exception): AuthError {
-      return AuthError.UnknownError(-1)
+      return AuthError.UnknownError("Test Error")
     }
 }

@@ -1,5 +1,7 @@
 package com.example.chatbot.on_board.data.auth
 
+import com.example.chatbot.R
+
 /**
  * A sealed class representing different authentication error types, extending the Exception class.
  *
@@ -13,33 +15,35 @@ sealed class AuthError(errorCode: Int) : Exception() {
      *
      * @param errorCode The error code indicating the unknown error condition.
      */
-    class UnknownError(errorCode: Int) : AuthError(errorCode)
+    class UnknownError(val errorMessage:String ) : AuthError(-1)
 
     /**
      * Represents an error due to an invalid email format with a specific error code.
      *
      * @param errorCode The error code indicating the invalid email format error.
      */
-    class InvalidEmailFormat(errorCode: Int) : AuthError(errorCode)
+    object InvalidEmailFormat : AuthError(R.string.error_invalid_email_format)
 
     /**
      * Represents an error due to invalid credentials with a specific error code.
      *
      * @param errorCode The error code indicating the invalid credentials error.
      */
-    class InvalidCredentials(errorCode: Int) : AuthError(errorCode)
+    object InvalidCredentials: AuthError(R.string.error_invalid_credentials)
 
     /**
      * Represents an error due to a user collision with a specific error code.
      *
      * @param errorCode The error code indicating the user collision error.
      */
-    class UserCollision(errorCode: Int) : AuthError(errorCode)
+    object UserCollision : AuthError(R.string.error_user_collision)
 
     /**
      * Represents an error indicating that the provided password is too weak with a specific error code.
      *
      * @param errorCode The error code indicating the password too weak error.
      */
-    class PasswordTooWeak(errorCode: Int) : AuthError(errorCode)
+    object PasswordTooWeak : AuthError(R.string.error_password_is_too_weak)
+
+    object UserUidNotFound:AuthError(R.string.error_no_user_uid_found)
 }

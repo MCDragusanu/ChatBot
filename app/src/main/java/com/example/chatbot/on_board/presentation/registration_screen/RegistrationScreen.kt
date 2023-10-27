@@ -16,7 +16,8 @@ abstract class RegistrationScreen : Destination("RegistrationScreen") {
      * Composable function for the main registration screen view.
      *
      * @param viewModel The ViewModel for managing the registration screen.
-     * @param onCompletedRegistration A callback function to be invoked when the registration is successfully completed, passing the user's unique identifier.
+     * @param onCompletedRegistration A callback function to be invoked when the registration is successfully completed,
+     *                              passing the user's unique identifier.
      */
     @Composable
     abstract fun Main(viewModel: RegistrationScreenViewModel, onCompletedRegistration: (String) -> Unit)
@@ -45,7 +46,7 @@ abstract class RegistrationScreen : Destination("RegistrationScreen") {
      * Composable function for the "Terms of Use" checkbox.
      *
      * @param modifier The modifier to apply to the Composable element.
-     * @param state A StateFlow representing the state of the checkbox.
+     * @param state A StateFlow representing the state of the checkbox (checked or unchecked).
      * @param onStateChanged A callback function to handle changes in the checkbox state.
      */
     @Composable

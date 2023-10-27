@@ -1,7 +1,6 @@
 package com.example.chatbot.on_board.presentation.nav_graph
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -34,13 +33,13 @@ object OnBoardNavGraph {
     @Composable
     fun Main(
         loginScreenViewModel: LoginScreenViewModel,
-        registrationScreenViewModel: RegistrationScreenViewModel,
-        onBoardViewModel: OnBoardViewModel,
-        splashScreenViewModel: SplashScreenViewModel,
         loginScreen: LoginScreen,
-        splashScreen: SplashScreen,
         registrationScreen: RegistrationScreen,
+        registrationScreenViewModel: RegistrationScreenViewModel,
         onBoardScreen: OnBoardScreen,
+        onBoardViewModel: OnBoardViewModel,
+        splashScreen: SplashScreen,
+        splashScreenViewModel: SplashScreenViewModel,
         onCompletedAuth: (String) -> Unit
     ) {
         // Create a navigation controller to manage navigation between Composables.
@@ -52,8 +51,8 @@ object OnBoardNavGraph {
                 // Display the splash screen and handle navigation to other screens.
                 splashScreen.Main(
                     splashScreenViewModel = splashScreenViewModel,
-                    onStartMainActivity = onCompletedAuth,
-                    onShowLoginScreen = {
+                    onUserIsSignedIn = onCompletedAuth,
+                    onUserNotFound = {
                         // Navigate to the login screen.
                         navController.popBackStack()
                         navController.navigate(loginScreen.dest)
@@ -75,7 +74,10 @@ object OnBoardNavGraph {
                 // Display the registration screen.
                 registrationScreen.Main(
                     viewModel = registrationScreenViewModel,
-                    onCompletedRegistration = onCompletedAuth
+                    onCompletedRegistration = {
+                        navController.popBackStack(registrationScreen.dest , true)
+                        onCompletedAuth(it)
+                    }
                 )
             }
             composable(onBoardScreen.dest) {
