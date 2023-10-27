@@ -5,6 +5,10 @@ import com.example.chatbot.common.SnackbarEvent
 import com.example.chatbot.common.TextFieldState
 import com.example.chatbot.common.UIState
 import com.example.chatbot.on_board.data.module.OnBoardModule
+import com.example.chatbot.on_board.domain.EmailValidator
+import com.example.chatbot.on_board.domain.EmailValidatorImpl
+import com.example.chatbot.on_board.domain.PasswordValidator
+import com.example.chatbot.on_board.domain.PasswordValidatorImpl
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,6 +36,9 @@ abstract class RegistrationScreenViewModel : ViewModel() {
 
     private val _btnRegister = MutableStateFlow(UIState.Enabled)
     val btnRegister = _btnRegister.asStateFlow()
+
+    private val passwordValidator:PasswordValidator = PasswordValidatorImpl
+    private val emailValidator:EmailValidator = EmailValidatorImpl
 
     private lateinit var module: OnBoardModule
 

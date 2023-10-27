@@ -5,6 +5,10 @@ import com.example.chatbot.common.SnackbarEvent
 import com.example.chatbot.common.TextFieldState
 import com.example.chatbot.common.UIState
 import com.example.chatbot.on_board.data.module.OnBoardModule
+import com.example.chatbot.on_board.domain.EmailValidator
+import com.example.chatbot.on_board.domain.EmailValidatorImpl
+import com.example.chatbot.on_board.domain.PasswordValidator
+import com.example.chatbot.on_board.domain.PasswordValidatorImpl
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,6 +52,9 @@ abstract class LoginScreenViewModel : ViewModel() {
     protected val _passwordResetButton = MutableStateFlow(UIState.Enabled)
     val passwordResetButton = _passwordResetButton.asStateFlow()
 
+
+    private val emailValidator:EmailValidator = EmailValidatorImpl
+
     // Reference to the OnBoardModule, which provides authentication and user management functionality.
     protected lateinit var module: OnBoardModule
 
@@ -90,7 +97,7 @@ abstract class LoginScreenViewModel : ViewModel() {
 
     /**
      * Checks if the provided email and password combination is valid.
-     *
+     * use the [PasswordValidator] and [EmailValidator] to check the input
      * @param email The email address.
      * @param password The password.
      * @return `true` if the input is valid, `false` otherwise.

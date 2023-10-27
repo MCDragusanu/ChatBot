@@ -23,10 +23,9 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
         TODO("Not yet implemented")
     }
 
-    override fun inputIsValid(email: String, password: String): Boolean {
+    override fun inputIsValid(email: String, password: String, termsIsChecked: Boolean): Boolean {
         TODO("Not yet implemented")
     }
-
     override fun onError(exception: Exception) {
         TODO("Not yet implemented")
     }
