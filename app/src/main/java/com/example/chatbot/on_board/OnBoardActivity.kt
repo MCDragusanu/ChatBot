@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.example.chatbot.MainActivity
-import com.example.chatbot.R
 import com.example.chatbot.on_board.data.module.OnBoardModule
 import com.example.chatbot.on_board.presentation.login_screen.LoginScreenImpl
 import com.example.chatbot.on_board.presentation.login_screen.LoginScreenViewModelImpl
@@ -15,7 +14,6 @@ import com.example.chatbot.on_board.presentation.nav_graph.OnBoardNavGraph
 import com.example.chatbot.on_board.presentation.on_board_screen.OnBoardScreenImpl
 import com.example.chatbot.on_board.presentation.on_board_screen.OnBoardViewModelImpl
 import com.example.chatbot.on_board.presentation.registration_screen.RegistrationScreenImpl
-import com.example.chatbot.on_board.presentation.registration_screen.RegistrationScreenViewModel
 import com.example.chatbot.on_board.presentation.registration_screen.RegistrationScreenViewModelImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenViewModelImpl
@@ -33,7 +31,7 @@ class OnBoardActivity : ComponentActivity() {
 
         // Initialize the LoginScreenViewModel and set the OnBoardModule dependency.
         val loginScreenViewModel by viewModels<LoginScreenViewModelImpl>().apply {
-            this.value.setModule(onBoardModule)
+            this.value.initModule(onBoardModule)
         }
 
         // Initialize the RegistrationScreenViewModel and set the OnBoardModule dependency.

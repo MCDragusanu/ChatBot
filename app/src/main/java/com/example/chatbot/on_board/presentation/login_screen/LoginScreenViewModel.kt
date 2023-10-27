@@ -8,7 +8,6 @@ import com.example.chatbot.on_board.data.module.OnBoardModule
 import com.example.chatbot.on_board.domain.EmailValidator
 import com.example.chatbot.on_board.domain.EmailValidatorImpl
 import com.example.chatbot.on_board.domain.PasswordValidator
-import com.example.chatbot.on_board.domain.PasswordValidatorImpl
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,8 +62,8 @@ abstract class LoginScreenViewModel : ViewModel() {
      *
      * @param module The OnBoardModule instance to be used by this ViewModel.
      */
-    fun setModule(module: OnBoardModule) {
-        this.module = module
+    fun initModule(onBoardModule: OnBoardModule) {
+        this.module = onBoardModule
     }
 
     /**
