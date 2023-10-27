@@ -1,3 +1,5 @@
+package com.example.chatbot.on_board.domain
+
 import com.example.chatbot.R
 
 /**
