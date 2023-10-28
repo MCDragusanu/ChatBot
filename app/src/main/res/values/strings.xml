@@ -13,4 +13,6 @@
     <string name="error_no_user_uid_found">No userUid retrieved</string>
     <string name="error_no_user_found">There is no active user linked to this email</string>
     <string name="error_auth_required">You must have a recent login before attempting this operation</string>
+    <string name="error_email_not_provied">Please enter an email adress</string>
+    <string name="error_password_not_provided">Please enter a password</string>
 </resources>

@@ -1,9 +1,11 @@
 package com.example.chatbot.on_board.presentation.login_screen
 
 import androidx.lifecycle.ViewModel
+import com.example.chatbot.account_manager.AccountErrors
 import com.example.chatbot.common.SnackbarEvent
 import com.example.chatbot.common.TextFieldState
 import com.example.chatbot.common.UIState
+import com.example.chatbot.on_board.data.auth.AuthError
 import com.example.chatbot.on_board.data.module.OnBoardModule
 import com.example.chatbot.on_board.domain.EmailValidator
 import com.example.chatbot.on_board.domain.EmailValidatorImpl
@@ -110,7 +112,9 @@ abstract class LoginScreenViewModel : ViewModel() {
      *
      * @param exception The exception representing the error.
      */
-    protected abstract fun onError(exception: Exception)
+    protected abstract fun onLoginError(exception: AuthError)
+
+    protected abstract fun onResetPasswordError(exception:AccountErrors)
 
     /**
      * Handles the user's action when the login button is pressed.
@@ -119,6 +123,8 @@ abstract class LoginScreenViewModel : ViewModel() {
      *                        passing the user's unique identifier.
      */
     abstract fun onLoginIsPressed(onCompletedLogin: (String) -> Unit)
+
+
 
 
 }
