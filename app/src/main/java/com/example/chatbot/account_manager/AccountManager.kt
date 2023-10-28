@@ -1,5 +1,7 @@
 package com.example.chatbot.account_manager
 
+import java.lang.Exception
+
 abstract class AccountManager {
 
     /**
@@ -48,4 +50,6 @@ abstract class AccountManager {
   abstract  suspend fun deleteAccount(email: String, password: String): AccountResult
 
   protected abstract suspend fun reauthUser(email: String, password: String):AccountResult
+
+   protected abstract fun translateError(exception: Exception):AccountErrors
 }

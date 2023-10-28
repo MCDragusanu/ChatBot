@@ -52,7 +52,7 @@ abstract class LoginScreenViewModel : ViewModel() {
     val passwordResetButton = _passwordResetButton.asStateFlow()
 
 
-    private val emailValidator:EmailValidator = EmailValidatorImpl
+    protected val emailValidator:EmailValidator = EmailValidatorImpl
 
     // Reference to the OnBoardModule, which provides authentication and user management functionality.
     protected lateinit var module: OnBoardModule
@@ -84,13 +84,15 @@ abstract class LoginScreenViewModel : ViewModel() {
      * Initiates the process to send a password reset email to the provided email address.
      *
      * @param email The email address to which the password reset email will be sent.
+     * @param onCompleted the callback used to signal UI Layer that the task is completed
      */
-    abstract fun sendPasswordResetEmail(email: String)
+    abstract fun sendPasswordResetEmail(email: String , onCompleted:()->Unit)
 
     /**
      * Emits a SnackBar event to be displayed in the user interface.
      *
      * @param snackbarEvent The event to be displayed in a SnackBar.
+     *
      */
     protected abstract fun emitSnackbar(snackbarEvent: SnackbarEvent)
 

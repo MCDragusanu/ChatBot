@@ -5,7 +5,7 @@ package com.example.chatbot.account_manager
  *
  * @param error An optional exception associated with the failure, which can be null for successful outcomes.
  */
-sealed class AccountResult(val error: Exception?) {
+sealed class AccountResult(val error: AccountErrors?) {
 
     /**
      * Represents a successful account operation.
@@ -17,7 +17,7 @@ sealed class AccountResult(val error: Exception?) {
      *
      * @param exception The exception that caused the failure.
      */
-    class Failure(exception: Exception) : AccountResult(exception)
+    class Failure(exception: AccountErrors) : AccountResult(exception)
 
     /**
      * Executes the specified action if the result represents a successful operation.
@@ -38,7 +38,7 @@ sealed class AccountResult(val error: Exception?) {
      * @param action The action to execute on failure.
      * @return The original result instance.
      */
-    fun onFailure(action: (Exception) -> Unit): AccountResult {
+    fun onFailure(action: (AccountErrors) -> Unit): AccountResult {
         if (this is Failure) {
             action(this.error ?: throw NullPointerException("Exception can't be null"))
         }

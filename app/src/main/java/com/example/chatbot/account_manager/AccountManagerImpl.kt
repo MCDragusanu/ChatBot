@@ -1,6 +1,10 @@
 package com.example.chatbot.account_manager
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthEmailException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import java.lang.Exception
 
 class AccountManagerImpl: AccountManager() {
 
@@ -47,5 +51,14 @@ class AccountManagerImpl: AccountManager() {
         //To see how to reauth the user use this link https://firebase.google.com/docs/auth/android/manage-users#re-authenticate_a_user
         //use this method whenever you need to re-auth the user
         TODO("Not yet implemented")
+    }
+
+    override fun translateError(exception: Exception): AccountErrors {
+       return  when(exception){
+            is FirebaseAuthRecentLoginRequiredException->AccountErrors.ReauthRequired
+            is FirebaseAuthInvalidUserException->AccountErrors.NoUserFound
+            is FirebaseAuthEmailException->AccountErrors.InvalidEmail
+            else -> AccountErrors.UnknownError(exception.localizedMessage?:"Unknown error has occurred")
+        }
     }
 }
