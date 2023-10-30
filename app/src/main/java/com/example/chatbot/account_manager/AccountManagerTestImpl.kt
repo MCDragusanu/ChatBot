@@ -1,6 +1,7 @@
 package com.example.chatbot.account_manager
 
 import kotlinx.coroutines.delay
+import java.lang.Exception
 
 class AccountManagerTestImpl:AccountManager() {
     override suspend fun sendPasswordResetEmail(email: String): AccountResult {
@@ -31,5 +32,9 @@ class AccountManagerTestImpl:AccountManager() {
     override suspend fun reauthUser(email: String, password: String): AccountResult {
         delay(1000)
         return AccountResult.Success()
+    }
+
+    override fun translateError(exception: Exception): AccountErrors {
+        TODO("Not yet implemented")
     }
 }

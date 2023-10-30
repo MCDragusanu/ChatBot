@@ -38,7 +38,7 @@ abstract class LoginScreenViewModel : ViewModel() {
     val passwordState = _passwordState.asStateFlow()
 
     // Channel for delivering SnackBar events.
-    protected val _snackbarChannel = Channel<SnackbarEvent>()
+    protected val _snackbarChannel = Channel<SnackbarEvent?>()
     val snackbarChannel = _snackbarChannel.consumeAsFlow()
 
     // StateFlow to manage the state of the login button.
@@ -88,7 +88,7 @@ abstract class LoginScreenViewModel : ViewModel() {
      * @param email The email address to which the password reset email will be sent.
      * @param onCompleted the callback used to signal UI Layer that the task is completed
      */
-    abstract fun sendPasswordResetEmail(email: String , onCompleted:()->Unit)
+    abstract fun sendPasswordResetEmail(onCompleted:()->Unit)
 
     /**
      * Emits a SnackBar event to be displayed in the user interface.
@@ -123,8 +123,7 @@ abstract class LoginScreenViewModel : ViewModel() {
      *                        passing the user's unique identifier.
      */
     abstract fun onLoginIsPressed(onCompletedLogin: (String) -> Unit)
-
-
+   abstract fun onResetPasswordEmaiLChanged(email: String)
 
 
 }

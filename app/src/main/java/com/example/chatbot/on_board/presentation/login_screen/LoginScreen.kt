@@ -72,6 +72,9 @@ abstract class LoginScreen : Destination("LoginScreen") {
         onClick: () -> Unit
     )
 
+    @Composable
+    abstract fun Headline()
+
     /**
      * Composable function for the "Forgot Password" button.
      *
@@ -92,9 +95,18 @@ abstract class LoginScreen : Destination("LoginScreen") {
     @Composable
     abstract fun ForgotPasswordDialog(
         modifier: Modifier,
+        onDismiss: () -> Unit,
         emailFieldState: StateFlow<TextFieldState>,
         sendResetPasswordEmailButtonState: StateFlow<UIState>,
-        onSendEmail: (String) -> Unit
+        onEmailChanged:(String)->Unit,
+        onSendEmail: () -> Unit
     )
+
+    @Composable
+    abstract fun ForgotPasswordDialogButton(modifier: Modifier, onClick: () -> Unit)
+
+    @Composable
+    abstract fun RegisterButton(modifier: Modifier , onClick: () -> Unit)
+
 }
 

@@ -6,7 +6,7 @@
     <string name="password_contains_special_characters">Password can contain special characters</string>
     <string name="password_is_long_enough">Password has at least 15 characters</string>
     <string name="error_user_uid_null">NO user uid was found</string>
-    <string name="error_invalid_email_format">Please enter a valid message</string>
+    <string name="error_invalid_email_format">Please enter a valid email</string>
     <string name="error_invalid_credentials">Please enter a valid email / password combination</string>
     <string name="error_user_collision">This Email is linked to another account</string>
     <string name="error_password_is_too_weak">Password is too weak</string>

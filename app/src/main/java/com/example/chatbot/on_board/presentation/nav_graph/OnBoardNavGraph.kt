@@ -46,7 +46,7 @@ object OnBoardNavGraph {
         val navController = rememberNavController()
 
         // Define the navigation flow using Jetpack Compose's NavHost and composable functions.
-        NavHost(navController, startDestination = splashScreen.dest) {
+        NavHost(navController, startDestination = loginScreen.dest) {
             composable(splashScreen.dest) {
                 // Display the splash screen and handle navigation to other screens.
                 splashScreen.Main(
@@ -66,7 +66,7 @@ object OnBoardNavGraph {
                     onLoginCompleted = onCompletedAuth,
                     onRegister = {
                         // Navigate to the onboarding screen.
-                        navController.navigate(onBoardScreen.dest)
+                       // navController.navigate(onBoardScreen.dest)
                     }
                 )
             }
