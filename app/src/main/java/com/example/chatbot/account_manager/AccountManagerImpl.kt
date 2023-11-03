@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 
 class AccountManagerImpl: AccountManager() {
@@ -20,6 +21,7 @@ class AccountManagerImpl: AccountManager() {
     private val auth:FirebaseAuth = FirebaseAuth.getInstance() // this object contains the methods needed to perform the actions
     override suspend fun sendPasswordResetEmail(email: String): AccountResult {
         //https://firebase.google.com/docs/auth/android/manage-users#send_a_password_reset_email
+        auth.sendPasswordResetEmail(email).await()
         TODO("Not yet implemented")
     }
 

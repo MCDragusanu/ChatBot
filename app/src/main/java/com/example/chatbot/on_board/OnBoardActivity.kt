@@ -27,7 +27,7 @@ class OnBoardActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Create an OnBoardModule with test mode enabled.
-        val onBoardModule = OnBoardModule.getModule(isInTestMode = true)
+        val onBoardModule = OnBoardModule.getModule(isInTestMode = false)
 
         // Initialize the LoginScreenViewModel and set the OnBoardModule dependency.
         val loginScreenViewModel by viewModels<LoginScreenViewModelImpl>().apply {

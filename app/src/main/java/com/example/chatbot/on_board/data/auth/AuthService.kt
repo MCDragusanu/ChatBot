@@ -1,6 +1,8 @@
 package com.example.chatbot.on_board.data.auth
 
-import java.lang.Exception
+import com.google.firebase.FirebaseException
+
+import kotlin.Exception
 
 /**
  * An abstract class representing the authentication service for user login and registration.
