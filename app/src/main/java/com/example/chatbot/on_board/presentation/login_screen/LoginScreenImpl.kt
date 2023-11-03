@@ -236,30 +236,30 @@ object LoginScreenImpl:LoginScreen() {
 
     @Composable
     override fun LoginButton(modifier: Modifier, state: StateFlow<UIState>, onClick: () -> Unit) {
-        val currentState by state.collectAsState()
+        val state by state.collectAsState()
         val containerColor by animateColorAsState(
             when {
-                currentState.isCompleted() -> Color.Green
-                currentState.isError() -> MaterialTheme.colorScheme.errorContainer
+                state.isCompleted() -> Color.Green
+                state.isError() -> MaterialTheme.colorScheme.errorContainer
                 else -> MaterialTheme.colorScheme.primaryContainer
             }, label = ""
         ) // Animate the container color based on state
 
         val contentColor by animateColorAsState(
             when {
-                currentState.isCompleted() -> Color.White
-                currentState.isError() -> MaterialTheme.colorScheme.onErrorContainer
+                state.isCompleted() -> Color.White
+                state.isError() -> MaterialTheme.colorScheme.onErrorContainer
                 else -> MaterialTheme.colorScheme.onPrimaryContainer
             }, label = ""
         ) // Animate the content color based on state
 
         Button(onClick = {
-            if (!currentState.isLoading()) {
+            if (!state.isLoading()) {
                 onClick()
             }// with these we prevent the user from triggering the login when the task is already being processed
         }, modifier = modifier, colors = ButtonDefaults.buttonColors(containerColor, contentColor)) {
             AnimatedContent(
-                currentState,
+                state,
                 label = ""
             ) { state -> // with these we update the content of the button based on it's state
                 when (state) {
