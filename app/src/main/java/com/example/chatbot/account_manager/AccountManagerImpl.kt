@@ -1,5 +1,6 @@
 package com.example.chatbot.account_manager
 
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthEmailException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -21,38 +22,136 @@ class AccountManagerImpl: AccountManager() {
     private val auth:FirebaseAuth = FirebaseAuth.getInstance() // this object contains the methods needed to perform the actions
     override suspend fun sendPasswordResetEmail(email: String): AccountResult {
         //https://firebase.google.com/docs/auth/android/manage-users#send_a_password_reset_email
-        auth.sendPasswordResetEmail(email).await()
-        TODO("Not yet implemented")
+        return try
+        {
+            val task = auth.sendPasswordResetEmail(email)
+            task.await()
+            if (task.isSuccessful)
+                AccountResult.Success()
+            else {
+                val translatedError = translateError(task.exception?:Exception())
+                AccountResult.Failure(translatedError)
+            }
+        }catch(e:Exception){
+            val translatedError = translateError(e)
+            AccountResult.Failure(translatedError)
+        }
     }
 
     override suspend fun sendEmailVerification(email: String): AccountResult {
-        //https://firebase.google.com/docs/auth/android/manage-users#send_a_user_a_verification_email
-        TODO("Not yet implemented")
-    }
+        return try {
+            val user = auth.currentUser
+            if (user == null) {
+                return AccountResult.Failure(AccountErrors.NoUserFound);
+            }
+            val task = user.sendEmailVerification()
+            task.await()
+            if (task.isSuccessful) {
+                AccountResult.Success()
+            } else {
+                val translatedError = translateError(task.exception?:Exception())
+                AccountResult.Failure(translatedError)
+            }
+        }catch(e:Exception) {
+                val translatedError = translateError(e)
+                AccountResult.Failure(translatedError)
+            }
+        }
 
     override suspend fun changeEmail(oldEmail: String, password: String, newEmail: String): AccountResult {
-        //in order to change any account credentials like password ,email or delete account,
-        //first you have to authenticate the user with its credentials
 
-        TODO("Not yet implemented")
+        val user = auth.currentUser
+        if (user == null) {
+            return AccountResult.Failure(AccountErrors.NoUserFound);
+        }
+        val result = reauthUser(oldEmail, password)
+        if (result == AccountResult.Success()) {
+            return try {
+                val task = user.updateEmail(newEmail)
+                task.await()
+                if (task.isSuccessful) {
+                    AccountResult.Success()
+                } else {
+                    val translatedError = translateError(task.exception ?: Exception())
+                    AccountResult.Failure(translatedError)
+                }
+            }catch(e:Exception) {
+                val translatedError = translateError(e)
+                AccountResult.Failure(translatedError)
+            }
+        }
+        else return AccountResult.Failure(AccountErrors.ReauthRequired)
     }
 
     override suspend fun changePassword(email: String, oldPassword: String, newPassword: String): AccountResult {
-        //in order to change any account credentials like password ,email or delete account,
-        //first you have to authenticate the user with its credentials
-        TODO("Not yet implemented")
+
+        val user = auth.currentUser
+        if (user == null) {
+            return AccountResult.Failure(AccountErrors.NoUserFound);
+        }
+        val result = reauthUser(email, oldPassword)
+        if (result == AccountResult.Success()) {
+            return try {
+                val task = user.updatePassword(newPassword)
+                task.await()
+                if (task.isSuccessful) {
+                    AccountResult.Success()
+                } else {
+                    val translatedError = translateError(task.exception ?: Exception())
+                    AccountResult.Failure(translatedError)
+                }
+            }catch(e:Exception) {
+                val translatedError = translateError(e)
+                AccountResult.Failure(translatedError)
+            }
+        }
+        else return AccountResult.Failure(AccountErrors.ReauthRequired)
     }
 
     override suspend fun deleteAccount(email: String, password: String): AccountResult {
-        //in order to change any account credentials like password ,email or delete account,
-        //first you have to authenticate the user with its credentials
-        TODO("Not yet implemented")
+        val user = auth.currentUser
+        if (user == null) {
+            return AccountResult.Failure(AccountErrors.NoUserFound);
+        }
+        val result = reauthUser(email, password)
+        if (result == AccountResult.Success()) {
+            return try {
+                val task = user.delete()
+                task.await()
+                if (task.isSuccessful) {
+                    AccountResult.Success()
+                }
+                else {
+                    val translatedError = translateError(task.exception ?: Exception())
+                    AccountResult.Failure(translatedError)
+                }
+            }catch(e:Exception) {
+                val translatedError = translateError(e)
+                AccountResult.Failure(translatedError)
+            }
+        }
+        else return AccountResult.Failure(AccountErrors.ReauthRequired)
     }
 
     override suspend fun reauthUser(email: String, password: String): AccountResult {
-        //To see how to reauth the user use this link https://firebase.google.com/docs/auth/android/manage-users#re-authenticate_a_user
-        //use this method whenever you need to re-auth the user
-        TODO("Not yet implemented")
+        val user = auth.currentUser
+        if (user == null) {
+            return AccountResult.Failure(AccountErrors.NoUserFound);
+        }
+        val credential = EmailAuthProvider.getCredential(email, password)
+        return try {
+            val task = user.reauthenticate(credential)
+            task.await()
+            if (task.isSuccessful())
+                AccountResult.Success()
+            else {
+                val translatedError = translateError(task.exception ?: Exception())
+                AccountResult.Failure(translatedError)
+            }
+        }catch(e:Exception) {
+            val translatedError = translateError(e)
+            AccountResult.Failure(translatedError)
+        }
     }
 
     override fun translateError(exception: Exception): AccountErrors {

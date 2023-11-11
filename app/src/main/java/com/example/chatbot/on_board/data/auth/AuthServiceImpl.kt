@@ -17,19 +17,6 @@ import kotlinx.coroutines.tasks.await
 class AuthServiceImpl: AuthService() {
 
     private val auth:FirebaseAuth = FirebaseAuth.getInstance()
-
-    /*see all the resources
-    //https://firebase.google.com/docs/auth/android/password-auth
-    // val task = auth.yourTask(args) ********** this starts the request and stored in 'task' variable
-    // task.await()  *********** with this you say 'wait until the task is completed' // if you don't put this it will execute the remaining lines without waiting for the completion
-    // if(task.isSuccessfully)
-    //     val userUid = task.result.user?.uid **** get the userUid from the task's result
-    //     if(userUid == null) return an AuthResult.Failure(UserUidNotFound) // handle the case when the userUid is null 99.999999999999999% of the time this won't happen but is nice to check
-    //     else return an AuthResult.Completed(uid)
-    // else
-    //      val error = translateError(task.exception?: Exception()) // use the method defined in this class to handle the errors
-    //      return AuthResult.Failure(error)
-    /*
     override suspend fun loginUser(email: String, password: String): AuthResult {
 
         return try {
@@ -49,7 +36,21 @@ class AuthServiceImpl: AuthService() {
     }
 
     override suspend fun registerUser(email: String, password: String): AuthResult {
-        TODO("Not yet implemented")
+
+        return try {
+            val task = auth.createUserWithEmailAndPassword(email, password)
+            task.await()
+
+            if (task.isSuccessful) {
+                AuthResult.Completed(task.result.user?.uid ?: throw AuthError.UserUidNotFound)
+            } else {
+                val error = translateError(task.exception ?: Exception("Unknown Exception"))
+                AuthResult.Failed(error)
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            AuthResult.Failed(translateError(e))
+        }
     }
 
 
@@ -60,6 +61,5 @@ class AuthServiceImpl: AuthService() {
           is FirebaseAuthInvalidUserException->AuthError.UserUidNotFound
           else -> AuthError.UnknownError(exception.message?:"Unknown Error")
       }
-
     }
 }
