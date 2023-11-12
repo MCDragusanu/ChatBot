@@ -17,6 +17,7 @@ import kotlinx.coroutines.tasks.await
 class AuthServiceImpl: AuthService() {
 
     private val auth:FirebaseAuth = FirebaseAuth.getInstance()
+
     override suspend fun loginUser(email: String, password: String): AuthResult {
 
         return try {

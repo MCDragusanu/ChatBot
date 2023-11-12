@@ -15,4 +15,10 @@
     <string name="error_auth_required">You must have a recent login before attempting this operation</string>
     <string name="error_email_not_provied">Please enter an email adress</string>
     <string name="error_password_not_provided">Please enter a password</string>
+    <string name="onboard_feature1_title">Mock Interview Sessions</string>
+    <string name="onboard_feature1_body">Practice your technical interview skills through simulated interviews. Our chatbot conducts realistic mock interviews, offering a diverse set of technical questions and scenarios to help you refine your responses and build confidence.</string>
+    <string name="onboard_feature2_title">Feedback and Performance Analysis</string>
+    <string name="onboard_feature2_body">Receive comprehensive feedback and analysis post-interview. The chatbot evaluates your performance, highlighting strengths and areas for improvement. Gain insights into your interview style, technical knowledge, and communication skills.</string>
+    <string name="onboard_feature3_title">Personalized Learning Paths</string>
+    <string name="onboard_feature3_body">Tailored learning paths designed to address your specific areas of improvement. Based on your performance in mock interviews, the chatbot suggests personalized resources, articles, and practice problems to bolster your weak areas and enhance your strengths.</string>
 </resources>
