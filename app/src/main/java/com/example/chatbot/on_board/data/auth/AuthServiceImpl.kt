@@ -18,7 +18,6 @@ class AuthServiceImpl: AuthService() {
 
     private val auth:FirebaseAuth = FirebaseAuth.getInstance()
 
-
     override suspend fun loginUser(email: String, password: String): AuthResult {
 
         return try {
@@ -38,7 +37,21 @@ class AuthServiceImpl: AuthService() {
     }
 
     override suspend fun registerUser(email: String, password: String): AuthResult {
-        TODO("Not yet implemented")
+
+        return try {
+            val task = auth.createUserWithEmailAndPassword(email, password)
+            task.await()
+
+            if (task.isSuccessful) {
+                AuthResult.Completed(task.result.user?.uid ?: throw AuthError.UserUidNotFound)
+            } else {
+                val error = translateError(task.exception ?: Exception("Unknown Exception"))
+                AuthResult.Failed(error)
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            AuthResult.Failed(translateError(e))
+        }
     }
 
 
@@ -49,6 +62,5 @@ class AuthServiceImpl: AuthService() {
           is FirebaseAuthInvalidUserException->AuthError.UserUidNotFound
           else -> AuthError.UnknownError(exception.message?:"Unknown Error")
       }
-
     }
 }
