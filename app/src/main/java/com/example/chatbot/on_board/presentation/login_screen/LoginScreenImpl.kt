@@ -34,7 +34,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -46,8 +45,6 @@ import com.example.chatbot.common.UIState
 import com.example.chatbot.ui.theme.Typography
 import kotlinx.coroutines.flow.StateFlow
 import androidx.compose.foundation.layout.Arrangement
-
-
 
 
 
@@ -433,7 +430,7 @@ object LoginScreenImpl:LoginScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.codelingo),
+                painter = painterResource(id = R.drawable.bg),
                 contentDescription = null
             )
         }

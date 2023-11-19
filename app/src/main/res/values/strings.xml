@@ -21,4 +21,9 @@
     <string name="onboard_feature2_body">Receive comprehensive feedback and analysis post-interview. The chatbot evaluates your performance, highlighting strengths and areas for improvement. Gain insights into your interview style, technical knowledge, and communication skills.</string>
     <string name="onboard_feature3_title">Personalized Learning Paths</string>
     <string name="onboard_feature3_body">Tailored learning paths designed to address your specific areas of improvement. Based on your performance in mock interviews, the chatbot suggests personalized resources, articles, and practice problems to bolster your weak areas and enhance your strengths.</string>
+    <string name="password">Password</string>
+    <string name="show">Show password</string>
+    <string name="hide">Hide password</string>
+    <string name="login_into_acc">Login into your Account</string>
+    <string name="hey">Hey there, </string>
 </resources>
