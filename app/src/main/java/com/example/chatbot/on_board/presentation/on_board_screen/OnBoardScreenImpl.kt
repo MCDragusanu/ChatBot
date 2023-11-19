@@ -1,19 +1,43 @@
 package com.example.chatbot.on_board.presentation.on_board_screen
 
+import android.annotation.SuppressLint
+import android.graphics.Matrix
+import android.graphics.RectF
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Fill
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Stroke
+
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.graphics.PathParser
 import com.example.chatbot.R
 
 object OnBoardScreenImpl: OnBoardScreen() {
@@ -41,16 +65,16 @@ object OnBoardScreenImpl: OnBoardScreen() {
         LazyRow(){
                 items(Feature.list,key = {it.imageId})
                 {
-                    FeatureCard(it)
+                    FeatureCard(modifier = Modifier.fillParentMaxWidth() ,it)
                 }
         }
 
 
     }
-    @Composable fun FeatureCard(feature : Feature)
+    @Composable fun FeatureCard(modifier: Modifier , feature : Feature)
     {
 
-        Card { Image(painter = painterResource(feature.imageId),contentDescription = null)
+        Card(modifier = modifier , colors = CardDefaults.cardColors(containerColor = Color.Transparent)) { Image(painter = painterResource(feature.imageId),contentDescription = null)
             Text(text = stringResource(feature.titleId))
             Text(text = stringResource(feature.bodyId))
         }
@@ -62,7 +86,9 @@ object OnBoardScreenImpl: OnBoardScreen() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            FeaturesCarousel (modifier= Modifier.fillMaxWidth().wrapContentHeight(),onItemChanges = {})
+            FeaturesCarousel (modifier= Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),onItemChanges = {})
             RegisterButton(
                 modifier = Modifier.padding(16.dp),
                 onClick = onRegister
@@ -86,3 +112,6 @@ object OnBoardScreenImpl: OnBoardScreen() {
         }
     }
 }
+
+
+

@@ -66,7 +66,7 @@ object OnBoardNavGraph {
                     onLoginCompleted = onCompletedAuth,
                     onRegister = {
                         // Navigate to the onboarding screen.
-                       // navController.navigate(onBoardScreen.dest)
+                        navController.navigate(onBoardScreen.dest)
                     }
                 )
             }
