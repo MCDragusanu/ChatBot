@@ -43,7 +43,7 @@ class OnBoardActivity : ComponentActivity() {
 
         // Initialize the RegistrationScreenViewModel and set the OnBoardModule dependency.
         val registrationScreenViewModel by viewModels<RegistrationScreenViewModelImpl>().apply {
-            this.value.setModule(onBoardModule)
+            this.value.initModule(onBoardModule)
         }
 
         // Initialize the OnBoardViewModel and set the OnBoardModule dependency.

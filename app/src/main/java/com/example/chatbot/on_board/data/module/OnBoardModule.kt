@@ -21,7 +21,7 @@ import com.example.chatbot.common.databases.user_database.UserRepositoryImpl
  * @property authService The authentication service used for user login and registration.
  * @property uidGenerator The user ID generator used for creating unique user identifiers.
  */
-class OnBoardModule private constructor(val userRepository: UserRepository, val authService: AuthService, val accountManager : AccountManager, val uidGenerator: UIDGenerator) {
+class OnBoardModule private constructor( val userRepository: UserRepository, val authService: AuthService, val accountManager : AccountManager, val uidGenerator: UIDGenerator) {
 
     companion object {
         private var instance: OnBoardModule? = null

@@ -51,5 +51,5 @@ abstract class AccountManager {
 
   protected abstract suspend fun reauthUser(email: String, password: String): AccountResult
 
-   protected abstract fun translateError(exception: Exception): AccountErrors
+  protected abstract fun translateError(exception: Exception): AccountErrors
 }

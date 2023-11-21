@@ -47,7 +47,7 @@ abstract class RegistrationScreenViewModel : ViewModel() {
      *
      * @param onBoardModule The OnBoardModule instance to be used by this ViewModel.
      */
-    fun setModule(onBoardModule: OnBoardModule) {
+    fun initModule(onBoardModule: OnBoardModule) {
         this.module = onBoardModule
     }
 
