@@ -1,11 +1,12 @@
 package com.example.chatbot.on_board.presentation.registration_screen
 
 import com.example.chatbot.common.SnackbarEvent
+import kotlinx.coroutines.flow.update
 
 class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
     override fun onEmailChanged(newEmail: String) {
-        TODO("Not yet implemented")
-    }
+       this._emailFieldState.update { it.copy(content = newEmail) }
+          }
 
     override fun onPasswordChanged(newPassword: String) {
         TODO("Not yet implemented")
@@ -16,7 +17,7 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
     }
 
     override fun onRegister(onCompletedRegistration: (String) -> Unit) {
-        TODO("Not yet implemented")
+
     }
 
     override fun emitSnackbar(snackbarEvent: SnackbarEvent) {

@@ -8,22 +8,19 @@ class RecommendationMatrixImpl(_buffer:Array<Array<Double>>): RecommendationMatr
     }
 
     override fun getCoefficient(topicIndex:Int , questionIndex:Int):Double?{
-        if(isInside(topicIndex , questionIndex) == false) return null
+        if(!isInside(topicIndex , questionIndex)) return null
         return _buffer[topicIndex][questionIndex]
-    } // null if indexex are not inside{
+    } // null if indexex are not inside
 
 
     override fun setCoefficient(topicIndex:Int , questionIndex:Int , value:Double):Boolean{
-        if(isInside(topicIndex , questionIndex) == false) return false
+        if(!isInside(topicIndex , questionIndex)) return false
         _buffer[topicIndex][questionIndex] = value
         return true
     } // true if the value has been changed , false if is not inside
 
     override fun getRecommendedQuestions(topicIndex:Int , amount:Int):List<Int>{
-        val list1= _buffer[topicIndex].withIndex().toList()
-        list1.sortByDescending{it.value}
-        val list = list1.take(amount).map{it.index}
-        return list
+       return _buffer[topicIndex].sortedBy { -it }.subList(0 , amount).withIndex().map { it.index }
     }//return the uids of the questions
 
     override fun updateBufferWithThresholdValue(treshHold:Double){
@@ -35,9 +32,7 @@ class RecommendationMatrixImpl(_buffer:Array<Array<Double>>): RecommendationMatr
     }//set the elements of the buffer with this value
 
     protected override fun isInside(topicIndex:Int , questionIndex:Int):Boolean{
-        if(topicIndex >= _buffer.size || questionIndex >= _buffer[0].size)
-            return false
-        else return true
+        return !(topicIndex >= _buffer.size || questionIndex >= _buffer[topicIndex].size)
     } // use this to check if the indexes are inside
 
 }

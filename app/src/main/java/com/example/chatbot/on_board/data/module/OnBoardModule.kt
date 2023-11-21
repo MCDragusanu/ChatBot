@@ -8,6 +8,8 @@ import com.example.chatbot.on_board.data.auth.AuthServiceImpl
 import com.example.chatbot.on_board.data.auth.AuthServiceTestImpl
 import com.example.chatbot.uid_generator.UIDGenerator
 import com.example.chatbot.uid_generator.UIDGeneratorImpl
+import com.example.chatbot.user_database.UserRepository
+import com.example.chatbot.user_database.UserRepositoryImpl
 
 /**
  * A singleton module for managing the configuration and dependencies related to onboarding and authentication.
@@ -19,7 +21,7 @@ import com.example.chatbot.uid_generator.UIDGeneratorImpl
  * @property authService The authentication service used for user login and registration.
  * @property uidGenerator The user ID generator used for creating unique user identifiers.
  */
-class OnBoardModule private constructor( val authService: AuthService,  val accountManager : AccountManager,  val uidGenerator: UIDGenerator) {
+class OnBoardModule private constructor(val userRepository: UserRepository, val authService: AuthService,  val accountManager : AccountManager,  val uidGenerator: UIDGenerator) {
 
     companion object {
         private var instance: OnBoardModule? = null
@@ -35,6 +37,7 @@ class OnBoardModule private constructor( val authService: AuthService,  val acco
 
                 //Creating a new instance of this module
                 val newModule = OnBoardModule(
+                    userRepository = UserRepositoryImpl(),
                     authService = if (isInTestMode) AuthServiceTestImpl() else AuthServiceImpl(),
                     accountManager = if(isInTestMode) AccountManagerTestImpl() else AccountManagerImpl(),
                     uidGenerator = UIDGeneratorImpl()

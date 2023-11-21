@@ -19,28 +19,28 @@ import kotlinx.coroutines.flow.consumeAsFlow
  */
 abstract class RegistrationScreenViewModel : ViewModel() {
     // State flows for email, password, terms, and UI components.
-    private val _emailFieldState = MutableStateFlow(TextFieldState())
+    protected val _emailFieldState = MutableStateFlow(TextFieldState())
     val emailFieldState = _emailFieldState.asStateFlow()
 
-    private val _passwordFieldState = MutableStateFlow(TextFieldState())
+    protected val _passwordFieldState = MutableStateFlow(TextFieldState())
     val passwordFieldState = _passwordFieldState.asStateFlow()
 
-    private val _termsState = MutableStateFlow(UIState.Enabled)
+    protected val _termsState = MutableStateFlow(UIState.Enabled)
     val termsState = _termsState.asStateFlow()
 
-    private val _termsIsChecked = MutableStateFlow(false)
+    protected val _termsIsChecked = MutableStateFlow(false)
     val termsIsChecked = _termsIsChecked.asStateFlow()
 
-    private val _snackbarChannel = Channel<SnackbarEvent>()
+    protected val _snackbarChannel = Channel<SnackbarEvent>()
     val snackbarChannel = _snackbarChannel.consumeAsFlow()
 
-    private val _btnRegister = MutableStateFlow(UIState.Enabled)
+    protected val _btnRegister = MutableStateFlow(UIState.Enabled)
     val btnRegister = _btnRegister.asStateFlow()
 
-    private val passwordValidator:PasswordValidator = PasswordValidatorImpl
-    private val emailValidator:EmailValidator = EmailValidatorImpl
+    protected val passwordValidator:PasswordValidator = PasswordValidatorImpl
+    protected val emailValidator:EmailValidator = EmailValidatorImpl
 
-    private lateinit var module: OnBoardModule
+    protected lateinit var module: OnBoardModule
 
     /**
      * Set the OnBoardModule to be used for registration and user management.
