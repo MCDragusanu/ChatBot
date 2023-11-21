@@ -1,6 +1,6 @@
 package com.example.chatbot.on_board.data.auth
 
-import com.example.chatbot.uid_generator.UIDGeneratorImpl
+import com.example.chatbot.common.services.uid_generator.UIDGeneratorImpl
 import kotlinx.coroutines.delay
 import java.lang.Exception
 /**

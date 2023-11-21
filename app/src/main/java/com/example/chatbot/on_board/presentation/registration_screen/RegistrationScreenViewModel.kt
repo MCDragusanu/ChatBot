@@ -1,9 +1,9 @@
 package com.example.chatbot.on_board.presentation.registration_screen
 
 import androidx.lifecycle.ViewModel
-import com.example.chatbot.common.SnackbarEvent
-import com.example.chatbot.common.TextFieldState
-import com.example.chatbot.common.UIState
+import com.example.chatbot.common.ui.util.SnackbarEvent
+import com.example.chatbot.common.ui.util.TextFieldState
+import com.example.chatbot.common.ui.util.UIState
 import com.example.chatbot.on_board.data.module.OnBoardModule
 import com.example.chatbot.on_board.domain.EmailValidator
 import com.example.chatbot.on_board.domain.EmailValidatorImpl

@@ -39,10 +39,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.chatbot.R
-import com.example.chatbot.common.SnackbarEvent
-import com.example.chatbot.common.TextFieldState
-import com.example.chatbot.common.UIState
-import com.example.chatbot.ui.theme.Typography
+import com.example.chatbot.common.ui.util.SnackbarEvent
+import com.example.chatbot.common.ui.util.TextFieldState
+import com.example.chatbot.common.ui.util.UIState
+import com.example.chatbot.common.ui.theme.Typography
 import kotlinx.coroutines.flow.StateFlow
 import androidx.compose.foundation.layout.Arrangement
 
@@ -82,15 +82,15 @@ object LoginScreenImpl:LoginScreen() {
     }
 
     @Composable
-    fun LoginCard( modifier: Modifier,
-                   emailState: StateFlow<TextFieldState>,
-                   onEmailChanged: (String) -> Unit,
-                   passwordState: StateFlow<TextFieldState>,
-                   onPasswordChanged: (String) -> Unit,
-                   onForgotPasswordClick: () -> Unit,
-                   buttonLoginState: StateFlow<UIState>,
-                   onButtonLoginClick: () -> Unit,
-                   onRegister: () -> Unit){
+    fun LoginCard(modifier: Modifier,
+                  emailState: StateFlow<TextFieldState>,
+                  onEmailChanged: (String) -> Unit,
+                  passwordState: StateFlow<TextFieldState>,
+                  onPasswordChanged: (String) -> Unit,
+                  onForgotPasswordClick: () -> Unit,
+                  buttonLoginState: StateFlow<UIState>,
+                  onButtonLoginClick: () -> Unit,
+                  onRegister: () -> Unit){
         Card(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.7f),

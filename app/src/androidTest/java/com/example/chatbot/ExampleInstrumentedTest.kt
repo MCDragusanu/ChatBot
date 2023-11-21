@@ -2,10 +2,10 @@ package com.example.chatbot
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.chatbot.question_database.CloudDataSource
-import com.example.chatbot.question_database.FirebaseCloudDatabase
-import com.example.chatbot.question_database.Question
-import com.example.chatbot.question_database.Topic
+import com.example.chatbot.common.databases.question_database.CloudDataSource
+import com.example.chatbot.common.databases.question_database.FirebaseCloudDatabase
+import com.example.chatbot.common.databases.question_database.Question
+import com.example.chatbot.common.databases.question_database.Topic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -34,11 +34,12 @@ class ExampleInstrumentedTest {
 
 @RunWith(AndroidJUnit4::class)
 class TopicBuilder{
-    private val dataSource:CloudDataSource = FirebaseCloudDatabase()
+    private val dataSource: CloudDataSource = FirebaseCloudDatabase()
 
     @Test
     fun postTopic(){
-        val questionList = listOf<Question>(Question(
+        val questionList = listOf<Question>(
+            Question(
             uid = 1,
             topicUid = 1,
             content = "What is the main concept of Object-Oriented Programming?",
@@ -67,7 +68,8 @@ class TopicBuilder{
                 topicUid = 1,
                 content = "Explain the concept of encapsulation.",
                 hints = listOf("Think about bundling data and methods that operate on the data within a class.")
-            ))
+            )
+        )
         //De fiecare data aveti grija sa incrementati uid ul
         val topic = Topic(
             uid =1,

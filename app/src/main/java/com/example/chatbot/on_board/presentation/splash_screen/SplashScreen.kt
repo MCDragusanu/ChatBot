@@ -3,7 +3,7 @@ package com.example.chatbot.on_board.presentation.splash_screen
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.chatbot.common.Destination
+import com.example.chatbot.common.ui.util.Destination
 
 /**
  * An abstract class representing a splash screen with Jetpack Compose components and related functionality.

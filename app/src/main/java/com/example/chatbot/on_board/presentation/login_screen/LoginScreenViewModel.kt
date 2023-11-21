@@ -1,10 +1,10 @@
 package com.example.chatbot.on_board.presentation.login_screen
 
 import androidx.lifecycle.ViewModel
-import com.example.chatbot.account_manager.AccountErrors
-import com.example.chatbot.common.SnackbarEvent
-import com.example.chatbot.common.TextFieldState
-import com.example.chatbot.common.UIState
+import com.example.chatbot.common.services.account_manager.AccountErrors
+import com.example.chatbot.common.ui.util.SnackbarEvent
+import com.example.chatbot.common.ui.util.TextFieldState
+import com.example.chatbot.common.ui.util.UIState
 import com.example.chatbot.on_board.data.auth.AuthError
 import com.example.chatbot.on_board.data.module.OnBoardModule
 import com.example.chatbot.on_board.domain.EmailValidator
@@ -114,7 +114,7 @@ abstract class LoginScreenViewModel : ViewModel() {
      */
     protected abstract fun onLoginError(exception: AuthError)
 
-    protected abstract fun onResetPasswordError(exception:AccountErrors)
+    protected abstract fun onResetPasswordError(exception: AccountErrors)
 
     /**
      * Handles the user's action when the login button is pressed.

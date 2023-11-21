@@ -2,7 +2,7 @@ package com.example.chatbot.on_board.presentation.on_board_screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.chatbot.common.Destination
+import com.example.chatbot.common.ui.util.Destination
 
 abstract class OnBoardScreen : Destination("OnBoardScreen") {
     /**

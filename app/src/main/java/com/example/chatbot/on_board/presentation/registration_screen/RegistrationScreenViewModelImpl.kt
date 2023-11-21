@@ -1,6 +1,6 @@
 package com.example.chatbot.on_board.presentation.registration_screen
 
-import com.example.chatbot.common.SnackbarEvent
+import com.example.chatbot.common.ui.util.SnackbarEvent
 import kotlinx.coroutines.flow.update
 
 class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {

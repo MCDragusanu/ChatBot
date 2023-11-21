@@ -2,7 +2,7 @@ package com.example.chatbot.on_board.presentation.registration_screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.chatbot.common.TextFieldState
+import com.example.chatbot.common.ui.util.TextFieldState
 import kotlinx.coroutines.flow.StateFlow
 
 object RegistrationScreenImpl:RegistrationScreen() {

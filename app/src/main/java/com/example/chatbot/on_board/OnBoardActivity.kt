@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.example.chatbot.MainActivity
+import com.example.chatbot.main.MainActivity
 import com.example.chatbot.on_board.data.module.OnBoardModule
 import com.example.chatbot.on_board.presentation.login_screen.LoginScreenImpl
 import com.example.chatbot.on_board.presentation.login_screen.LoginScreenViewModelImpl
@@ -17,10 +17,10 @@ import com.example.chatbot.on_board.presentation.registration_screen.Registratio
 import com.example.chatbot.on_board.presentation.registration_screen.RegistrationScreenViewModelImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenViewModelImpl
-import com.example.chatbot.question_database.CloudDataSource
-import com.example.chatbot.question_database.FirebaseCloudDatabase
-import com.example.chatbot.question_database.Question
-import com.example.chatbot.question_database.Topic
+import com.example.chatbot.common.databases.question_database.CloudDataSource
+import com.example.chatbot.common.databases.question_database.FirebaseCloudDatabase
+import com.example.chatbot.common.databases.question_database.Question
+import com.example.chatbot.common.databases.question_database.Topic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

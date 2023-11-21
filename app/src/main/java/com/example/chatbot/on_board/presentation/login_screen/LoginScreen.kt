@@ -2,9 +2,9 @@ package com.example.chatbot.on_board.presentation.login_screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.chatbot.common.Destination
-import com.example.chatbot.common.TextFieldState
-import com.example.chatbot.common.UIState
+import com.example.chatbot.common.ui.util.Destination
+import com.example.chatbot.common.ui.util.TextFieldState
+import com.example.chatbot.common.ui.util.UIState
 import kotlinx.coroutines.flow.StateFlow
 
 /**
