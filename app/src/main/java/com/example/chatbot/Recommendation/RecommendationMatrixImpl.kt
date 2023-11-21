@@ -20,10 +20,9 @@ class RecommendationMatrixImpl(_buffer:Array<Array<Double>>): RecommendationMatr
     } // true if the value has been changed , false if is not inside
 
     override fun getRecommendedQuestions(topicIndex:Int , amount:Int):List<Int>{
-        _buffer[topicIndex].sortDescending()
-        val list: MutableList<Int> = MutableList(amount){0}
-        for(i in 0..amount - 1)
-            list[i] = i                              //de unde se iau uid-urile intrebarilor????
+        val list1= _buffer[topicIndex].withIndex().toList()
+        list1.sortByDescending{it.value}
+        val list = list1.take(amount).map{it.index}
         return list
     }//return the uids of the questions
 
