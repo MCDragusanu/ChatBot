@@ -42,7 +42,7 @@ class AccountManagerImpl: AccountManager() {
         return try {
             val user = auth.currentUser
             if (user == null) {
-                return AccountResult.Failure(AccountErrors.NoUserFound);
+                return AccountResult.Failure(AccountErrors.NoUserFound)
             }
             val task = user.sendEmailVerification()
             task.await()
@@ -62,7 +62,7 @@ class AccountManagerImpl: AccountManager() {
 
         val user = auth.currentUser
         if (user == null) {
-            return AccountResult.Failure(AccountErrors.NoUserFound);
+            return AccountResult.Failure(AccountErrors.NoUserFound)
         }
         val result = reauthUser(oldEmail, password)
         if (result == AccountResult.Success()) {
@@ -87,7 +87,7 @@ class AccountManagerImpl: AccountManager() {
 
         val user = auth.currentUser
         if (user == null) {
-            return AccountResult.Failure(AccountErrors.NoUserFound);
+            return AccountResult.Failure(AccountErrors.NoUserFound)
         }
         val result = reauthUser(email, oldPassword)
         if (result == AccountResult.Success()) {
@@ -111,7 +111,7 @@ class AccountManagerImpl: AccountManager() {
     override suspend fun deleteAccount(email: String, password: String): AccountResult {
         val user = auth.currentUser
         if (user == null) {
-            return AccountResult.Failure(AccountErrors.NoUserFound);
+            return AccountResult.Failure(AccountErrors.NoUserFound)
         }
         val result = reauthUser(email, password)
         if (result == AccountResult.Success()) {
@@ -136,13 +136,13 @@ class AccountManagerImpl: AccountManager() {
     override suspend fun reauthUser(email: String, password: String): AccountResult {
         val user = auth.currentUser
         if (user == null) {
-            return AccountResult.Failure(AccountErrors.NoUserFound);
+            return AccountResult.Failure(AccountErrors.NoUserFound)
         }
         val credential = EmailAuthProvider.getCredential(email, password)
         return try {
             val task = user.reauthenticate(credential)
             task.await()
-            if (task.isSuccessful())
+            if (task.isSuccessful)
                 AccountResult.Success()
             else {
                 val translatedError = translateError(task.exception ?: Exception())

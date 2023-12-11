@@ -31,7 +31,7 @@ class RecommendationMatrixImpl(_buffer:Array<Array<Double>>): RecommendationMatr
         }
     }//set the elements of the buffer with this value
 
-    protected override fun isInside(topicIndex:Int , questionIndex:Int):Boolean{
+    override fun isInside(topicIndex:Int , questionIndex:Int):Boolean{
         return !(topicIndex >= _buffer.size || questionIndex >= _buffer[topicIndex].size)
     } // use this to check if the indexes are inside
 

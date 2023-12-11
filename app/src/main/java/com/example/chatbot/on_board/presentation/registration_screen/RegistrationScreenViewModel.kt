@@ -11,13 +11,17 @@ import com.example.chatbot.on_board.domain.PasswordValidator
 import com.example.chatbot.on_board.domain.PasswordValidatorImpl
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 
 /**
  * An abstract ViewModel class for the registration screen, responsible for managing the UI state and user interactions during registration.
  */
-abstract class RegistrationScreenViewModel : ViewModel() {
+abstract class RegistrationScreenViewModel() : ViewModel() {
+
+
+
     // State flows for email, password, terms, and UI components.
     protected val _emailFieldState = MutableStateFlow(TextFieldState())
     val emailFieldState = _emailFieldState.asStateFlow()
@@ -102,4 +106,5 @@ abstract class RegistrationScreenViewModel : ViewModel() {
      * @param exception The exception representing the error.
      */
     protected abstract fun onError(exception: Exception)
+
 }

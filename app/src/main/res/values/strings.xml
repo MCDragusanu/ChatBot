@@ -26,4 +26,13 @@
     <string name="hide">Hide password</string>
     <string name="login_into_acc">Login into your Account</string>
     <string name="hey">Hey there, </string>
+    <string name="create_account">Create your account in no time</string>
+    <string name="registration">Registration</string>
+    <string name="terms_of_use">Termeni si conditii</string>
+    <string name="terms_of_use_content"></string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="email" />
+
+
 </resources>
