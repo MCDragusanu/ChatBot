@@ -93,19 +93,24 @@ object OnBoardScreenImpl: OnBoardScreen() {
         Card(
             modifier = modifier,
             colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+
         ) {
-            Image(painter = painterResource(feature.imageId), contentDescription = null)
-            Text(
-                text = stringResource(feature.titleId),
-                color = Color.White, // Set the text color to white
-                fontSize = 20.sp, // Set the font size for the title
-                fontWeight = FontWeight.Bold // Optionally, set the font weight for the title
-            )
-            Text(
-                text = stringResource(feature.bodyId),
-                color = Color.White, // Set the text color to white
-                fontSize = 16.sp // Set the font size for the body
-            )
+            Column(modifier = Modifier.padding(16.dp)){
+                Image(painter = painterResource(feature.imageId), contentDescription = null)
+                Text(
+                    text = stringResource(feature.titleId),
+                    color = Color.White, // Set the text color to white
+                    fontSize = 20.sp, // Set the font size for the title
+                    fontWeight = FontWeight.Bold // Optionally, set the font weight for the title
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = stringResource(feature.bodyId),
+                    color = Color.White, // Set the text color to white
+                    fontSize = 16.sp // Set the font size for the body
+                )
+
+            }
         }
     }
 

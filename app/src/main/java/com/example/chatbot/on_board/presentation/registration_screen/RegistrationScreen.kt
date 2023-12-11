@@ -38,7 +38,6 @@ abstract class RegistrationScreen : Destination("RegistrationScreen") {
         modifier: Modifier,
         textFieldState: StateFlow<TextFieldState>,
         onValueChanged: (String) -> Unit,
-        state: StateFlow<TextFieldState>
     )
 
     /**
@@ -53,7 +52,6 @@ abstract class RegistrationScreen : Destination("RegistrationScreen") {
         modifier: Modifier,
         textFieldState: StateFlow<TextFieldState>,
         onValueChanged: (String) -> Unit,
-        state: StateFlow<TextFieldState>
     )
 
     /**
@@ -93,7 +91,7 @@ abstract class RegistrationScreen : Destination("RegistrationScreen") {
      * @param onClick A callback function to handle the click event of the "Forgot Password" button.
      */
     @Composable
-    abstract fun RegisterButton(modifier: Modifier, onClick: () -> Unit, state: StateFlow<UIState>)
+    abstract fun RegisterButton(modifier: Modifier, onClick: () -> Unit)
 
 
 

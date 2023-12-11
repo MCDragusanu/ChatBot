@@ -40,7 +40,7 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
             //putting btnRegister in loading state
             _btnRegister.update{ UIState.Loading }
 
-            module.authService.loginUser(_emailFieldState.value.content, _passwordFieldState.value.content)
+            module.authService.registerUser(_emailFieldState.value.content, _passwordFieldState.value.content)
                 .onFailure { onError(it) }
                 .onSuccess {
 
