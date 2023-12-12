@@ -1,6 +1,7 @@
 package com.example.chatbot.main.data.message_database.model
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 /**
  * Represents an instruction entity in the local storage database.
@@ -15,6 +16,7 @@ import androidx.room.Entity
  */
 @Entity(tableName = "instruction_table")
 class Instruction(
-    val uid: Long,
+    @PrimaryKey val uid: Long,
+    val threadUid:Long,
     val content: String
 )

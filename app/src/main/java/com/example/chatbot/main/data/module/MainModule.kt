@@ -13,6 +13,7 @@ import com.example.chatbot.common.services.uid_generator.UIDGenerator
 import com.example.chatbot.common.services.uid_generator.UIDGeneratorImpl
 import com.example.chatbot.main.data.message_database.database.ConversationDatabase
 import com.example.chatbot.main.data.openai.OpenAIClient
+import com.example.chatbot.main.data.question_metadata_database.QuestionMetadataDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,8 +22,13 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
                                      val accountManager:AccountManager,
                                      val networkObserver: NetworkObserver ,
                                      val uidGenerator: UIDGenerator ,
-                                     conversationDatabase: ConversationDatabase){
-    var openAIClient:OpenAIClient? = null
+                                     val conversationDatabase: ConversationDatabase,
+                                     val questionMetadataDatabase: QuestionMetadataDatabase
+
+
+    ) {
+    var openAIClient: OpenAIClient? = null
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val apiKey = keyFetcher.getAPIKey(
@@ -38,19 +44,19 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
             openAIClient = OpenAIClient(apiKey)
         }
     }
-    companion object {
-        private var instance:MainModule? = null
 
-        fun getInstance(inTestMode:Boolean , application: Application):MainModule {
+    companion object {
+        private var instance: MainModule? = null
+
+        fun getInstance(inTestMode: Boolean, application: Application): MainModule {
             return instance ?: MainModule(
                 keyFetcher = FirestoreKeyFetcher(),
                 accountManager = if (!inTestMode) AccountManagerImpl() else AccountManagerTestImpl(),
                 networkObserver = NetworkObserverImpl(application.applicationContext),
                 uidGenerator = UIDGeneratorImpl(),
+                questionMetadataDatabase = QuestionMetadataDatabase.getInstance(application.applicationContext),
                 conversationDatabase = ConversationDatabase.getInstance(application.applicationContext)
             )
         }
-
-
     }
 }
