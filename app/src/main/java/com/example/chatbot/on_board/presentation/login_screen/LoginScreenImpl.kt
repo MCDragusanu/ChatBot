@@ -93,12 +93,12 @@ object LoginScreenImpl:LoginScreen() {
                   onRegister: () -> Unit){
         Card(modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.7f),
+            .wrapContentHeight(),
             colors = CardDefaults.cardColors(containerColor = Color(0xAA143D7A)),
             border = BorderStroke(0.7f.dp, color = Color(0xFF39ECF8))
         ) {
             Column(
-
+                    modifier = Modifier.padding(12.dp)
             ){ Spacer(modifier = Modifier.height(8.dp))
 
                 NormalTextComponent(value = stringResource(id = R.string.hey))
@@ -233,7 +233,7 @@ object LoginScreenImpl:LoginScreen() {
                     },
                     onEmailChanged = viewModel::onResetPasswordEmaiLChanged,
                     onSendEmail = {
-                        viewModel.sendPasswordResetEmail() {
+                        viewModel.sendPasswordResetEmail {
                             //if a function is given as last argument you can use this syntax
                             //after the task is completed we close the dialogue
                             showForgotPasswordDialog = false
@@ -265,15 +265,16 @@ object LoginScreenImpl:LoginScreen() {
             horizontalAlignment = Alignment.Start
         ) {
             OutlinedTextField(
+                textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
                 modifier = Modifier.fillMaxWidth().width(20.dp),
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
                 label = { Text("Email") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(id = R.color.blue),
-                    unfocusedBorderColor = colorResource(id = R.color.blue)
+                    unfocusedBorderColor = colorResource(id = R.color.blue),
                 ),
                 leadingIcon = { Icon(imageVector = Icons.Filled.Email, contentDescription = null) },
                 trailingIcon = {
@@ -314,6 +315,7 @@ object LoginScreenImpl:LoginScreen() {
             horizontalAlignment = Alignment.Start
         ) {
             OutlinedTextField(
+                textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
                 modifier = Modifier.fillMaxWidth().width(20.dp),
@@ -321,9 +323,9 @@ object LoginScreenImpl:LoginScreen() {
                 enabled = !currentState.state.isLoading(),
                 visualTransformation = if (passwordIsHidden)  VisualTransformation.None else PasswordVisualTransformation(),  // to show ****** when is hidden else tghe content
                 label = { Text("Password") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(id = R.color.blue),
-                    unfocusedBorderColor = colorResource(id = R.color.blue)
+                    unfocusedBorderColor = colorResource(id = R.color.blue),
                 ),
                 leadingIcon = { Icon(imageVector = Icons.Filled.Lock, contentDescription = null, ) },
                 trailingIcon = {
@@ -430,8 +432,9 @@ object LoginScreenImpl:LoginScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null
+                painter = painterResource(id = R.drawable.codelingo),
+                contentDescription = null,
+                modifier = Modifier.size(100.dp)
             )
         }
     }

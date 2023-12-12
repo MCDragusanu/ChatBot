@@ -22,5 +22,4 @@ data class User(val uid:String  = "",
            val isEmailVerified:Boolean = false ,
            val providerId:String = "Email",
            val dateOfCreation:String = "11.21.2023",
-           val occupation:String = "Student",) {
-}
+           val occupation:String = "Student",)

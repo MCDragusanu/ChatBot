@@ -1,6 +1,14 @@
 package com.example.chatbot.on_board.presentation.login_screen
 
 import android.util.Log
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.example.chatbot.R
 import com.example.chatbot.common.services.account_manager.AccountErrors
@@ -11,8 +19,10 @@ import com.example.chatbot.on_board.domain.EmailValidator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.format.TextStyle
 
 class LoginScreenViewModelImpl:LoginScreenViewModel() {
+
     override fun onEmailChanged(newEmail: String) {
 
         this._emailState.update { it.copy(content = newEmail) }

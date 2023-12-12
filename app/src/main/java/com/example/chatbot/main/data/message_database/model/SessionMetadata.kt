@@ -24,8 +24,5 @@ class SessionMetadata(
     val userUid: String,
     val timestamp: Long,
     val topicsUids: String
-) {
-
-
-}
+)
 
