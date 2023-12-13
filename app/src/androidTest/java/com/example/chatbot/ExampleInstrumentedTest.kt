@@ -5,17 +5,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.chatbot.common.databases.question_database.CloudDataSource
 import com.example.chatbot.common.databases.question_database.FirebaseCloudDatabase
 import com.example.chatbot.common.databases.question_database.Question
-import com.example.chatbot.common.databases.question_database.Topic
+import com.example.chatbot.common.databases.question_database.TopicMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
-import kotlin.coroutines.coroutineContext
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -71,7 +69,7 @@ class TopicBuilder{
             )
         )
         //De fiecare data aveti grija sa incrementati uid ul
-        val topic = Topic(
+        val topic = TopicMetadata(
             uid =1,
             label = "Object-Oriented Programming",
             keyWords = listOf("OOP", "Object-Oriented Programming", "Classes", "Inheritance", "Polymorphism", "Encapsulation", "Abstraction"),

@@ -2,7 +2,7 @@ package com.example.chatbot.main.presentation.home
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
-import com.example.chatbot.common.databases.question_database.Topic
+import com.example.chatbot.common.databases.question_database.TopicMetadata
 
 interface HomeScreen {
 
@@ -20,5 +20,5 @@ interface HomeScreen {
     fun RecentSessions()
 
     @Composable
-    fun NewSessionDialog(onDismiss:()->Unit , onSubmit:(List<Topic> ,  difficultyLevel:Int, numberOfQuestions:Int) ->Unit)
+    fun NewSessionDialog(onDismiss:()->Unit , onSubmit:(List<TopicMetadata>, difficultyLevel:Int, numberOfQuestions:Int) ->Unit)
 }

@@ -11,17 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chatbot.common.ui.theme.ChatBotTheme
+import com.example.chatbot.main.data.module.MainModule
+import com.example.chatbot.main.presentation.composables.TestPreview
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            ChatBotTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
-                }
-            }
+        val mainModule = MainModule.getInstance(true , this.application )
+        setContent{
+            TestPreview()
         }
     }
 }

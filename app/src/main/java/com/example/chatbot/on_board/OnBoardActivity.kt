@@ -20,7 +20,7 @@ import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenViewM
 import com.example.chatbot.common.databases.question_database.CloudDataSource
 import com.example.chatbot.common.databases.question_database.FirebaseCloudDatabase
 import com.example.chatbot.common.databases.question_database.Question
-import com.example.chatbot.common.databases.question_database.Topic
+import com.example.chatbot.common.databases.question_database.TopicMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -123,7 +123,7 @@ class OnBoardActivity : ComponentActivity() {
             )
         )
         //De fiecare data aveti grija sa incrementati uid ul
-        val topic = Topic(
+        val topic = TopicMetadata(
             uid = 1,
             label = "Object-Oriented Programming",
             keyWords = listOf(

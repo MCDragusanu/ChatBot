@@ -7,7 +7,7 @@ import kotlinx.coroutines.tasks.await
 class FirebaseCloudDatabase: CloudDataSource {
 
     private val collectionRef = Firebase.firestore.collection("Question Database")
-    override suspend fun addTopicsAndQuestions(topic: Topic): Result<Unit> {
+    override suspend fun addTopicsAndQuestions(topic: TopicMetadata): Result<Unit> {
         return try {
             val task = collectionRef.document("${topic.uid}").set(topic)
             task.await()
@@ -20,13 +20,13 @@ class FirebaseCloudDatabase: CloudDataSource {
     }
 
 
-    override suspend fun getTopic(topicUid: Int): Result<Topic> {
+    override suspend fun getTopic(topicUid: Int): Result<TopicMetadata> {
        return try {
             val task = collectionRef.document(topicUid.toString()).get()
             task.await()
 
             if (task.isSuccessful) {
-                val _object = task.result.toObject(Topic::class.java)
+                val _object = task.result.toObject(TopicMetadata::class.java)
                 if (_object == null) {
                      Result.failure(Exception("Failed to convert document to Class Instance"))
                 } else

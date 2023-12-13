@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 data class QuestionMetadata(@PrimaryKey val uid:Long,
                             val grade:Float ,
                             val statusCode:Int ,
-                            val questionUid:Int ,
+                            val questionUid:Int,
+                            val questionContent:String,
+                            val correctAnswer:String,
                             val topicUid:Int ,
                             val weight:Double) {
     companion object {

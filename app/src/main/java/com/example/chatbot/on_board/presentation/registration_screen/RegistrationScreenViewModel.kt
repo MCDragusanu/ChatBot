@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 /**
  * An abstract ViewModel class for the registration screen, responsible for managing the UI state and user interactions during registration.
  */
-abstract class RegistrationScreenViewModel() : ViewModel() {
+abstract class RegistrationScreenViewModel : ViewModel() {
 
 
 

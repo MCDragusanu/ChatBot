@@ -39,6 +39,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -218,9 +219,9 @@ object RegistrationScreenImpl:RegistrationScreen() {
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
                 label = { Text("Email") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(id = R.color.blue),
-                    unfocusedBorderColor = colorResource(id = R.color.blue)
+                    unfocusedBorderColor = colorResource(id = R.color.blue),
                 ),
                 leadingIcon = { Icon(imageVector = Icons.Filled.Email, contentDescription = null) },
                 trailingIcon = {
@@ -277,9 +278,9 @@ object RegistrationScreenImpl:RegistrationScreen() {
                 enabled = !currentState.state.isLoading(),
                 visualTransformation = if (passwordIsHidden) VisualTransformation.None else PasswordVisualTransformation(),  // to show ****** when is hidden else tghe content
                 label = { Text("Password") },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(id = R.color.blue),
-                    unfocusedBorderColor = colorResource(id = R.color.blue)
+                    unfocusedBorderColor = colorResource(id = R.color.blue),
                 ),
                 leadingIcon = { Icon(imageVector = Icons.Filled.Lock, contentDescription = null,) },
                 trailingIcon = {
