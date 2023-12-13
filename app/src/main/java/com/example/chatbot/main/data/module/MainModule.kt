@@ -13,7 +13,7 @@ import com.example.chatbot.common.services.uid_generator.UIDGenerator
 import com.example.chatbot.common.services.uid_generator.UIDGeneratorImpl
 import com.example.chatbot.main.data.message_database.database.ConversationDatabase
 import com.example.chatbot.main.data.openai.OpenAIClient
-import com.example.chatbot.main.data.question_metadata_database.QuestionMetadataDatabase
+import com.example.chatbot.main.data.question_metadata_database.local.QuestionMetadataDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

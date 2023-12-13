@@ -1,9 +1,10 @@
-package com.example.chatbot.main.data.question_metadata_database
+package com.example.chatbot.main.data.question_metadata_database.local
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
 
 @Database(entities = [QuestionMetadata::class] , version = 1)
 abstract class QuestionMetadataDatabase:RoomDatabase() {

@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.chatbot.main.data.question_metadata_database.QuestionMetadata
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
 import java.util.Random
 import kotlin.streams.toList
 

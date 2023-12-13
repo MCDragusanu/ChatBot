@@ -1,8 +1,7 @@
 package com.example.chatbot.main.domain.pre_defined_questions
 
-import android.adservices.topics.Topic
-import com.example.chatbot.common.databases.question_database.TopicMetadata
-import com.example.chatbot.main.data.question_metadata_database.QuestionMetadata
+import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
 
 
 val predefinedTopics by lazy {

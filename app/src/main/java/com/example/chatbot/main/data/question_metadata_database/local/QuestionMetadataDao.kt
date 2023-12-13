@@ -1,10 +1,11 @@
-package com.example.chatbot.main.data.question_metadata_database
+package com.example.chatbot.main.data.question_metadata_database.local
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
 
 @Dao
 interface QuestionMetadataDao {
@@ -22,5 +23,7 @@ interface QuestionMetadataDao {
     suspend fun getAllMetadatForTopic(topicUid:Int):List<QuestionMetadata>
 
     @Query("SELECT * from question_metadata_table where questionUid = :questionUid")
-    suspend fun getMetadataByQuestionUid(questionUid:Int):QuestionMetadata?
+    suspend fun getMetadataByQuestionUid(questionUid:Int): QuestionMetadata?
+
+
 }

@@ -2,7 +2,7 @@ package com.example.chatbot.main.presentation.home
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
-import com.example.chatbot.common.databases.question_database.TopicMetadata
+import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
 
 interface HomeScreen {
 

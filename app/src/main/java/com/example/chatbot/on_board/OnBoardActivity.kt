@@ -17,10 +17,9 @@ import com.example.chatbot.on_board.presentation.registration_screen.Registratio
 import com.example.chatbot.on_board.presentation.registration_screen.RegistrationScreenViewModelImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenViewModelImpl
-import com.example.chatbot.common.databases.question_database.CloudDataSource
-import com.example.chatbot.common.databases.question_database.FirebaseCloudDatabase
-import com.example.chatbot.common.databases.question_database.Question
-import com.example.chatbot.common.databases.question_database.TopicMetadata
+import com.example.chatbot.main.data.question_metadata_database.cloud.CloudDataSource
+import com.example.chatbot.main.data.question_metadata_database.cloud.FirebaseCloudDatabase
+import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,7 +55,6 @@ class OnBoardActivity : ComponentActivity() {
             this.value.setModule(onBoardModule)
         }
 
-        postTopic()
 
         // Set the content view for the activity.
         setContent {
@@ -87,58 +85,5 @@ class OnBoardActivity : ComponentActivity() {
         this.finish()
     }
 
-    fun postTopic() {
 
-        val dataSource: CloudDataSource = FirebaseCloudDatabase()
-        val questionList = listOf<Question>(
-            Question(
-                uid = 1,
-                topicUid = 1,
-                content = "What is the main concept of Object-Oriented Programming?",
-                hints = listOf("Think about organizing code around objects and their interactions.")
-            ),
-            Question(
-                uid = 2,
-                topicUid = 1,
-                content = "Explain the concept of a class in OOP.",
-                hints = listOf("Consider how a class serves as a blueprint for objects.")
-            ),
-            Question(
-                uid = 3,
-                topicUid = 1,
-                content = "How does inheritance work in OOP?",
-                hints = listOf("Think about how a class can inherit properties and behaviors from another class.")
-            ),
-            Question(
-                uid = 4,
-                topicUid = 1,
-                content = "What is polymorphism in OOP?",
-                hints = listOf("Consider how objects of different classes can be treated as objects of a common base class.")
-            ),
-            Question(
-                uid = 5,
-                topicUid = 1,
-                content = "Explain the concept of encapsulation.",
-                hints = listOf("Think about bundling data and methods that operate on the data within a class.")
-            )
-        )
-        //De fiecare data aveti grija sa incrementati uid ul
-        val topic = TopicMetadata(
-            uid = 1,
-            label = "Object-Oriented Programming",
-            keyWords = listOf(
-                "OOP",
-                "Object-Oriented Programming",
-                "Classes",
-                "Inheritance",
-                "Polymorphism",
-                "Encapsulation",
-                "Abstraction"
-            ),
-            questionList = questionList
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            dataSource.addTopicsAndQuestions(topic)
-        }
-    }
 }

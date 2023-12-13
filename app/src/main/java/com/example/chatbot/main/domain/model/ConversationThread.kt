@@ -1,6 +1,5 @@
 package com.example.chatbot.main.domain.model
 
-import com.example.chatbot.common.databases.question_database.Question
 import com.example.chatbot.main.data.message_database.model.Instruction
 import com.example.chatbot.main.data.message_database.model.Message
 import com.example.chatbot.main.data.message_database.model.ThreadMetadata
