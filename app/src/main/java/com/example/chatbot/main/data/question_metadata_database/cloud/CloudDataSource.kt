@@ -15,7 +15,7 @@ interface CloudDataSource {
      * @param source The type of the database where the topic will be added (Project or Production).
      * @return A Result object indicating the success or failure of the operation.
      */
-    suspend fun addTopic(topic: TopicMetadata, source: DatabaseType): Result<Unit>
+    suspend fun addTopic(topic: TopicMetadata, source: DataSource): Result<Unit>
 
     /**
      * Adds a list of questions to the cloud data source.
@@ -24,7 +24,7 @@ interface CloudDataSource {
      * @param source The type of the database where the questions will be added (Project or Production).
      * @return A Result object indicating the success or failure of the operation.
      */
-    suspend fun addQuestions(questions: List<QuestionMetadata>, source: DatabaseType): Result<Unit>
+    suspend fun addQuestions(questions: List<QuestionMetadata>, source: DataSource): Result<Unit>
 
     /**
      * Retrieves a topic from the cloud data source based on its unique identifier (UID).
@@ -33,7 +33,7 @@ interface CloudDataSource {
      * @param source The type of the database where the topic will be retrieved (Project or Production).
      * @return A Result object containing the retrieved TopicMetadata or an error.
      */
-    suspend fun getTopicByUid(uid: Int, source: DatabaseType): Result<TopicMetadata>
+    suspend fun getTopicByUid(uid: Int, source: DataSource): Result<TopicMetadata>
 
     /**
      * Retrieves a list of questions associated with a specific topic from the cloud data source.
@@ -42,7 +42,7 @@ interface CloudDataSource {
      * @param source The type of the database where the questions will be retrieved (Project or Production).
      * @return A Result object containing the retrieved list of QuestionMetadata or an error.
      */
-    suspend fun getQuestionsForTopic(topic: TopicMetadata, source: DatabaseType): Result<List<QuestionMetadata>>
+    suspend fun getQuestionsForTopic(topic: TopicMetadata, source: DataSource): Result<List<QuestionMetadata>>
 
     /**
      * Sealed class representing different database types (Project and Production).
@@ -50,9 +50,9 @@ interface CloudDataSource {
      * @param topicCollection The name of the collection where topics are stored.
      * @param questionCollection The name of the collection where questions are stored.
      */
-    sealed class DatabaseType(val topicCollection: String, val questionCollection: String) {
-        object ProjectDatabase : DatabaseType("Project Topic Collection", "Project Question Collection")
-        object ProductionDatabase : DatabaseType("Production Topic Collection", "Production Question Collection")
+    sealed class DataSource(val topicCollection: String, val questionCollection: String) {
+        object ProjectDatabase : DataSource("Project Topic Collection", "Project Question Collection")
+        object ProductionDatabase : DataSource("Production Topic Collection", "Production Question Collection")
     }
 }
 

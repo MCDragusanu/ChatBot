@@ -29,9 +29,3 @@ class ExampleInstrumentedTest {
     }
 }
 
-@RunWith(AndroidJUnit4::class)
-class TopicBuilder{
-    private val dataSource: CloudDataSource = FirebaseCloudDatabase()
-
-
-}

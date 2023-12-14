@@ -21,7 +21,7 @@ class FirebaseCloudDatabase : CloudDataSource {
     private val questionsCollection = Firebase.firestore.collection("MCARAMIHAI Qestions")
 
     // Add a new topic to the cloud database
-    override suspend fun addTopic(topic: TopicMetadata,  source: CloudDataSource.DatabaseType): Result<Unit> {
+    override suspend fun addTopic(topic: TopicMetadata,  source: CloudDataSource.DataSource): Result<Unit> {
         return try {
             // Set the topic metadata in the specified collection
             val task = Firebase.firestore.collection(source.topicCollection).document(topic.uid.toString())
@@ -42,7 +42,7 @@ class FirebaseCloudDatabase : CloudDataSource {
     // Add a list of questions to the cloud database
     override suspend fun addQuestions(
         questions: List<QuestionMetadata>,
-        source: CloudDataSource.DatabaseType
+        source: CloudDataSource.DataSource
     ): Result<Unit> {
         return try {
             // Use coroutines to asynchronously add each question to the specified collection
@@ -73,7 +73,7 @@ class FirebaseCloudDatabase : CloudDataSource {
     }
 
     // Retrieve a topic by its UID from the cloud database
-    override suspend fun getTopicByUid(uid: Int,  source: CloudDataSource.DatabaseType): Result<TopicMetadata> {
+    override suspend fun getTopicByUid(uid: Int,  source: CloudDataSource.DataSource): Result<TopicMetadata> {
         return try {
             // Get the document by UID from the specified collection
             val task = Firebase.firestore.collection(source.topicCollection).document(uid.toString()).get()
@@ -102,7 +102,7 @@ class FirebaseCloudDatabase : CloudDataSource {
     // Retrieve questions associated with a specific topic from the cloud database
     override suspend fun getQuestionsForTopic(
         topic: TopicMetadata,
-        source: CloudDataSource.DatabaseType
+        source: CloudDataSource.DataSource
     ): Result<List<QuestionMetadata>> {
         return try {
             // Query documents in the question collection where topicUid matches

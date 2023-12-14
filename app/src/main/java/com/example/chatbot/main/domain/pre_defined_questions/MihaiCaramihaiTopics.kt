@@ -366,7 +366,7 @@ val topic1Questions by lazy {
     )
 }
 val topic2Questions by lazy {
-    val questions = listOf(
+    listOf(
         // Set 1 (UIDs 30-59)
         QuestionMetadata(
             uid = 30,
@@ -1279,8 +1279,7 @@ val topic4Questions by lazy {
         ),
     )
 }
-val topic5Questions by lazy {
-    val questionsSet7 = listOf(
+val topic5Questions by lazy {listOf(
         QuestionMetadata(
             119,
             -1f,
@@ -2155,7 +2154,7 @@ val topic7Questions by lazy {
 }
 
 val topic8Questions by lazy {
-    val questionsSet20 = listOf(
+listOf(
         QuestionMetadata(
             203,
             -1f,

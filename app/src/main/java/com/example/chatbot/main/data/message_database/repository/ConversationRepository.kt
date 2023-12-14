@@ -4,6 +4,7 @@ import com.example.chatbot.main.data.message_database.model.Instruction
 import com.example.chatbot.main.data.message_database.model.Message
 import com.example.chatbot.main.data.message_database.model.SessionMetadata
 import com.example.chatbot.main.data.message_database.model.ThreadMetadata
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
 
 /**
  * Repository interface for managing conversations in the local storage database.
@@ -41,7 +42,7 @@ interface ConversationRepository {
      * @param questionUid Unique identifier for the question.
      * @return Question object if found, otherwise null.
      */
-    suspend fun retrieveQuestionByUid(questionUid: Long): Question?
+    suspend fun retrieveQuestionByUid(questionUid: Long): QuestionMetadata?
 
     /**
      * Retrieves an instruction based on the unique identifier of the associated thread.
@@ -72,7 +73,7 @@ interface ConversationRepository {
      * @param question The question to be added.
      * @return Result indicating success or failure of the operation.
      */
-    suspend fun addQuestion(question: Question): Result<Unit>
+    suspend fun addQuestion(question: QuestionMetadata): Result<Unit>
 
     /**
      * Adds a new instruction to the local storage.
@@ -89,5 +90,6 @@ interface ConversationRepository {
      * @return Result indicating success or failure of the operation.
      */
     suspend fun addSessionsMetadata(sessionMetadata: SessionMetadata): Result<Unit>
+    
     suspend fun retrieveThreadByUid(threadUid: Long): ThreadMetadata?
 }

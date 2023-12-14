@@ -15,8 +15,8 @@ interface APIKeyFetcher {
     suspend fun getAPIKey( documentName:String,fieldName: String): Result<String>
 
     companion object{
-        const val OPEN_AI_KEY_FIELD = "OPEN_AI_API_KEY"
-        const val OPEN_AI_DOCUMENT_NAME = "OPEN_AI"
+        const val OPEN_AI_KEY_FIELD = "key"
+        const val OPEN_AI_DOCUMENT_NAME = "open_ai_key"
         const val COLLECTION_NAME = "SECRET_KEYS"
      }
 }

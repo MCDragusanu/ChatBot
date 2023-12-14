@@ -3,7 +3,7 @@ package com.example.chatbot.main.domain.model
 import com.example.chatbot.main.data.message_database.model.Instruction
 import com.example.chatbot.main.data.message_database.model.Message
 import com.example.chatbot.main.data.message_database.model.ThreadMetadata
-
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
 
 
 /**
@@ -17,6 +17,6 @@ import com.example.chatbot.main.data.message_database.model.ThreadMetadata
 data class ConversationThread(
     val threadMetadata: ThreadMetadata,
     val messages: List<Message>,
-    val question: Question,
+    val question: QuestionMetadata,
     val instruction: Instruction
 )

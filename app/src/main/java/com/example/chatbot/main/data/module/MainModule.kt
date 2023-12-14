@@ -13,6 +13,8 @@ import com.example.chatbot.common.services.uid_generator.UIDGenerator
 import com.example.chatbot.common.services.uid_generator.UIDGeneratorImpl
 import com.example.chatbot.main.data.message_database.database.ConversationDatabase
 import com.example.chatbot.main.data.openai.OpenAIClient
+import com.example.chatbot.main.data.question_metadata_database.cloud.CloudDataSource
+import com.example.chatbot.main.data.question_metadata_database.cloud.FirebaseCloudDatabase
 import com.example.chatbot.main.data.question_metadata_database.local.QuestionMetadataDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +22,12 @@ import kotlinx.coroutines.launch
 
 class MainModule private constructor(val keyFetcher: APIKeyFetcher,
                                      val accountManager:AccountManager,
-                                     val networkObserver: NetworkObserver ,
-                                     val uidGenerator: UIDGenerator ,
+                                     val networkObserver: NetworkObserver,
+                                     val uidGenerator: UIDGenerator,
+                                     val topicsSource:CloudDataSource.DataSource,
                                      val conversationDatabase: ConversationDatabase,
-                                     val questionMetadataDatabase: QuestionMetadataDatabase
+                                     val questionMetadataDatabase: QuestionMetadataDatabase,
+                                     val cloudDataSource: CloudDataSource
 
 
     ) {
@@ -48,14 +52,16 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
     companion object {
         private var instance: MainModule? = null
 
-        fun getInstance(inTestMode: Boolean, application: Application): MainModule {
+        fun getInstance(inTestMode: Boolean, application: Application , dataSource: CloudDataSource.DataSource): MainModule {
             return instance ?: MainModule(
                 keyFetcher = FirestoreKeyFetcher(),
                 accountManager = if (!inTestMode) AccountManagerImpl() else AccountManagerTestImpl(),
                 networkObserver = NetworkObserverImpl(application.applicationContext),
                 uidGenerator = UIDGeneratorImpl(),
+                topicsSource = dataSource,
                 questionMetadataDatabase = QuestionMetadataDatabase.getInstance(application.applicationContext),
-                conversationDatabase = ConversationDatabase.getInstance(application.applicationContext)
+                conversationDatabase = ConversationDatabase.getInstance(application.applicationContext),
+                cloudDataSource = FirebaseCloudDatabase()
             )
         }
     }
