@@ -15,7 +15,7 @@ import androidx.room.Entity
  * @property dateOfCreation Date when the user account was created. Default value is "11.21.2023".
  * @property occupation Occupation or role of the user. Default value is "Student".
  */
-data class User(val uid:String  = "",
+data class User(val uid:String  = "DEFAULT_USER",
            val email:String  = "",
            val firstName:String = "John",
            val lastName:String = "Doe",

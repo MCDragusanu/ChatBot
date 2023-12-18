@@ -1,6 +1,7 @@
 package com.example.chatbot.main.data.question_metadata_database.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 /**
@@ -13,8 +14,9 @@ import androidx.room.PrimaryKey
  */
 @Entity("topic_metadata_table")
 data class TopicMetadata(
-    @PrimaryKey val uid: Int = 0,
-    val label: String = "",
-    val keyWords: List<String> = emptyList(),
-    val imageUid: Int = -1
-)
+    @PrimaryKey(autoGenerate = false)
+    val uid: Int = 0,
+    val label: String = "DEFAULT TOPIC",
+    val imageUid: Int = -1  ,
+    val keyWords: String = "",
+){}

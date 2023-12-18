@@ -2,6 +2,7 @@ package com.example.chatbot.main.data.module
 
 import android.app.Application
 import android.util.Log
+import com.example.chatbot.common.databases.user_database.User
 import com.example.chatbot.common.services.account_manager.AccountManager
 import com.example.chatbot.common.services.account_manager.AccountManagerImpl
 import com.example.chatbot.common.services.account_manager.AccountManagerTestImpl
@@ -16,6 +17,10 @@ import com.example.chatbot.main.data.openai.OpenAIClient
 import com.example.chatbot.main.data.question_metadata_database.cloud.CloudDataSource
 import com.example.chatbot.main.data.question_metadata_database.cloud.FirebaseCloudDatabase
 import com.example.chatbot.main.data.question_metadata_database.local.QuestionMetadataDatabase
+import com.example.chatbot.main.data.question_metadata_database.local.QuestionRepository
+import com.example.chatbot.main.data.question_metadata_database.local.QuestionRepositoryImpl
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,10 +29,12 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
                                      val accountManager:AccountManager,
                                      val networkObserver: NetworkObserver,
                                      val uidGenerator: UIDGenerator,
-                                     val topicsSource:CloudDataSource.DataSource,
+                                     val source:CloudDataSource.DataSource,
                                      val conversationDatabase: ConversationDatabase,
                                      val questionMetadataDatabase: QuestionMetadataDatabase,
-                                     val cloudDataSource: CloudDataSource
+                                     val questionRepository:QuestionRepository,
+                                     val cloudDataSource: CloudDataSource,
+                                     val currentUser:User = User()
 
 
     ) {
@@ -52,16 +59,27 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
     companion object {
         private var instance: MainModule? = null
 
-        fun getInstance(inTestMode: Boolean, application: Application , dataSource: CloudDataSource.DataSource): MainModule {
+        fun getInstance(
+            inTestMode: Boolean,
+            application: Application,
+            currentUser: User,
+            dataSource: CloudDataSource.DataSource
+        ): MainModule {
             return instance ?: MainModule(
                 keyFetcher = FirestoreKeyFetcher(),
                 accountManager = if (!inTestMode) AccountManagerImpl() else AccountManagerTestImpl(),
                 networkObserver = NetworkObserverImpl(application.applicationContext),
                 uidGenerator = UIDGeneratorImpl(),
-                topicsSource = dataSource,
+                source = dataSource,
                 questionMetadataDatabase = QuestionMetadataDatabase.getInstance(application.applicationContext),
                 conversationDatabase = ConversationDatabase.getInstance(application.applicationContext),
-                cloudDataSource = FirebaseCloudDatabase()
+                questionRepository = QuestionRepositoryImpl(
+                    questionMetadataDao = QuestionMetadataDatabase.getInstance(
+                        application.applicationContext
+                    ).dao
+                ),
+                cloudDataSource = FirebaseCloudDatabase(),
+                currentUser = currentUser
             )
         }
     }

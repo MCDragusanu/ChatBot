@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -19,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionRow
 import java.util.Random
 import kotlin.streams.toList
 
@@ -30,34 +36,23 @@ object ProgressVisualizer {
         questionsPerRow: Int
     ) {
 
-        val rows = questions.size / questionsPerRow
-        val surplusCells = questions.size % questionsPerRow
 
-        Column(
-            modifier = Modifier
-                .wrapContentHeight()
-                .wrapContentWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        LazyVerticalGrid(
+            columns = GridCells.FixedSize(16.dp),
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-
-            for (rowIndex in 0 until rows) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-
-                    for (columnIndex in 0 until questionsPerRow) {
-                        val currentQuestion = questions[rowIndex * questionsPerRow + columnIndex]
-                        Surface(
-                            modifier = Modifier.size(16.dp),
-                            color = if (currentQuestion == QuestionMetadata.DEFAULT) MaterialTheme.colorScheme.surface else if (currentQuestion == QuestionMetadata.COMPLETED) Color.Green else Color.Red
-                        ) {}
-                    }
-                }
+            items(questions) {
+                Surface(
+                    color = when (it) {
+                        0 -> MaterialTheme.colorScheme.surface
+                        1 -> MaterialTheme.colorScheme.primary
+                        else -> Color.Red
+                    },
+                    shape = RoundedCornerShape(2.dp),
+                    modifier = Modifier.size(12.dp)
+                ) {}
             }
         }
     }

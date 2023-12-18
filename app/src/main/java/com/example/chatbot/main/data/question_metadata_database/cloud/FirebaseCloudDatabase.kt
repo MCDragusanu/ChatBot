@@ -1,6 +1,8 @@
 package com.example.chatbot.main.data.question_metadata_database.cloud
 
+import android.adservices.topics.Topic
 import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
+import com.example.chatbot.main.data.question_metadata_database.entity.QuestionRow
 import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Filter
@@ -16,9 +18,7 @@ import kotlinx.coroutines.tasks.await
 
 class FirebaseCloudDatabase : CloudDataSource {
 
-    // Firebase Firestore collections for topics and questions
-    private val topicsCollection = Firebase.firestore.collection("MCARAMIHAI Topics")
-    private val questionsCollection = Firebase.firestore.collection("MCARAMIHAI Qestions")
+
 
     // Add a new topic to the cloud database
     override suspend fun addTopic(topic: TopicMetadata,  source: CloudDataSource.DataSource): Result<Unit> {
@@ -41,7 +41,7 @@ class FirebaseCloudDatabase : CloudDataSource {
 
     // Add a list of questions to the cloud database
     override suspend fun addQuestions(
-        questions: List<QuestionMetadata>,
+        questions: List<QuestionRow>,
         source: CloudDataSource.DataSource
     ): Result<Unit> {
         return try {
@@ -99,47 +99,104 @@ class FirebaseCloudDatabase : CloudDataSource {
         }
     }
 
-    // Retrieve questions associated with a specific topic from the cloud database
-    override suspend fun getQuestionsForTopic(
-        topic: TopicMetadata,
-        source: CloudDataSource.DataSource
-    ): Result<List<QuestionMetadata>> {
+    override suspend fun getDatabaseContent(source: CloudDataSource.DataSource): Result<Pair<List<TopicMetadata>, List<QuestionRow>>> {
         return try {
-            // Query documents in the question collection where topicUid matches
-            val task = Firebase.firestore.collection(source.questionCollection)
-                .where(Filter.equalTo("topicUid", topic.uid)).get()
-            task.await()
+            var topicsList = listOf<TopicMetadata>()
+            var questionList = listOf<QuestionRow>()
 
-            // Check if the retrieval was successful
-            if (task.exception != null || !task.isSuccessful) {
-                throw task.exception ?: Exception("Failed to retrieve questions")
-            }
-
-            // Use coroutines to asynchronously convert each document to QuestionMetadata
-            val questions = mutableListOf<Deferred<QuestionMetadata>>()
             val job = CoroutineScope(Dispatchers.IO).launch {
-                task.result.documents.onEach {
-                    val fetchedQuestion = async {
-                        return@async it.toObject<QuestionMetadata>()
-                            ?: throw NullPointerException("Failed to convert document to POJO")
+                async {
+                    val task = Firebase.firestore.collection(source.topicCollection).get()
+                    task.await()
+
+                    topicsList = task.result.documents.map {
+                        it.toObject<TopicMetadata>()
+                            ?: throw NullPointerException("Failed to retrieve topics")
                     }
-                    questions.add(fetchedQuestion)
                 }
+                async {
+                    val task = Firebase.firestore.collection(source.questionCollection).get()
+                    task.await()
+
+                    questionList = task.result.documents.map {
+                        it.toObject<QuestionRow>()
+                            ?: throw NullPointerException("Failed to retrieve topics")
+                    }
+                }
+
+
             }
-
             // Wait for all asynchronous jobs to complete
-            job.join()
-
-            // Check for any completion exception and throw it if present
             job.invokeOnCompletion {
                 if (it != null) throw it
             }
 
-            Result.success(questions.awaitAll())
+            job.join()
+
+            return Result.success(Pair(topicsList, questionList))
 
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
         }
     }
+
+    override suspend fun getTopics(source: CloudDataSource.DataSource): Result<List<TopicMetadata>> {
+        return try {
+            val job = Firebase.firestore.collection(source.topicCollection).get()
+            job.await()
+
+            if(job.isSuccessful){
+                Result.success(job.result.documents.map { it.toObject<TopicMetadata>() ?: throw NullPointerException("Failed to convert topic document")})
+            } else throw job.exception?: Exception("Unknown Errro has ocurred while retrieving topics")
+        }catch (e:Exception){
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getQuestions(source: CloudDataSource.DataSource): Result<List<QuestionRow>> {
+        return try {
+            val job = Firebase.firestore.collection(source.questionCollection).get()
+            job.await()
+
+            if (job.isSuccessful) {
+                Result.success(job.result.documents.map {
+                    it.toObject<QuestionRow>()
+                        ?: throw NullPointerException("Failed to convert topic document")
+                })
+            } else throw job.exception
+                ?: Exception("Unknown Errro has ocurred while retrieving questions")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getQuestionsForTopic(
+        topic: TopicMetadata,
+        source: CloudDataSource.DataSource
+    ): Result<List<QuestionRow>> {
+        return try {
+            val task = Firebase.firestore.collection(source.questionCollection)
+                .where(Filter.equalTo("topicUid", topic.uid)).get()
+            task.await()
+
+            if (task.isSuccessful) {
+                Result.success(task.result.map {
+                    it.toObject<QuestionRow>()
+                        ?: throw NullPointerException("Failed to convert document to Question Row")
+                })
+            } else throw task.exception
+                ?: Exception("Unknown error has occurred while retrieving queston for topics")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+
+
+
+
 }
