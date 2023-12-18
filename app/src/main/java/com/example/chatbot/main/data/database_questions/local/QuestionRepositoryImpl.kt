@@ -1,9 +1,9 @@
-package com.example.chatbot.main.data.question_metadata_database.local
+package com.example.chatbot.main.data.database_questions.local
 
 import android.util.Log
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionRow
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +25,11 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
         } else throw Exception("Primary key collision for questionMetadata with pk = ${questionMetadata.questionRowUid}")
     }
 
-    override suspend fun removeMetadata(metadata: QuestionRow) {
+    override suspend fun removeQuestionMetadata(metadata: QuestionRow){
         questionMetadataDao.removeQuestion(metadata)
     }
 
-    override suspend fun updateMetadata(metadata: QuestionRow) {
+    override suspend fun updateQuestionMetadata(metadata: QuestionRow) {
         questionMetadataDao.updateQuestion(metadata)
     }
 

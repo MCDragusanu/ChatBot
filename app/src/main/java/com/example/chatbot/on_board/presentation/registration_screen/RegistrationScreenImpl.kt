@@ -73,7 +73,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatbot.R
-import com.example.chatbot.common.ui.theme.Purple40
 import com.example.chatbot.common.ui.theme.Typography
 import com.example.chatbot.common.ui.util.SnackbarEvent
 import com.example.chatbot.common.ui.util.TextFieldState

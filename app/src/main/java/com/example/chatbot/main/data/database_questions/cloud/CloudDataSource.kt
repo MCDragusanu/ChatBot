@@ -1,7 +1,7 @@
-package com.example.chatbot.main.data.question_metadata_database.cloud
+package com.example.chatbot.main.data.database_questions.cloud
 
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionRow
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 
 /**
  * An interface representing a cloud data source that provides methods to interact with topics and questions.

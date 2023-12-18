@@ -3,8 +3,7 @@ package com.example.chatbot.main.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatbot.main.data.module.MainModule
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Random
 
 
 class HomeScreenViewModel:ViewModel() {

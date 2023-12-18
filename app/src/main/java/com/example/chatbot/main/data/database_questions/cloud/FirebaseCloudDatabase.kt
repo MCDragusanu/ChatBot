@@ -1,18 +1,14 @@
-package com.example.chatbot.main.data.question_metadata_database.cloud
+package com.example.chatbot.main.data.database_questions.cloud
 
-import android.adservices.topics.Topic
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionRow
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 

@@ -2,7 +2,7 @@ package com.example.chatbot.main.domain.use_cases
 
 import android.util.Log
 import com.example.chatbot.main.data.module.MainModule
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 

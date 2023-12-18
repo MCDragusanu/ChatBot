@@ -17,12 +17,6 @@ import com.example.chatbot.on_board.presentation.registration_screen.Registratio
 import com.example.chatbot.on_board.presentation.registration_screen.RegistrationScreenViewModelImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenViewModelImpl
-import com.example.chatbot.main.data.question_metadata_database.cloud.CloudDataSource
-import com.example.chatbot.main.data.question_metadata_database.cloud.FirebaseCloudDatabase
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * The main activity for the onboarding process.

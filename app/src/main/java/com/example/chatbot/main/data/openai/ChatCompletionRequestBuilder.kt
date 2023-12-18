@@ -5,7 +5,7 @@ import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.chatCompletionRequest
-import com.example.chatbot.main.data.message_database.model.Message
+import com.example.chatbot.main.data.database_messages.model.Message
 
 /**
  * Builder class for creating a [ChatCompletionRequest] based on conversation history and the current user message.

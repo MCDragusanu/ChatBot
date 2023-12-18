@@ -1,13 +1,13 @@
-package com.example.chatbot.main.data.question_metadata_database.local
+package com.example.chatbot.main.data.database_questions.local
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionMetadata
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionRow
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 
 /**
  * Data Access Object (DAO) interface for interacting with question-related metadata in the database.

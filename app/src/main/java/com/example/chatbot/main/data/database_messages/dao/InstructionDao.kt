@@ -1,11 +1,11 @@
-package com.example.chatbot.main.data.message_database.dao
+package com.example.chatbot.main.data.database_messages.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.chatbot.main.data.message_database.model.Instruction
+import com.example.chatbot.main.data.database_messages.model.Instruction
 
 
 /**

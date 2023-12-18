@@ -1,7 +1,7 @@
 package com.example.chatbot.main.domain.pre_defined_questions
 
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
-import com.example.chatbot.main.data.question_metadata_database.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
+import com.example.chatbot.main.data.database_questions.entity.QuestionRow
 
 
 val predefinedTopics by lazy {

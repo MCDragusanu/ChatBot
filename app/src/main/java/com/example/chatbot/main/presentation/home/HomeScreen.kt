@@ -2,10 +2,8 @@ package com.example.chatbot.main.presentation.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
 import com.example.chatbot.common.databases.user_database.User
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
-import com.google.android.datatransport.runtime.Destination
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 
 abstract class HomeScreen : com.example.chatbot.common.ui.util.Destination("HomeScreen") {
 

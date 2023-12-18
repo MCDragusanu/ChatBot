@@ -127,7 +127,7 @@ object OnBoardScreenImpl: OnBoardScreen() {
                 modifier = Modifier
                     .width(15.dp)
                     .height(10.dp),
-                color = Color.Green
+                color = MaterialTheme.colorScheme.primary
             ) {}
         },
         defaultItemContent: @Composable () -> Unit = {

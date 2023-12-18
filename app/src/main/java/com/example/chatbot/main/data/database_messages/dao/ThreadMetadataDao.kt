@@ -1,11 +1,11 @@
-package com.example.chatbot.main.data.message_database.dao
+package com.example.chatbot.main.data.database_messages.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.chatbot.main.data.message_database.model.ThreadMetadata
+import com.example.chatbot.main.data.database_messages.model.ThreadMetadata
 
 /**
  * Data Access Object (DAO) for managing thread metadata in the local storage database.

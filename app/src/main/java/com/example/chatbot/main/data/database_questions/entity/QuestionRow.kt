@@ -1,4 +1,4 @@
-package com.example.chatbot.main.data.question_metadata_database.entity
+package com.example.chatbot.main.data.database_questions.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

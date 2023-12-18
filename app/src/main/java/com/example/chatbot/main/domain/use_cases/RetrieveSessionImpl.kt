@@ -1,7 +1,7 @@
 package com.example.chatbot.main.domain.use_cases
 
 import android.util.Log
-import com.example.chatbot.main.data.message_database.repository.ConversationRepository
+import com.example.chatbot.main.data.database_messages.repository.ConversationRepository
 import com.example.chatbot.main.domain.model.ConversationThread
 import com.example.chatbot.main.domain.model.Session
 import kotlinx.coroutines.CoroutineScope

@@ -1,4 +1,4 @@
-package com.example.chatbot.main.data.message_database.dao
+package com.example.chatbot.main.data.database_messages.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,8 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.chatbot.main.data.message_database.model.SessionMetadata
-import com.example.chatbot.main.domain.model.Session
+import com.example.chatbot.main.data.database_messages.model.SessionMetadata
 
 /**
  * Data Access Object (DAO) for managing session metadata in the local storage database.

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,10 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import com.example.chatbot.common.databases.user_database.User
 import com.example.chatbot.common.ui.theme.Typography
-import com.example.chatbot.main.data.question_metadata_database.entity.TopicMetadata
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.example.chatbot.main.presentation.composables.ProgressVisualizer
 import com.example.chatbot.on_board.presentation.on_board_screen.OnBoardScreenImpl
 import kotlinx.coroutines.flow.Flow
@@ -58,12 +57,12 @@ object HomeScreenImpl : HomeScreen() {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp)
+               ,
+            containerColor = MaterialTheme.colorScheme.background
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it),
+                    .fillMaxSize().padding(it) .padding(12.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(48.dp)
             ) {
@@ -104,15 +103,15 @@ object HomeScreenImpl : HomeScreen() {
                 modifier = Modifier
                     .wrapContentSize()
             ) {
-                Text(text = "Welcome Back" , color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f))
-                Text(text = currentUser.firstName + " " + currentUser.lastName , style = Typography.headlineSmall)
+                Text(text = "Welcome Back" , color = MaterialTheme.colorScheme.onBackground.copy(0.25f) , style = Typography.bodySmall)
+                Text(text = currentUser.firstName + " " + currentUser.lastName , style = Typography.headlineSmall )
             }
             Row {
                 IconButton(onClick =  onSettingsClicked) {
-                    Icon(imageVector = Icons.Filled.Settings, contentDescription = null)
+                    Icon(imageVector = Icons.Filled.Settings, contentDescription = null , tint = MaterialTheme.colorScheme.primary)
                 }
                 IconButton(onClick = onAccountClicked) {
-                    Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = null)
+                    Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = null , tint = MaterialTheme.colorScheme.primary)
                 }
             }
         }
@@ -128,7 +127,8 @@ object HomeScreenImpl : HomeScreen() {
             Text(text = "Your Courses", style = Typography.headlineSmall)
             Text(
                 text = "See your progress on each course and see your strength and weaknesses",
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f),
+                style = Typography.bodySmall
             )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -146,7 +146,7 @@ object HomeScreenImpl : HomeScreen() {
                         StatsCard(
                             modifier = Modifier
                                 .fillParentMaxWidth(0.7f)
-                                .height(200.dp), topicMetadata = it, questionsStatus = statusList
+                                .height(175.dp), topicMetadata = it, questionsStatus = statusList
                         )
                     }
                 }
@@ -170,12 +170,12 @@ object HomeScreenImpl : HomeScreen() {
 
     @Composable
     override fun StatsCard(modifier: Modifier ,topicMetadata: TopicMetadata ,  questionsStatus : List<Int>) {
-        Card(modifier = modifier) {
+        Card(modifier = modifier , colors =CardDefaults.cardColors( MaterialTheme.colorScheme.surfaceContainer , contentColor = MaterialTheme.colorScheme.onPrimaryContainer)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(12.dp),
+                    .padding(20.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -195,7 +195,7 @@ object HomeScreenImpl : HomeScreen() {
                         )
                     }
                 }
-                Text(text = "Progress")
+                Text(text = "Progress" , style = Typography.bodySmall)
                 ProgressVisualizer(
                     modifier = Modifier
                         .fillMaxWidth(0.75f)
