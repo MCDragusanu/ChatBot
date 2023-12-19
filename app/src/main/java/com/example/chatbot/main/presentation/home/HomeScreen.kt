@@ -64,6 +64,7 @@ abstract class HomeScreen : com.example.chatbot.common.ui.util.Destination("Home
     @Composable
     abstract fun NewSessionDialog(
         onDismiss: () -> Unit,
+        topics:List<TopicMetadata>,
         onSubmit: (List<TopicMetadata>, difficultyLevel: Int, numberOfQuestions: Int) -> Unit
     )
 }

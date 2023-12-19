@@ -1,11 +1,19 @@
 package com.example.chatbot.main.presentation.home
 
+import android.adservices.topics.Topic
 import android.util.Log
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,16 +24,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.FullscreenExit
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -40,14 +56,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.chatbot.common.databases.user_database.User
 import com.example.chatbot.common.ui.theme.Typography
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
@@ -57,6 +79,8 @@ import com.example.chatbot.on_board.presentation.on_board_screen.OnBoardScreenIm
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import topicColorPairs
 import java.text.SimpleDateFormat
 import java.util.Random
 import kotlin.streams.toList
@@ -71,6 +95,7 @@ object HomeScreenImpl : HomeScreen() {
         // Create a LazyListState to manage the state of the LazyColumn.
         val topicsRowState = rememberLazyListState()
 
+        var showDialog by remember { mutableStateOf(false) }
         // Create a MutableStateFlow to track the current visible topic.
         val currentTopic = MutableStateFlow(topicsRowState.firstVisibleItemIndex)
 
@@ -118,7 +143,20 @@ object HomeScreenImpl : HomeScreen() {
                         onClick = {}  // Placeholder click handler for session item
                     )
                 }
+                item {
+                    Button(onClick = { showDialog = true }) {
+                        Text("Create new Quiz")
+                    }
+                }
             }
+        }
+        if (showDialog) {
+            NewSessionDialog(
+                onDismiss = { showDialog = false },
+                topics = topics,
+                onSubmit = { list, dificulty, questionCount ->
+                    Log.d("Test" , "Received Topics = ${list.map { it.label }.toString()}")
+                })
         }
 
         // LaunchedEffect is used to observe changes in the visible item index and update the currentTopic.
@@ -531,11 +569,267 @@ object HomeScreenImpl : HomeScreen() {
     }
 
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     override fun NewSessionDialog(
         onDismiss: () -> Unit,
+        topics: List<TopicMetadata>,
         onSubmit: (List<TopicMetadata>, difficultyLevel: Int, numberOfQuestions: Int) -> Unit
     ) {
-        TODO("Not yet implemented")
+
+        val selectedTopics = remember { mutableStateListOf<TopicMetadata>() }
+        var numberOfQuestions by remember { mutableStateOf(10) }
+        Dialog(
+            onDismissRequest = onDismiss,
+            properties = DialogProperties(dismissOnClickOutside = false, dismissOnBackPress = false)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth().fillMaxHeight(0.8f)
+                    .background(
+                        MaterialTheme.colorScheme.surfaceBright,
+                        RoundedCornerShape(10.dp)
+                    )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(
+                            modifier = Modifier.wrapContentSize(),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = "Create new Quiz",
+                                style = Typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = "You can pick maximum 5 courses",
+                                style = Typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
+                            )
+                        }
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                imageVector = Icons.Filled.FullscreenExit,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(100.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        items(topics, key = { it.uid }) {
+                            TopicCard(
+                                modifier = Modifier.fillMaxSize(),
+                                topicMetadata = it,
+                                onClick = {
+
+                                    if (selectedTopics.size < 5) {
+                                        if (it !in selectedTopics) {
+                                            selectedTopics += it
+                                        }
+                                        Log.d(
+                                            "Test",
+                                            "Final size after addition = ${selectedTopics.size}"
+                                        )
+                                    } else selectedTopics -= it
+                                    Log.d("Test", selectedTopics.map { it.label }.toString())
+                                },
+                                isInside = it in selectedTopics
+                            )
+                        }
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        Alignment.Start
+                    ) {
+                        Text(
+                            text = "Quiz Length",
+                            style = Typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        FlowRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            val button1Color by animateColorAsState(
+                                targetValue = if (numberOfQuestions == 5) MaterialTheme.colorScheme.secondary.copy(
+                                    0.5f
+                                ) else MaterialTheme.colorScheme.surface
+                            )
+                            val button2Color by animateColorAsState(
+                                targetValue = if (numberOfQuestions == 10) MaterialTheme.colorScheme.secondary.copy(
+                                    0.5f
+                                ) else MaterialTheme.colorScheme.surface
+                            )
+                            val button3Color by animateColorAsState(
+                                targetValue = if (numberOfQuestions == 15) MaterialTheme.colorScheme.secondary.copy(
+                                    0.5f
+                                ) else MaterialTheme.colorScheme.surface
+                            )
+
+                            Button(
+                                onClick = { numberOfQuestions = 5 },
+                                modifier = Modifier.weight(1f, true),
+                                shape = RoundedCornerShape(2.dp),
+                                colors = ButtonDefaults.buttonColors(button1Color)
+                            ) {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        4.dp,
+                                        Alignment.CenterVertically
+                                    ), horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(text = "Short Quiz", fontSize = 10.sp)
+                                    Text(text = "5 Questions", fontSize = 8.sp)
+                                }
+                            }
+                            Button(
+                                onClick = { numberOfQuestions = 10 },
+                                modifier = Modifier.weight(1f, true),
+                                shape = RoundedCornerShape(2.dp),
+                                colors = ButtonDefaults.buttonColors(button2Color)
+                            ) {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        4.dp,
+                                        Alignment.CenterVertically
+                                    ), horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(text = "Normal Quiz", fontSize = 8.sp)
+                                    Text(text = "10 Questions", fontSize = 8.sp)
+                                }
+                            }
+                            Button(
+                                onClick = { numberOfQuestions = 15 },
+                                modifier = Modifier.weight(1f, true),
+                                shape = RoundedCornerShape(2.dp),
+                                colors = ButtonDefaults.buttonColors(button3Color)
+                            ) {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        4.dp,
+                                        Alignment.CenterVertically
+                                    ), horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(text = "Long Quiz", fontSize = 10.sp)
+                                    Text(text = "15 Questions", fontSize = 8.sp)
+                                }
+                            }
+                        }
+                    }
+                    Button(
+                        onClick = { onSubmit(selectedTopics, 0, numberOfQuestions)
+                                    onDismiss()
+                                  },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(2.dp),
+                    ) {
+                        Text(text = "Create New Quiz")
+                        Icon(imageVector = Icons.Filled.Send, contentDescription = null)
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun TopicCard(
+        modifier: Modifier,
+        topicMetadata: TopicMetadata,
+        onClick: (TopicMetadata) -> Unit,
+        isInside: Boolean
+    ) {
+        var isInsideSwitch by remember { mutableStateOf(isInside) }
+        val defaultGradient =
+            Pair(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surface)
+        val targetGradient = topicColorPairs[topicMetadata.uid % topicColorPairs.size]
+        val color1Animation by animateColorAsState(
+            targetValue = if (isInsideSwitch) targetGradient.first else defaultGradient.first,
+            label = ""
+        )
+        val color2Animation by animateColorAsState(
+            targetValue = if (isInsideSwitch) targetGradient.second else defaultGradient.second,
+            label = ""
+        )
+        Log.d("Test", "${topicMetadata.label} IsInside = $isInside")
+        Surface(
+            Modifier
+                .wrapContentHeight(Alignment.CenterVertically)
+                .wrapContentWidth(Alignment.Start)
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            color1Animation,
+                            color2Animation
+                        )
+                    ),
+                    shape = RoundedCornerShape(4.dp)
+
+                )
+                .clickable {
+                    isInsideSwitch = !isInsideSwitch
+                    onClick(topicMetadata)
+
+                }
+                .then(modifier),
+            shape = RoundedCornerShape(4.dp),
+            color = Color.Transparent,
+            shadowElevation = 0.dp,
+            tonalElevation = 0.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Row {
+                    if (topicMetadata.imageUid != -1) {
+                        Icon(
+                            painter = painterResource(id = topicMetadata.uid),
+                            contentDescription = null
+                        )
+                    }
+                    Text(text = topicMetadata.label ,  fontSize = 12.sp ,color = MaterialTheme.colorScheme.onBackground.copy(0.75f) , maxLines = 2 , overflow = TextOverflow.Ellipsis)
+                }
+                val keyWorkds = topicMetadata.keyWords.split("/").filter { it.isNotBlank() }
+                val content = buildString {
+                    keyWorkds.onEachIndexed { index, s ->
+                        if (index != keyWorkds.lastIndex) append(s + ",")
+                        else append(s)
+                    }
+                }
+                Text(
+                    text = content,
+                    style = Typography.bodySmall,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
+                )
+            }
+        }
+
     }
 }

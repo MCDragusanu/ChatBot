@@ -62,3 +62,21 @@ val md_theme_dark_shadow = Color(0xFF000000) // Black
 val md_theme_dark_surfaceTint = Color(0xFF2E5F80) // Darker Light Blue
 val md_theme_dark_outlineVariant = Color(0xFF163345) // Dark Navy (Slightly Darker Shade)
 val md_theme_dark_scrim = Color(0xFF000000) // Black
+
+private val workoutTagColors = listOf(
+ Color(0xFFBA68C8),Color(0xFFF06292),
+ Color(0xFFBA68C8),Color(0xFF7986CB),
+ Color(0xFF64B5F6),Color(0xFF4DD0E1),
+ Color(0xFF4DB6AC),Color(0xFF9CCC65),
+ Color(0xFFD4E157),Color(0xFFFFCA28),
+ Color(0xFFCAC226),Color(0xFFFF7043),
+ Color(0xFFCA6826) ,Color(0xFFFF4378),
+ Color(0xFFEF9A9A),Color(0xFFCE93D8),
+ Color(0xFFB39DDB),Color(0xFF90CAF9),
+ Color(0xFF9FA8DA),Color(0xFF90CAF9),
+ Color(0xFF90CAF9),Color(0xFF80DEEA),
+ Color(0xFFC5E1A5),Color(0xFFFFF59D),
+ Color(0xFFE6EE9C),Color(0xFFFFAB91),
+ Color(0xFFEED39C) ,Color(0xFFFF9591) ,
+)
+val topicColorPairs = workoutTagColors.shuffled().map { Pair(workoutTagColors.random() , workoutTagColors.random()) }
