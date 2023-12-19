@@ -23,6 +23,13 @@ class SessionMetadata(
     @PrimaryKey val uid: Long,
     val userUid: String,
     val timestamp: Long,
-    val topicsUids: String
-)
+    val topicsUids: String,
+    val status:Int
+){
+    companion object{
+        val STARTED = 0
+        val COMPLETED = 1
+        val QUITTED = 2
+    }
+}
 

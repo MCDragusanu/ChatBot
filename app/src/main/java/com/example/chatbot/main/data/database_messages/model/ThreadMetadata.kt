@@ -23,6 +23,6 @@ import androidx.room.PrimaryKey
 data class ThreadMetadata(
     @PrimaryKey val uid: Long,
     val sessionUid: Long,
-    val questionUid: Long,
+    val questionUid: Int,
     val instructionUid: Long
 )

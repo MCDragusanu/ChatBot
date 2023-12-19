@@ -2,6 +2,7 @@ package com.example.chatbot.main.domain.use_cases
 
 import android.util.Log
 import com.example.chatbot.main.data.database_messages.repository.ConversationRepository
+import com.example.chatbot.main.data.database_questions.local.QuestionRepository
 import com.example.chatbot.main.domain.model.ConversationThread
 import com.example.chatbot.main.domain.model.Session
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +15,7 @@ object RetrieveSessionImpl:RetrieveSession {
     // UseCase to retrieve a session from local storage by sessionUid
     // Input: sessionUid - Unique identifier for the session, repository - Data repository for conversations
     // Output: Result<Session> - Success with the retrieved session or Failure with an exception
-   override suspend fun execute(sessionUid: Long, repository: ConversationRepository): Result<Session> {
+   override suspend fun execute(sessionUid: Long, repository: ConversationRepository ,  questionRepository: QuestionRepository): Result<Session> {
         return try {
             // Step 1: Retrieve session metadata from the repository
             val sessionMetadata = repository.retrieveSessionByUid(sessionUid)
@@ -41,10 +42,10 @@ object RetrieveSessionImpl:RetrieveSession {
                         repository.retrieveMessagesForThread(it.uid)
                     }
                     val question = async {
-                        repository.retrieveQuestionByUid(it.questionUid)
+                        questionRepository.getQuestionByUid(it.questionUid)
                     }
                     val instruction = async {
-                        repository.retrieveInstructionForThread(it.questionUid)
+                        repository.retrieveInstructionForThread(it.uid)
                     }
 
                     // Step 6: Create a ConversationThread object and add it to the list of threads

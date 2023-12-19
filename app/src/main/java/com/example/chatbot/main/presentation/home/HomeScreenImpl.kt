@@ -1,9 +1,13 @@
 package com.example.chatbot.main.presentation.home
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -34,46 +39,68 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.chatbot.common.databases.user_database.User
 import com.example.chatbot.common.ui.theme.Typography
+import com.example.chatbot.main.data.database_messages.model.SessionMetadata
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.example.chatbot.main.presentation.composables.ProgressVisualizer
 import com.example.chatbot.on_board.presentation.on_board_screen.OnBoardScreenImpl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.text.SimpleDateFormat
+import java.util.Random
+import kotlin.streams.toList
 
 object HomeScreenImpl : HomeScreen() {
     @Composable
+    // The Main function represents the main content of the home screen.
     override fun Main(homeScreenViewModel: HomeScreenViewModel, onStartNewSession: (Long) -> Unit) {
+        // Collect the state of topics from the ViewModel as a Composable State.
         val topics by homeScreenViewModel.topics.collectAsState()
+
+        // Create a LazyListState to manage the state of the LazyColumn.
         val topicsRowState = rememberLazyListState()
+
+        // Create a MutableStateFlow to track the current visible topic.
         val currentTopic = MutableStateFlow(topicsRowState.firstVisibleItemIndex)
+
+        // Collect the state of recent sessions from the ViewModel as a Composable State.
+        val recentSessions by homeScreenViewModel.recentSessions.collectAsState()
+
+        // Scaffold is a Material Design container for the screen layout.
         Scaffold(
-            modifier = Modifier
-                .fillMaxSize()
-               ,
+            modifier = Modifier.fillMaxSize(),
             containerColor = MaterialTheme.colorScheme.background
         ) {
+            // LazyColumn is a vertically scrolling list of composable items.
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize().padding(it) .padding(12.dp),
+                    .fillMaxSize()
+                    .padding(it)  // Apply padding to the LazyColumn
+                    .padding(16.dp),  // Additional padding
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(48.dp)
+                verticalArrangement = Arrangement.spacedBy(72.dp)  // Spacing between items
             ) {
-
+                // Item 1: Headline section displaying user information and action buttons.
                 item {
                     Headline(
                         currentUser = homeScreenViewModel.getCurrentUser(),
-                        onAccountClicked = {},
-                        onSettingsClicked = {})
+                        onAccountClicked = {},  // Placeholder click handler for account action
+                        onSettingsClicked = {}  // Placeholder click handler for settings action
+                    )
                 }
 
+                // Item 2: CourseProgression section displaying the user's course progress.
                 item {
                     CourseProgression(
                         topicsRowState = topicsRowState,
@@ -83,15 +110,31 @@ object HomeScreenImpl : HomeScreen() {
                     )
                 }
 
+                // Item 3: RecentSessions section displaying the user's recent quiz sessions.
+                item {
+                    RecentSessions(
+                        sessions = recentSessions,
+                        getTopicsLabels = homeScreenViewModel::getTopicsLabel,
+                        onClick = {}  // Placeholder click handler for session item
+                    )
+                }
             }
         }
+
+        // LaunchedEffect is used to observe changes in the visible item index and update the currentTopic.
         LaunchedEffect(key1 = remember { derivedStateOf { topicsRowState.firstVisibleItemIndex } }) {
             currentTopic.emit(topicsRowState.firstVisibleItemIndex)
         }
     }
 
+    // Composable function to display the headline section with user information and action buttons.
     @Composable
-    override fun Headline(currentUser: User , onSettingsClicked:()->Unit , onAccountClicked:()->Unit) {
+    override fun Headline(
+        currentUser: User,
+        onSettingsClicked: () -> Unit,
+        onAccountClicked: () -> Unit
+    ) {
+        // Row to arrange the contents horizontally with space between them.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,68 +142,111 @@ object HomeScreenImpl : HomeScreen() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // Column to arrange the texts vertically.
             Column(
                 modifier = Modifier
                     .wrapContentSize()
             ) {
-                Text(text = "Welcome Back" , color = MaterialTheme.colorScheme.onBackground.copy(0.25f) , style = Typography.bodySmall)
-                Text(text = currentUser.firstName + " " + currentUser.lastName , style = Typography.headlineSmall )
+                // Text displaying a welcome message.
+                Text(
+                    text = "Welcome Back",
+                    color = MaterialTheme.colorScheme.onBackground.copy(0.25f),
+                    style = Typography.bodySmall
+                )
+                // Text displaying the user's full name.
+                Text(
+                    text = currentUser.firstName + " " + currentUser.lastName,
+                    style = Typography.headlineSmall
+                )
             }
+            // Row to arrange the icon buttons horizontally.
             Row {
-                IconButton(onClick =  onSettingsClicked) {
-                    Icon(imageVector = Icons.Filled.Settings, contentDescription = null , tint = MaterialTheme.colorScheme.primary)
+                // IconButton for settings with a click handler.
+                IconButton(onClick = onSettingsClicked) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
+                // IconButton for account with a click handler.
                 IconButton(onClick = onAccountClicked) {
-                    Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = null , tint = MaterialTheme.colorScheme.primary)
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         }
     }
 
-    @Composable
-     fun CourseProgression(topicsRowState:LazyListState , topics:List<TopicMetadata >, currentTopic:StateFlow<Int>,status:(Int)-> Flow<List<Int>>) {
 
+    // Composable function to display the course progression section.
+    @Composable
+    fun CourseProgression(
+        topicsRowState: LazyListState,
+        topics: List<TopicMetadata>,
+        currentTopic: StateFlow<Int>,
+        status: (Int) -> Flow<List<Int>>
+    ) {
+        // Column to arrange the contents vertically.
         Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Text displaying the section title.
             Text(text = "Your Courses", style = Typography.headlineSmall)
+
+            // Text providing additional information about the section.
             Text(
                 text = "See your progress on each course and see your strength and weaknesses",
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f),
                 style = Typography.bodySmall
             )
+
+            // Nested Column for further organization.
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // LazyRow is a horizontally scrolling list.
                 LazyRow(
                     state = topicsRowState,
                     modifier = Modifier,
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
+                    // Iterate over the list of topics and create StatsCard for each.
                     items(topics, key = { it.uid }) {
+                        // Collect the status of the current topic.
                         val statusList by status(it.uid).collectAsState(initial = emptyList())
+                        // Log the number of items retrieved (for testing purposes).
                         Log.d("Test", "Retrieved ${statusList.size} items")
+                        // Display a StatsCard for the current topic.
                         StatsCard(
                             modifier = Modifier
                                 .fillParentMaxWidth(0.7f)
-                                .height(175.dp), topicMetadata = it, questionsStatus = statusList
+                                .height(175.dp),
+                            topicMetadata = it,
+                            questionsStatus = statusList
                         )
                     }
                 }
+
+                // ItemSlider for navigating through topics.
                 OnBoardScreenImpl.ItemSlider(
                     modifier = Modifier.width(200.dp),
                     currentItem = currentTopic,
-                    numberOfItems = topics.size-1,
+                    numberOfItems = topics.size - 1,
                     defaultItemContent = {
+                        // Placeholder content for default item in the slider.
                         Surface(
                             color = MaterialTheme.colorScheme.secondaryContainer,
                             shape = RoundedCornerShape(15.dp),
                             modifier = Modifier.size(10.dp)
                         ) {
-
+                            // Empty surface representing a default item.
                         }
                     }
                 )
@@ -168,9 +254,22 @@ object HomeScreenImpl : HomeScreen() {
         }
     }
 
+    // Composable function to display a statistics card for a specific topic.
     @Composable
-    override fun StatsCard(modifier: Modifier ,topicMetadata: TopicMetadata ,  questionsStatus : List<Int>) {
-        Card(modifier = modifier , colors =CardDefaults.cardColors( MaterialTheme.colorScheme.surfaceContainer , contentColor = MaterialTheme.colorScheme.onPrimaryContainer)) {
+    override fun StatsCard(
+        modifier: Modifier,
+        topicMetadata: TopicMetadata,
+        questionsStatus: List<Int>
+    ) {
+        // Card composable with a custom modifier and color scheme.
+        Card(
+            modifier = modifier,
+            colors = CardDefaults.cardColors(
+                MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        ) {
+            // Column to arrange the contents vertically with padding.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -179,6 +278,7 @@ object HomeScreenImpl : HomeScreen() {
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Row displaying the topic label and optional topic image.
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -186,7 +286,9 @@ object HomeScreenImpl : HomeScreen() {
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Text displaying the label of the topic.
                     Text(text = topicMetadata.label, style = Typography.labelLarge)
+                    // Display an optional topic image if available.
                     if (topicMetadata.imageUid != -1) {
                         Icon(
                             painter = painterResource(id = topicMetadata.uid),
@@ -195,22 +297,239 @@ object HomeScreenImpl : HomeScreen() {
                         )
                     }
                 }
-                Text(text = "Progress" , style = Typography.bodySmall)
+
+                // Text displaying the label "Progress" for the section.
+                Text(text = "Progress", style = Typography.bodySmall)
+
+                // ProgressVisualizer composable to visualize progress.
                 ProgressVisualizer(
                     modifier = Modifier
                         .fillMaxWidth(0.75f)
                         .wrapContentHeight(),
-                    questionsStatus,
+                    // Random data for demonstration purposes. Replace with actual data.
+                    Random().ints(25, 0, 3).toList(),
                     questionsPerRow = 7
                 )
             }
         }
     }
 
+
+    // Composable function to display the recent sessions section.
     @Composable
-    override fun RecentSessions() {
-        TODO("Not yet implemented")
+    override fun RecentSessions(
+        sessions: List<SessionMetadata>,
+        getTopicsLabels: (String) -> List<String>,
+        onClick: (SessionMetadata) -> Unit
+    ) {
+        // Calculate the window size for displaying recent sessions.
+        val windowSize = maxOf(sessions.size - 1, 5)
+        // Create an IntRange representing the window of visible sessions.
+        val window = IntRange(0, maxOf(sessions.size - 1, 5))
+
+        // MutableState for tracking the current page in the session window.
+        var currentPage by remember {
+            mutableIntStateOf(0)
+        }
+
+        // Calculate the total number of pages based on window size.
+        val numberOfPages = sessions.size / windowSize + 1
+
+        // Column to arrange the contents vertically.
+        Column(
+            modifier = Modifier.wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
+            horizontalAlignment = Alignment.Start
+        ) {
+            // Composable function for displaying the headline of recent sessions.
+            RecentSessionHeadline(
+                numberOfPages = numberOfPages,
+                currentPage = currentPage,
+                onPageChanged = {
+                    currentPage = it
+                }
+            )
+
+            // AnimatedContent for smoothly transitioning between pages.
+            AnimatedContent(targetState = currentPage, label = "") { currentPage ->
+                // Column to arrange session cards vertically with spacing.
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    // Loop through sessions in the current window and create SessionCard for each.
+                    for (index in numberOfPages * currentPage until numberOfPages * currentPage + window.last - 2) {
+                        // Retrieve the session metadata at the current index.
+                        sessions[index].also {
+                            // Display a SessionCard for the current session.
+                            SessionCard(
+                                session = it,
+                                getTopicsLabels = getTopicsLabels,
+                                onClick = onClick
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
+
+
+    // Composable function to display the headline of the recent sessions section.
+    @Composable
+    fun RecentSessionHeadline(numberOfPages: Int, currentPage: Int, onPageChanged: (Int) -> Unit) {
+        // Row to arrange the contents horizontally with space between them.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Column to arrange text contents vertically.
+            Column {
+                // Text displaying the main title of the recent sessions section.
+                Text(text = "Your Recent Sessions")
+                // Text providing additional information about the section.
+                Text(
+                    text = "See your recent quiz activity and stats",
+                    style = Typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
+                )
+            }
+
+            // Check if there is more than one page of recent sessions.
+            if (numberOfPages > 1) {
+                // Row to display page indicators with spacing between them.
+                Row(
+                    modifier = Modifier.wrapContentSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    // Repeat for each page indicator.
+                    repeat(numberOfPages) {
+                        // Text displaying the page number.
+                        Text(
+                            text = (it + 1).toString(),
+                            // Set color based on whether it's the current page or not.
+                            color = if (currentPage == it) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onBackground,
+                            // Clickable modifier to handle page changes.
+                            modifier = Modifier.clickable { onPageChanged(it) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
+    // Composable function to display a session card.
+    @Composable
+    fun SessionCard(
+        session: SessionMetadata,
+        getTopicsLabels: (String) -> List<String>,
+        onClick: (SessionMetadata) -> Unit
+    ) {
+        // MutableState to track the expansion state of the card.
+        var isExpanded by remember { mutableStateOf(false) }
+
+        // Card composable with custom modifier, click behavior, and color scheme.
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .clickable {
+                    // Invoke the onClick callback when the card is clicked.
+                    onClick(session)
+                    // Toggle the expansion state.
+                    isExpanded = !isExpanded
+                },
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+        ) {
+            // Column to arrange the contents of the card vertically.
+            Column(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .wrapContentSize(),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top)
+            ) {
+                // Row displaying session status indicator and status text.
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Surface for the session status indicator bar.
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        modifier = Modifier
+                            .width(3.dp)
+                            .height(30.dp),
+                        // Set color based on the session status.
+                        color = when (session.status) {
+                            SessionMetadata.COMPLETED -> Color.Green.copy(alpha = 0.5f)
+                            SessionMetadata.QUITTED -> Color.Red.copy(alpha = 0.5f)
+                            SessionMetadata.STARTED -> Color.Yellow.copy(alpha = 0.5f)
+                            else -> Color.Transparent
+                        }
+                    ) {}
+                    // Text displaying session details, including status and timestamp.
+                    Text(
+                        text = "Quiz ${
+                            when (session.status) {
+                                SessionMetadata.COMPLETED -> "finished"
+                                SessionMetadata.QUITTED -> "stopped"
+                                SessionMetadata.STARTED -> "started"
+                                else -> ""
+                            }
+                        } on ${
+                            SimpleDateFormat("mm/dd/yyyy").format(session.timestamp)
+                        }",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+
+                // AnimatedVisibility to conditionally show content when expanded.
+                AnimatedVisibility(visible = isExpanded) {
+                    // Column for additional content when the card is expanded.
+                    Column(modifier = Modifier.wrapContentSize()) {
+                        // Get the topics associated with the session.
+                        val topics = getTopicsLabels(session.topicsUids)
+                        // Text indicating the content type ("Courses").
+                        Text(
+                            text = "Courses",
+                            style = Typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        // Display each topic as a row with a colored circle and text.
+                        topics.onEach {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                // Colored circle representing the topic.
+                                Surface(
+                                    shape = CircleShape,
+                                    color = MaterialTheme.colorScheme.secondaryContainer,
+                                    modifier = Modifier.size(6.dp)
+                                ) {
+                                    // Empty surface for the circle.
+                                }
+                                // Text displaying the topic label.
+                                Text(
+                                    it,
+                                    style = Typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     @Composable
     override fun NewSessionDialog(

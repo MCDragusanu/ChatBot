@@ -20,6 +20,8 @@ import java.util.Random
 import kotlin.streams.toList
 
 object ProgressVisualizer {
+
+    // Composable function to visualize question progress.
     @Composable
     operator fun invoke(
         modifier: Modifier,
@@ -27,33 +29,29 @@ object ProgressVisualizer {
         questionsPerRow: Int
     ) {
 
-
+        // Use LazyVerticalGrid to arrange items in a grid layout.
         LazyVerticalGrid(
-            columns = GridCells.FixedSize(16.dp),
+            columns = GridCells.Fixed(questionsPerRow),
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(2.dp),
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
+            // Iterate over the list of questions.
             items(questions) {
+                // Create a Surface composable for each question with different colors based on its status.
                 Surface(
                     color = when (it) {
                         0 -> MaterialTheme.colorScheme.secondaryContainer
-                        1 -> MaterialTheme.colorScheme.primary
-                        else -> Color.Red
+                        1 -> Color.Green.copy(alpha = 0.5f)
+                        else -> Color.Red.copy(alpha = 0.5f)
                     },
                     shape = RoundedCornerShape(2.dp),
                     modifier = Modifier.size(12.dp)
-                ) {}
+                ) {
+                    // Empty content, representing a single question status indicator.
+                }
             }
         }
     }
 }
-@Preview
-@Composable
-fun TestPreview() {
-    ProgressVisualizer(
-        modifier = Modifier.fillMaxSize(),
-        Random().ints().toList().map { it % 3 }.subList(0, 29),
-        6
-    )
-}
+

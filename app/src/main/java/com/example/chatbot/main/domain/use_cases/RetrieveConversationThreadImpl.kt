@@ -1,6 +1,7 @@
 package com.example.chatbot.main.domain.use_cases
 
 import com.example.chatbot.main.data.database_messages.repository.ConversationRepository
+import com.example.chatbot.main.data.database_questions.local.QuestionRepository
 import com.example.chatbot.main.domain.model.ConversationThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ object RetrieveConversationThreadImpl : RetrieveConversationThread {
      * @param conversationRepository Repository for managing conversations in the local storage database.
      * @return Result<ConversationThread> indicating success with the retrieved thread or failure with an exception.
      */
-    override suspend fun execute(threadUid: Long, conversationRepository: ConversationRepository): Result<ConversationThread> {
+    override suspend fun execute(threadUid: Long, conversationRepository: ConversationRepository , questionRepository: QuestionRepository): Result<ConversationThread> {
         return try {
             // Step 1: Retrieve thread metadata from the repository
             val threadMetadata = conversationRepository.retrieveThreadByUid(threadUid)
@@ -36,7 +37,7 @@ object RetrieveConversationThreadImpl : RetrieveConversationThread {
 
             // Step 3: Launch a coroutine to asynchronously retrieve related information for the thread
             val job = CoroutineScope(Dispatchers.IO).launch {
-                val question = async { conversationRepository.retrieveQuestionByUid(threadMetadata.questionUid) }.await()
+                val question = async { questionRepository.getQuestionByUid(threadMetadata.questionUid) }.await()
                     ?: throw NullPointerException("No Question Found")
                 val instruction =
                     async { conversationRepository.retrieveInstructionForThread(threadMetadata.instructionUid) }.await()

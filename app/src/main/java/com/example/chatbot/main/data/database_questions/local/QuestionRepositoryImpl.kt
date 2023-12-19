@@ -85,4 +85,8 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
     override suspend fun getAllTopics(): List<TopicMetadata> {
         return questionMetadataDao.getAllTopics()
     }
+
+    override suspend fun getQuestionByUid(questionUid: Int): QuestionRow? {
+        return questionMetadataDao.getQuestionByUid(questionUid)
+    }
 }

@@ -24,4 +24,6 @@ interface QuestionRepository {
     // Topics
     suspend fun addTopic(topic: TopicMetadata)
     suspend fun getAllTopics(): List<TopicMetadata>
+
+    suspend fun getQuestionByUid(questionUid:Int):QuestionRow?
 }

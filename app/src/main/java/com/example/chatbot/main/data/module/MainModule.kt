@@ -13,6 +13,8 @@ import com.example.chatbot.common.services.network_observer.NetworkObserverImpl
 import com.example.chatbot.common.services.uid_generator.UIDGenerator
 import com.example.chatbot.common.services.uid_generator.UIDGeneratorImpl
 import com.example.chatbot.main.data.database_messages.database.ConversationDatabase
+import com.example.chatbot.main.data.database_messages.repository.ConversationRepository
+import com.example.chatbot.main.data.database_messages.repository.ConversationRepositoryImpl
 import com.example.chatbot.main.data.openai.OpenAIClient
 import com.example.chatbot.main.data.database_questions.cloud.CloudDataSource
 import com.example.chatbot.main.data.database_questions.cloud.FirebaseCloudDatabase
@@ -29,6 +31,7 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
                                      val uidGenerator: UIDGenerator,
                                      val source:CloudDataSource.DataSource,
                                      val conversationDatabase: ConversationDatabase,
+                                     val conversationRepository:ConversationRepository,
                                      val questionMetadataDatabase: QuestionMetadataDatabase,
                                      val questionRepository:QuestionRepository,
                                      val cloudDataSource: CloudDataSource,
@@ -75,6 +78,11 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
                     questionMetadataDao = QuestionMetadataDatabase.getInstance(
                         application.applicationContext
                     ).dao
+                ),
+                conversationRepository = ConversationRepositoryImpl(
+                    ConversationDatabase.getInstance(
+                        application.applicationContext
+                    ).sessionMetadataDao
                 ),
                 cloudDataSource = FirebaseCloudDatabase(),
                 currentUser = currentUser

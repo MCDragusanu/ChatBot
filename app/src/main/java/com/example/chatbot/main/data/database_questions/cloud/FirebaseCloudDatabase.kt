@@ -180,8 +180,7 @@ class FirebaseCloudDatabase : CloudDataSource {
 
             if (task.isSuccessful) {
                 Result.success(task.result.map {
-                    it.toObject<QuestionRow>()
-                        ?: throw NullPointerException("Failed to convert document to Question Row")
+                    it.toObject()
                 })
             } else throw task.exception
                 ?: Exception("Unknown error has occurred while retrieving queston for topics")
@@ -190,9 +189,5 @@ class FirebaseCloudDatabase : CloudDataSource {
             Result.failure(e)
         }
     }
-
-
-
-
 
 }

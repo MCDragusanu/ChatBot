@@ -3,11 +3,11 @@ import androidx.compose.ui.graphics.Color
 
  val md_theme_light_primary = Color(0xFF1189F3) // Blue
 val md_theme_light_onPrimary = Color(0xFFFFFFFF) // White
-val md_theme_light_primaryContainer = Color(0xFFD0DBF1) // Light Blue
+val md_theme_light_primaryContainer = Color(0xFFBDD9EE) // Light Blue
 val md_theme_light_onPrimaryContainer = Color(0xFF000000) // Black
 val md_theme_light_secondary = Color(0xFF00B0FF) // Light Blue
 val md_theme_light_onSecondary = Color( 0xFFFFFFFF) // Black
-val md_theme_light_secondaryContainer = Color(0xFF86C4F5) // Pale Blue
+val md_theme_light_secondaryContainer = Color(0xFF97C3E2) // Pale Blue
 val md_theme_light_onSecondaryContainer = Color( 0xFFFFFFFF) // Black
 val md_theme_light_tertiary = Color(0xFF8BC34A) // Green
 val md_theme_light_onTertiary = Color(0xFF000000) // Black
@@ -19,7 +19,7 @@ val md_theme_light_onError = Color(0xFFFFFFFF) // White
 val md_theme_light_onErrorContainer = Color(0xFF000000) // Black
 val md_theme_light_background = Color(0xFFE3F2FD) // Light Blue Nuance
 val md_theme_light_onBackground = Color(0xFF000000) // Black
-val md_theme_light_surface = Color(0xFFF5F5F5) // Light Gray
+val md_theme_light_surface = Color(0xFFB2D6F0) // Light Gray
 val md_theme_light_onSurface = Color(0xFF000000) // Black
 val md_theme_light_surfaceVariant = Color(0xFFEEEEEE) // Gray
 val md_theme_light_onSurfaceVariant = Color(0xFF000000) // Black

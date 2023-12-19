@@ -6,39 +6,54 @@ import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 
+/**
+ * Object responsible for synchronizing questions between the local database and the cloud data source.
+ */
 object SyncronizeQuestions {
 
-    suspend fun execute(module: MainModule , scope: CoroutineScope){
-        //check to see if question database is empty
+    /**
+     * Executes the synchronization process.
+     *
+     * @param module MainModule providing access to repositories and data sources.
+     * @param scope CoroutineScope for managing asynchronous tasks.
+     */
+    suspend fun execute(module: MainModule, scope: CoroutineScope) {
+        // Check if the local question database is empty
         if (module.questionRepository.noQuestionsCached()) {
-
-            //retrieve from cloud database
+            // Retrieve questions from the cloud database
             val questions = module.cloudDataSource.getQuestions(module.source)
 
+            // Handle the result of the cloud data source call
             questions.onSuccess {
-
-                it.onEach {question->
+                // Iterate through each retrieved question
+                it.onEach { question ->
+                    // Asynchronously check if there is metadata linked to the question
                     scope.async {
-                        //check to see if there is a metadata linked to the question
-                        if(module.questionRepository.getMetadataByQuestionUid(question.questionUid , module.currentUser.uid) == null){
-                            //create new metadata
-                            val metadata = QuestionMetadata(userUid = module.currentUser.uid , questionRowUid = question.uid)
-                            //insert to table
+                        // Check if there is no metadata linked to the question for the current user
+                        if (module.questionRepository.getMetadataByQuestionUid(
+                                question.questionUid,
+                                module.currentUser.uid
+                            ) == null
+                        ) {
+                            // Create new metadata for the question
+                            val metadata = QuestionMetadata(userUid = module.currentUser.uid, questionRowUid = question.uid)
+                            // Insert the metadata into the metadata table
                             module.questionRepository.addQuestionMetadata(metadata)
                         }
                     }
-                    //insert into table new queston
+                    // Asynchronously insert the new question into the question table
                     scope.async {
                         module.questionRepository.addQuestionRow(question)
                     }
                 }
             }.onFailure {
+                // Handle failure, print the stack trace, and return
                 it.printStackTrace()
                 return
             }
-        }
-        else {
-            Log.d("Test" , "Questions are chached locally")
+        } else {
+            // Log that questions are cached locally
+            Log.d("Test", "Questions are cached locally")
         }
     }
 }

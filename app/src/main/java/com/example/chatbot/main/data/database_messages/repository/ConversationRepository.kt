@@ -36,13 +36,7 @@ interface ConversationRepository {
      */
     suspend fun retrieveSessionByUid(sessionUid: Long): SessionMetadata?
 
-    /**
-     * Retrieves a question based on its unique identifier.
-     *
-     * @param questionUid Unique identifier for the question.
-     * @return Question object if found, otherwise null.
-     */
-    suspend fun retrieveQuestionByUid(questionUid: Long): QuestionRow?
+
 
     /**
      * Retrieves an instruction based on the unique identifier of the associated thread.
@@ -65,7 +59,7 @@ interface ConversationRepository {
      *
      * @param threadMetadata The thread metadata to be added.
      */
-    suspend fun addThreadMetadata(threadMetadata: ThreadMetadata)
+    suspend fun addThreadMetadata(threadMetadata: ThreadMetadata):Result<Unit>
 
     /**
      * Adds a new question to the local storage.
@@ -73,14 +67,7 @@ interface ConversationRepository {
      * @param question The question to be added.
      * @return Result indicating success or failure of the operation.
      */
-    suspend fun addQuestion(question: QuestionRow): Result<Unit>
 
-    /**
-     * Adds a new instruction to the local storage.
-     *
-     * @param instruction The instruction to be added.
-     * @return Result indicating success or failure of the operation.
-     */
     suspend fun addInstruction(instruction: Instruction): Result<Unit>
 
     /**
@@ -92,4 +79,5 @@ interface ConversationRepository {
     suspend fun addSessionsMetadata(sessionMetadata: SessionMetadata): Result<Unit>
     
     suspend fun retrieveThreadByUid(threadUid: Long): ThreadMetadata?
+     suspend fun retrieveSessionsByUserUid(uid: String):List<SessionMetadata>
 }
