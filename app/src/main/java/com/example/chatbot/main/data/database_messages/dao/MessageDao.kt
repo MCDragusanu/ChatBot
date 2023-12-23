@@ -1,11 +1,11 @@
-package com.example.chatbot.main.data.message_database.dao
+package com.example.chatbot.main.data.database_messages.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.chatbot.main.data.message_database.model.Message
+import com.example.chatbot.main.data.database_messages.model.Message
 
 /**
  * Data Access Object (DAO) for managing messages in the local storage database.

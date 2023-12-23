@@ -1,7 +1,6 @@
 package com.example.chatbot.main.domain.model
 
-import com.example.chatbot.main.data.message_database.model.Instruction
-import com.example.chatbot.main.data.message_database.model.SessionMetadata
+import com.example.chatbot.main.data.database_messages.model.SessionMetadata
 
 /**
  * Represents a conversation session, including metadata and a list of associated threads.

@@ -2,6 +2,7 @@ package com.example.chatbot.common.services.api_key_fetcher
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 
 /**
@@ -23,12 +24,26 @@ class FirestoreKeyFetcher : APIKeyFetcher {
     // else
     //     return Result.failure(task.exception ?:Exception("Unknown error has occurred while retrieving field $fieldName from document $documentName")) if the task is not successful
     // leftArg ?: rightArg is short for if(leftArg  == null ) rightArg
-override suspend fun getAPIKey(documentName: String, fieldName: String ): Result<String> {
+    override suspend fun getAPIKey(documentName: String, fieldName: String): Result<String> {
 
-        //https://firebase.google.com/docs/firestore/manage-data/add-data#kotlin+ktx_1
-        // resources on how it works and how to use
-        // make sure you check the code snippet ofr android and KotlinX
-        TODO("Not Yet Implemented")
 
+        return try{
+            val task = collectionRef.document(documentName).get()
+            task.await()
+
+            if (task.isSuccessful) {
+                val key = task.result[fieldName] as String?
+                if (key == null) {
+                    throw NullPointerException("No key found")
+                }
+                Result.success(key)
+            } else {
+                throw task.exception?:Exception("Failed to retrieve api key")
+            }
+
+        } catch (e:Exception){
+            e.printStackTrace()
+            Result.failure(e)
+        }
     }
 }

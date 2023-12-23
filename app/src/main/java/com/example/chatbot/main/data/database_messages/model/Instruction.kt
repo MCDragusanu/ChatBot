@@ -1,4 +1,4 @@
-package com.example.chatbot.main.data.message_database.model
+package com.example.chatbot.main.data.database_messages.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -16,8 +16,7 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "instruction_table")
 class Instruction(
-    @PrimaryKey
-    val uid: Long,
-    val threadUid: Long,
+    @PrimaryKey val uid: Long,
+    val threadUid:Long,
     val content: String
 )
