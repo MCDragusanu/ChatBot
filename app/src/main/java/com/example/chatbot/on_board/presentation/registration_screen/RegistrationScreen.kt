@@ -54,6 +54,24 @@ abstract class RegistrationScreen : Destination("RegistrationScreen") {
         onValueChanged: (String) -> Unit,
     )
 
+    @Composable
+    abstract fun FirstNameTextField(
+        modifier: Modifier,
+        textFieldState: StateFlow<TextFieldState>,
+        onValueChanged: (String) -> Unit,
+    )
+    @Composable
+    abstract fun LastNameTextField(
+        modifier: Modifier,
+        textFieldState: StateFlow<TextFieldState>,
+        onValueChanged: (String) -> Unit,
+    )
+    @Composable
+    abstract fun OccupationTextField(
+        modifier: Modifier,
+        textFieldState: StateFlow<TextFieldState>,
+        onValueChanged: (String) -> Unit,
+    )
     /**
      * Composable function for the "Terms of Use" checkbox.
      *

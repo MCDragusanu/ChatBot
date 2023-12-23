@@ -22,6 +22,15 @@ abstract class RegistrationScreenViewModel() : ViewModel() {
 
 
 
+    protected val _occupationFieldState =  MutableStateFlow(TextFieldState())
+    val occupationFieldState = _occupationFieldState.asStateFlow()
+
+    protected val _lastNameFieldState = MutableStateFlow(TextFieldState())
+    val lastNameFieldState = _lastNameFieldState.asStateFlow()
+
+    protected val _firstNameFieldState = MutableStateFlow(TextFieldState())
+    val firstNameFieldState = _lastNameFieldState.asStateFlow()
+
     // State flows for email, password, terms, and UI components.
     protected val _emailFieldState = MutableStateFlow(TextFieldState())
     val emailFieldState = _emailFieldState.asStateFlow()
@@ -106,5 +115,10 @@ abstract class RegistrationScreenViewModel() : ViewModel() {
      * @param exception The exception representing the error.
      */
     protected abstract fun onError(exception: Exception)
+    abstract fun onFirstNameChanged(newFirstName : String)
+
+
+    abstract fun onOccupationChanged(newOccupation: String)
+    abstract fun onLastNameChanged(newLastName : String)
 
 }

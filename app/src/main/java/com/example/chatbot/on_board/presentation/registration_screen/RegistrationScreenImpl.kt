@@ -7,13 +7,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,9 +29,11 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.WorkOutline
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -57,6 +62,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -133,55 +139,100 @@ object RegistrationScreenImpl:RegistrationScreen() {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Top Image
+            // Background Image
+            Image(
+                painter = painterResource(id = R.drawable.black_background),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            )
             Headline()
 
-            // Middle Card
-            Card(
+            // Partea de Register
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    NormalTextComponent(value = stringResource(id = R.string.registration))
-                    HeadingTextComponent(value = stringResource(id = R.string.create_account))
+                    .fillMaxSize()
+                    .padding(16.dp)
 
-                    // Email Text Field
-                    EmailTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        state = viewModel.emailFieldState,
-                        onValueChanged = viewModel::onEmailChanged
-                    )
+            )
+            {
+                // Middle Card
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(), // Seteaza inaltimea pentru a se adapta continutului
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
 
-                    // Password Text Field
-                    PasswordTextField(
+                ){
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        state = viewModel.passwordFieldState,
-                        onValueChanged = viewModel::onPasswordChanged
-                    )
+                            .padding(16.dp)
 
-                    // Register Button
-                    RegisterButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        onClick = { /* Handle button click */ }
-                    )
+                    ) {
+                        // Email Text Field
+                        EmailTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            state = viewModel.emailFieldState,
+                            onValueChanged = viewModel::onEmailChanged
+                        )
+
+                        // Password Text Field
+                        PasswordTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            state = viewModel.passwordFieldState,
+                            onValueChanged = viewModel::onPasswordChanged
+                        )
+
+                        // First Name and Last Name Text Fields
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            FirstNameTextField(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 8.dp),
+                                state = viewModel.firstNameFieldState,
+                                onValueChanged = viewModel::onFirstNameChanged
+                            )
+
+                            LastNameTextField(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp),
+                                state = viewModel.lastNameFieldState,
+                                onValueChanged = viewModel::onLastNameChanged
+                            )
+                        }
+
+                        // Occupation Text Field
+                        OccupationTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            state = viewModel.occupationFieldState,
+                            onValueChanged = viewModel::onOccupationChanged
+                        )
+
+                        // Register Button
+                        RegisterButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
+                            onClick = { /* Handle button click */ }
+                        )
+                    }
                 }
             }
-
-
         }
     }
 
+    // ...
 
     @Composable
     override fun Headline() {
@@ -190,6 +241,23 @@ object RegistrationScreenImpl:RegistrationScreen() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Text(
+                text = stringResource(id = R.string.registration),
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            )
+            Text(
+                text = stringResource(id = R.string.create_account),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.White
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Image(
                 painter = painterResource(id = R.drawable.registrationscreen),
                 contentDescription = null,
@@ -197,6 +265,7 @@ object RegistrationScreenImpl:RegistrationScreen() {
             )
         }
     }
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun EmailTextField(
@@ -315,6 +384,154 @@ object RegistrationScreenImpl:RegistrationScreen() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    override fun FirstNameTextField(
+        modifier: Modifier,
+        state: StateFlow<TextFieldState>,
+        onValueChanged: (String) -> Unit
+    ) {
+        val currentState by state.collectAsState()
+
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            OutlinedTextField(
+                textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+                value = currentState.content,
+                onValueChange = onValueChanged,
+                modifier = Modifier.fillMaxWidth(),
+                isError = currentState.state.isError(),
+                enabled = !currentState.state.isLoading(),
+                label = { Text("First Name") },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = colorResource(id = R.color.blue),
+                    unfocusedBorderColor = colorResource(id = R.color.blue)
+                ),
+                leadingIcon = { Icon(imageVector = Icons.Filled.Person, contentDescription = null) },
+                trailingIcon = {
+                    AnimatedVisibility(currentState.state.isCompleted()) {
+                        Icon(
+                            Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    AnimatedVisibility(currentState.state.isError()) {
+                        Icon(Icons.Filled.Warning, contentDescription = null)
+                    }
+                }
+            )
+            AnimatedVisibility(currentState.errorCode != null) {
+                currentState.errorCode?.let {
+                    Text(stringResource(it), color = MaterialTheme.colorScheme.error)
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    override fun LastNameTextField(
+        modifier: Modifier,
+        state: StateFlow<TextFieldState>,
+        onValueChanged: (String) -> Unit
+    ) {
+        val currentState by state.collectAsState()
+
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            OutlinedTextField(
+                textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+                value = currentState.content,
+                onValueChange = onValueChanged,
+                modifier = Modifier.fillMaxWidth(),
+                isError = currentState.state.isError(),
+                enabled = !currentState.state.isLoading(),
+                label = { Text("Last Name") },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = colorResource(id = R.color.blue),
+                    unfocusedBorderColor = colorResource(id = R.color.blue)
+                ),
+                leadingIcon = { Icon(imageVector = Icons.Filled.Person, contentDescription = null) },
+                trailingIcon = {
+                    AnimatedVisibility(currentState.state.isCompleted()) {
+                        Icon(
+                            Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    AnimatedVisibility(currentState.state.isError()) {
+                        Icon(Icons.Filled.Warning, contentDescription = null)
+                    }
+                }
+            )
+            AnimatedVisibility(currentState.errorCode != null) {
+                currentState.errorCode?.let {
+                    Text(stringResource(it), color = MaterialTheme.colorScheme.error)
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    override fun OccupationTextField(
+        modifier: Modifier,
+        state: StateFlow<TextFieldState>,
+        onValueChanged: (String) -> Unit
+    ) {
+        val currentState by state.collectAsState()
+
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            OutlinedTextField(
+                textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+                value = currentState.content,
+                onValueChange = onValueChanged,
+                modifier = Modifier.fillMaxWidth(),
+                isError = currentState.state.isError(),
+                enabled = !currentState.state.isLoading(),
+                label = { Text("Occupation") },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = colorResource(id = R.color.blue),
+                    unfocusedBorderColor = colorResource(id = R.color.blue)
+                ),
+                leadingIcon = { Icon(imageVector = Icons.Filled.WorkOutline, contentDescription = null) },
+                trailingIcon = {
+                    AnimatedVisibility(currentState.state.isCompleted()) {
+                        Icon(
+                            Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    AnimatedVisibility(currentState.state.isError()) {
+                        Icon(Icons.Filled.Warning, contentDescription = null)
+                    }
+                }
+            )
+            AnimatedVisibility(currentState.errorCode != null) {
+                currentState.errorCode?.let {
+                    Text(stringResource(it), color = MaterialTheme.colorScheme.error)
+                }
+            }
+        }
+    }
+
+
+
+
+
     @Composable
     override fun TermsOfUseCheckBox(
         modifier: Modifier,
@@ -401,6 +618,7 @@ object RegistrationScreenImpl:RegistrationScreen() {
             modifier = Modifier.padding(16.dp)
         )
     }
+
     @Composable
     override fun RegisterButton(modifier: Modifier, onClick: () -> Unit) {
         Column(
@@ -424,4 +642,13 @@ object RegistrationScreenImpl:RegistrationScreen() {
             }
         }
     }
+
+
 }
+
+
+
+
+
+
+
