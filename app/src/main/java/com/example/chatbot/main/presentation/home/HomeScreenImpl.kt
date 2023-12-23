@@ -1,8 +1,6 @@
 package com.example.chatbot.main.presentation.home
 
-import android.adservices.topics.Topic
 import android.util.Log
-import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -56,7 +54,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,8 +76,6 @@ import com.example.chatbot.on_board.presentation.on_board_screen.OnBoardScreenIm
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import topicColorPairs
 import java.text.SimpleDateFormat
 import java.util.Random
 import kotlin.streams.toList
@@ -105,6 +100,11 @@ object HomeScreenImpl : HomeScreen() {
         // Scaffold is a Material Design container for the screen layout.
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            floatingActionButton = {
+                Button(onClick = { showDialog = true }) {
+                    Text("Create new Quiz")
+                }
+            },
             containerColor = MaterialTheme.colorScheme.background
         ) {
             // LazyColumn is a vertically scrolling list of composable items.
@@ -143,19 +143,21 @@ object HomeScreenImpl : HomeScreen() {
                         onClick = {}  // Placeholder click handler for session item
                     )
                 }
-                item {
-                    Button(onClick = { showDialog = true }) {
-                        Text("Create new Quiz")
-                    }
-                }
+
+
+
             }
         }
         if (showDialog) {
             NewSessionDialog(
                 onDismiss = { showDialog = false },
                 topics = topics,
-                onSubmit = { list, dificulty, questionCount ->
-                    Log.d("Test" , "Received Topics = ${list.map { it.label }.toString()}")
+                onTopicSelected = homeScreenViewModel::onTopicSelected,
+                selectedTopics = homeScreenViewModel.selectedTopics,
+                onQuestionCountChanged = homeScreenViewModel::onQuestionCountChanged,
+                selectedQuestionCount = homeScreenViewModel.questionCount,
+                onSubmit = {
+
                 })
         }
 
@@ -574,18 +576,23 @@ object HomeScreenImpl : HomeScreen() {
     override fun NewSessionDialog(
         onDismiss: () -> Unit,
         topics: List<TopicMetadata>,
-        onSubmit: (List<TopicMetadata>, difficultyLevel: Int, numberOfQuestions: Int) -> Unit
+        onTopicSelected:(TopicMetadata)->Unit,
+        selectedTopics:StateFlow<List<TopicMetadata>>,
+        selectedQuestionCount : StateFlow<Int>,
+        onQuestionCountChanged:(Int)->Unit,
+        onSubmit: () -> Unit
     ) {
 
-        val selectedTopics = remember { mutableStateListOf<TopicMetadata>() }
-        var numberOfQuestions by remember { mutableStateOf(10) }
+        val selected by selectedTopics.collectAsState()
+        val questionCount by selectedQuestionCount.collectAsState()
         Dialog(
             onDismissRequest = onDismiss,
             properties = DialogProperties(dismissOnClickOutside = false, dismissOnBackPress = false)
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth().fillMaxHeight(0.8f)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f)
                     .background(
                         MaterialTheme.colorScheme.surfaceBright,
                         RoundedCornerShape(10.dp)
@@ -629,28 +636,19 @@ object HomeScreenImpl : HomeScreen() {
                         }
                     }
                     LazyVerticalGrid(
-                        columns = GridCells.Adaptive(100.dp),
+                        columns = GridCells.Fixed(3),
                         verticalArrangement = Arrangement.spacedBy(2.dp),
                         horizontalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         items(topics, key = { it.uid }) {
                             TopicCard(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.size(100.dp),
                                 topicMetadata = it,
                                 onClick = {
 
-                                    if (selectedTopics.size < 5) {
-                                        if (it !in selectedTopics) {
-                                            selectedTopics += it
-                                        }
-                                        Log.d(
-                                            "Test",
-                                            "Final size after addition = ${selectedTopics.size}"
-                                        )
-                                    } else selectedTopics -= it
-                                    Log.d("Test", selectedTopics.map { it.label }.toString())
+                                    onTopicSelected(it)
                                 },
-                                isInside = it in selectedTopics
+                                isInside = it in selected
                             )
                         }
                     }
@@ -673,23 +671,23 @@ object HomeScreenImpl : HomeScreen() {
                             horizontalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             val button1Color by animateColorAsState(
-                                targetValue = if (numberOfQuestions == 5) MaterialTheme.colorScheme.secondary.copy(
+                                targetValue = if (questionCount == 5) MaterialTheme.colorScheme.secondary.copy(
                                     0.5f
                                 ) else MaterialTheme.colorScheme.surface
                             )
                             val button2Color by animateColorAsState(
-                                targetValue = if (numberOfQuestions == 10) MaterialTheme.colorScheme.secondary.copy(
+                                targetValue = if (questionCount == 10) MaterialTheme.colorScheme.secondary.copy(
                                     0.5f
                                 ) else MaterialTheme.colorScheme.surface
                             )
                             val button3Color by animateColorAsState(
-                                targetValue = if (numberOfQuestions == 15) MaterialTheme.colorScheme.secondary.copy(
+                                targetValue = if (questionCount == 15) MaterialTheme.colorScheme.secondary.copy(
                                     0.5f
                                 ) else MaterialTheme.colorScheme.surface
                             )
 
                             Button(
-                                onClick = { numberOfQuestions = 5 },
+                                onClick = { onQuestionCountChanged(5) },
                                 modifier = Modifier.weight(1f, true),
                                 shape = RoundedCornerShape(2.dp),
                                 colors = ButtonDefaults.buttonColors(button1Color)
@@ -700,12 +698,12 @@ object HomeScreenImpl : HomeScreen() {
                                         Alignment.CenterVertically
                                     ), horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "Short Quiz", fontSize = 10.sp)
+                                    Text(text = "Short", fontSize = 10.sp)
                                     Text(text = "5 Questions", fontSize = 8.sp)
                                 }
                             }
                             Button(
-                                onClick = { numberOfQuestions = 10 },
+                                onClick = {onQuestionCountChanged(10) },
                                 modifier = Modifier.weight(1f, true),
                                 shape = RoundedCornerShape(2.dp),
                                 colors = ButtonDefaults.buttonColors(button2Color)
@@ -716,12 +714,12 @@ object HomeScreenImpl : HomeScreen() {
                                         Alignment.CenterVertically
                                     ), horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "Normal Quiz", fontSize = 8.sp)
+                                    Text(text = "Normal", fontSize = 8.sp)
                                     Text(text = "10 Questions", fontSize = 8.sp)
                                 }
                             }
                             Button(
-                                onClick = { numberOfQuestions = 15 },
+                                onClick = { onQuestionCountChanged(15) },
                                 modifier = Modifier.weight(1f, true),
                                 shape = RoundedCornerShape(2.dp),
                                 colors = ButtonDefaults.buttonColors(button3Color)
@@ -732,14 +730,14 @@ object HomeScreenImpl : HomeScreen() {
                                         Alignment.CenterVertically
                                     ), horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "Long Quiz", fontSize = 10.sp)
+                                    Text(text = "Long", fontSize = 10.sp)
                                     Text(text = "15 Questions", fontSize = 8.sp)
                                 }
                             }
                         }
                     }
                     Button(
-                        onClick = { onSubmit(selectedTopics, 0, numberOfQuestions)
+                        onClick = { onSubmit()
                                     onDismiss()
                                   },
                         modifier = Modifier.fillMaxWidth(),
@@ -760,16 +758,16 @@ object HomeScreenImpl : HomeScreen() {
         onClick: (TopicMetadata) -> Unit,
         isInside: Boolean
     ) {
-        var isInsideSwitch by remember { mutableStateOf(isInside) }
+        var triggerColorChange by remember { mutableStateOf(isInside) }
         val defaultGradient =
             Pair(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surface)
-        val targetGradient = topicColorPairs[topicMetadata.uid % topicColorPairs.size]
+        val targetGradient = Pair(MaterialTheme.colorScheme.primary , MaterialTheme.colorScheme.secondary)
         val color1Animation by animateColorAsState(
-            targetValue = if (isInsideSwitch) targetGradient.first else defaultGradient.first,
+            targetValue = if (triggerColorChange && isInside) targetGradient.first else defaultGradient.first,
             label = ""
         )
         val color2Animation by animateColorAsState(
-            targetValue = if (isInsideSwitch) targetGradient.second else defaultGradient.second,
+            targetValue = if (triggerColorChange && isInside) targetGradient.second else defaultGradient.second,
             label = ""
         )
         Log.d("Test", "${topicMetadata.label} IsInside = $isInside")
@@ -788,7 +786,8 @@ object HomeScreenImpl : HomeScreen() {
 
                 )
                 .clickable {
-                    isInsideSwitch = !isInsideSwitch
+                    if(!isInside) triggerColorChange = true
+                   // isInsideSwitch = !isInsideSwitch
                     onClick(topicMetadata)
 
                 }
@@ -813,7 +812,7 @@ object HomeScreenImpl : HomeScreen() {
                             contentDescription = null
                         )
                     }
-                    Text(text = topicMetadata.label ,  fontSize = 12.sp ,color = MaterialTheme.colorScheme.onBackground.copy(0.75f) , maxLines = 2 , overflow = TextOverflow.Ellipsis)
+                    Text(text = topicMetadata.label ,  fontSize = 12.sp ,color = MaterialTheme.colorScheme.onBackground.copy(0.75f) , maxLines = 4 , overflow = TextOverflow.Ellipsis)
                 }
                 val keyWorkds = topicMetadata.keyWords.split("/").filter { it.isNotBlank() }
                 val content = buildString {

@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import com.example.chatbot.common.databases.user_database.User
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Abstract class representing a common interface for the home screen in a Jetpack Compose application.
@@ -64,8 +65,12 @@ abstract class HomeScreen : com.example.chatbot.common.ui.util.Destination("Home
     @Composable
     abstract fun NewSessionDialog(
         onDismiss: () -> Unit,
-        topics:List<TopicMetadata>,
-        onSubmit: (List<TopicMetadata>, difficultyLevel: Int, numberOfQuestions: Int) -> Unit
+        topics: List<TopicMetadata>,
+        onTopicSelected:(TopicMetadata)->Unit,
+        selectedTopics: StateFlow<List<TopicMetadata>>,
+        selectedQuestionCount : StateFlow<Int>,
+        onQuestionCountChanged:(Int)->Unit,
+        onSubmit: () -> Unit
     )
 }
 

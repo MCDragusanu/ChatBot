@@ -1,5 +1,6 @@
 package com.example.chatbot.main.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
@@ -31,6 +32,12 @@ class HomeScreenViewModel:ViewModel() {
     // MutableStateFlow to represent the list of recent sessions.
     private val _recentSessions = MutableStateFlow(provideTestSessions())
     val recentSessions = _recentSessions.asStateFlow()
+
+    private val _selectedTopics = MutableStateFlow<List<TopicMetadata>>(emptyList())
+    val selectedTopics = _selectedTopics.asStateFlow()
+
+    private val _questionCount = MutableStateFlow<Int>(10)
+    val questionCount = _questionCount.asStateFlow()
 
     // Function to set the MainModule instance.
     fun setModule(newModule: MainModule) {
@@ -234,6 +241,18 @@ class HomeScreenViewModel:ViewModel() {
         )
     }
 
+    fun onTopicSelected(topicMetadata: TopicMetadata) {
+        _selectedTopics.update { current ->
+            if (topicMetadata !in current) {
+                if (current.size < 5) current + topicMetadata
+                else current
+            } else current - topicMetadata
+        }
+        Log.d("Test" , "Selected topics = ${_selectedTopics.value.map { it.label.split(" ").first() }}" )
+    }
+   fun onQuestionCountChanged(newCount : Int){
+       _questionCount.update { newCount }
+   }
     // Function to get topic labels based on a string containing topic UIDs.
     fun getTopicsLabel(s: String): List<String> {
         // Split the input string into a list of topic UIDs and filter out blank entries.
