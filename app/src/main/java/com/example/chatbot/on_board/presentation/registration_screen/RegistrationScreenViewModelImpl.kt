@@ -8,6 +8,7 @@ import com.example.chatbot.common.ui.util.UIState
 import com.example.chatbot.on_board.data.auth.AuthError
 import com.example.chatbot.on_board.domain.EmailValidator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,6 +26,16 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
         this._termsIsChecked.update { boolean }
     }
 
+    override fun onFirstNameChanged(newFirstName: String) {
+        this._lastNameFieldState.update { it.copy(content = newFirstName) }
+    }
+    override fun onLastNameChanged(newLastName: String) {
+        this._lastNameFieldState.update { it.copy(content = newLastName) }
+    }
+
+    override fun onOccupationChanged(newOccupation: String) {
+        this._occupationFieldState.update { it.copy(content = newOccupation) }
+    }
     override fun onRegister(onCompletedRegistration: (String) -> Unit) {
         //resetting state for password field
         _passwordFieldState.update { it.copy(errorCode = null, state = UIState.Enabled) }
@@ -59,6 +70,7 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
         }
 
     }
+
 
     override fun emitSnackbar(snackbarEvent: SnackbarEvent) {
         viewModelScope.launch {
@@ -151,3 +163,12 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
         emitSnackbar(snackbar)
     }
 }
+
+
+
+
+
+
+
+
+
