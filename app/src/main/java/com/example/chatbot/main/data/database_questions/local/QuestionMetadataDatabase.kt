@@ -5,10 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
-import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 
-@Database(entities = [QuestionRow::class , QuestionMetadata::class , TopicMetadata::class] , version = 1)
+@Database(entities = [Question::class , QuestionMetadata::class , TopicMetadata::class] , version = 2)
 abstract class QuestionMetadataDatabase:RoomDatabase() {
 
     abstract val dao: QuestionMetadataDao

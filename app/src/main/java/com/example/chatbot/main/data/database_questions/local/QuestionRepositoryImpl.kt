@@ -2,7 +2,7 @@ package com.example.chatbot.main.data.database_questions.local
 
 import android.util.Log
 import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
-import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -12,7 +12,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDao):QuestionRepository {
-    override suspend fun addQuestionRow(question: QuestionRow) {
+    override suspend fun addQuestionRow(question: Question) {
         if (!questionMetadataDao.questionAlreadyExists(question)) {
             questionMetadataDao.addQuestion(metadata = question)
         } else throw Exception("Primary key collision for question with pk = ${question.uid}")
@@ -25,11 +25,11 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
         } else throw Exception("Primary key collision for questionMetadata with pk = ${questionMetadata.questionRowUid}")
     }
 
-    override suspend fun removeQuestionMetadata(metadata: QuestionRow){
+    override suspend fun removeQuestionMetadata(metadata: Question){
         questionMetadataDao.removeQuestion(metadata)
     }
 
-    override suspend fun updateQuestionMetadata(metadata: QuestionRow) {
+    override suspend fun updateQuestionMetadata(metadata: Question) {
         questionMetadataDao.updateQuestion(metadata)
     }
 
@@ -59,7 +59,10 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
             }
             job.join()
             val result = array.awaitAll()
-            Log.d("Test", result.toString())
+            result.onEach {
+
+                Log.d("Test", it.toString())
+            }
             return result.toTypedArray()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -86,7 +89,7 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
         return questionMetadataDao.getAllTopics()
     }
 
-    override suspend fun getQuestionByUid(questionUid: Int): QuestionRow? {
+    override suspend fun getQuestionByUid(questionUid: Int): Question? {
         return questionMetadataDao.getQuestionByUid(questionUid)
     }
 }

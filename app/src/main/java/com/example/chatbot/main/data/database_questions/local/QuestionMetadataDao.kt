@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
-import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 
 /**
@@ -19,31 +19,31 @@ interface QuestionMetadataDao {
      * Adds a new question to the database.
      */
     @Insert
-    suspend fun addQuestion(metadata: QuestionRow)
+    suspend fun addQuestion(metadata: Question)
 
     /**
      * Removes a question from the database.
      */
     @Delete
-    suspend fun removeQuestion(metadata: QuestionRow)
+    suspend fun removeQuestion(metadata: Question)
 
     /**
      * Updates an existing question in the database.
      */
     @Update
-    suspend fun updateQuestion(metadata: QuestionRow)
+    suspend fun updateQuestion(metadata: Question)
 
     /**
      * Retrieves all questions for a specific topic from the database.
      */
     @Query("SELECT * from question_table where topicUid = :topicUid")
-    suspend fun getAllQuestionsForTopic(topicUid: Int): List<QuestionRow>
+    suspend fun getAllQuestionsForTopic(topicUid: Int): List<Question>
 
     /**
      * Retrieves a question by its unique identifier (UID) from the database.
      */
     @Query("SELECT * from question_table where questionUid = :questionUid")
-    suspend fun getQuestionByUid(questionUid: Int): QuestionRow?
+    suspend fun getQuestionByUid(questionUid: Int): Question?
 
     /**
      * Adds metadata for a question to the database.
@@ -126,7 +126,7 @@ interface QuestionMetadataDao {
 
     @Query("SELECT COUNT(uid) from question_table where uid = :uid")
     suspend fun getQuestionCount(uid: Int): Int
-    suspend fun questionAlreadyExists(question: QuestionRow): Boolean {
+    suspend fun questionAlreadyExists(question: Question): Boolean {
         val count = getQuestionCount(question.uid)
         return count != 0
     }

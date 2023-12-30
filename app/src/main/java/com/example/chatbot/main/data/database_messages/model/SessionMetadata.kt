@@ -24,6 +24,7 @@ class SessionMetadata(
     val userUid: String,
     val timestamp: Long,
     val topicsUids: String,
+    val questionUids:String,
     val status:Int
 ){
     companion object{

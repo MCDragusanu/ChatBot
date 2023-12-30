@@ -1,6 +1,6 @@
 package com.example.chatbot.main.data.database_questions.cloud
 
-import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 
 /**
@@ -24,7 +24,7 @@ interface CloudDataSource {
      * @param source The type of the database where the questions will be added (Project or Production).
      * @return A Result object indicating the success or failure of the operation.
      */
-    suspend fun addQuestions(questions: List<QuestionRow>, source: DataSource): Result<Unit>
+    suspend fun addQuestions(questions: List<Question>, source: DataSource): Result<Unit>
 
     /**
      * Retrieves a topic from the cloud data source based on its unique identifier (UID).
@@ -43,12 +43,12 @@ interface CloudDataSource {
      * @return A Result object containing the retrieved list of QuestionMetadata or an error.
      */
 
-    suspend fun getDatabaseContent(source: DataSource):Result<Pair<List<TopicMetadata >, List<QuestionRow>>>
+    suspend fun getDatabaseContent(source: DataSource):Result<Pair<List<TopicMetadata >, List<Question>>>
 
     suspend fun getTopics(source: DataSource):Result<List<TopicMetadata>>
 
-    suspend fun getQuestions(source: DataSource):Result<List<QuestionRow>>
-    suspend fun getQuestionsForTopic(topic: TopicMetadata, source: DataSource): Result<List<QuestionRow>>
+    suspend fun getQuestions(source: DataSource):Result<List<Question>>
+    suspend fun getQuestionsForTopic(topic: TopicMetadata, source: DataSource): Result<List<Question>>
 
     /**
      * Sealed class representing different database types (Project and Production).

@@ -3,16 +3,22 @@ package com.example.chatbot.main.presentation.home
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +41,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
@@ -59,6 +67,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -101,65 +110,68 @@ object HomeScreenImpl : HomeScreen() {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
-                Button(onClick = { showDialog = true }) {
-                    Text("Create new Quiz")
+                AnimatedVisibility(visible = !showDialog) {
+                    Button(onClick = { showDialog = true }) {
+                        Text("Create new Quiz!")
+                    }
                 }
             },
             containerColor = MaterialTheme.colorScheme.background
         ) {
             // LazyColumn is a vertically scrolling list of composable items.
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)  // Apply padding to the LazyColumn
-                    .padding(16.dp),  // Additional padding
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(72.dp)  // Spacing between items
-            ) {
-                // Item 1: Headline section displaying user information and action buttons.
-                item {
-                    Headline(
-                        currentUser = homeScreenViewModel.getCurrentUser(),
-                        onAccountClicked = {},  // Placeholder click handler for account action
-                        onSettingsClicked = {}  // Placeholder click handler for settings action
-                    )
-                }
+            Crossfade(targetState = showDialog, label = "") { state ->
+                if (!state) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it)  // Apply padding to the LazyColumn
+                            .padding(16.dp),  // Additional padding
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.spacedBy(72.dp)  // Spacing between items
+                    ) {
+                        // Item 1: Headline section displaying user information and action buttons.
+                        item {
+                            Headline(
+                                currentUser = homeScreenViewModel.getCurrentUser(),
+                                onAccountClicked = {},  // Placeholder click handler for account action
+                                onSettingsClicked = {}  // Placeholder click handler for settings action
+                            )
+                        }
 
-                // Item 2: CourseProgression section displaying the user's course progress.
-                item {
-                    CourseProgression(
-                        topicsRowState = topicsRowState,
-                        topics = topics,
-                        currentTopic = currentTopic,
-                        status = homeScreenViewModel::getQuestionsMetadataForTopic
-                    )
-                }
+                        // Item 2: CourseProgression section displaying the user's course progress.
+                        item {
+                            CourseProgression(
+                                topicsRowState = topicsRowState,
+                                topics = topics,
+                                currentTopic = currentTopic,
+                                status = homeScreenViewModel::getQuestionsMetadataForTopic
+                            )
+                        }
 
-                // Item 3: RecentSessions section displaying the user's recent quiz sessions.
-                item {
-                    RecentSessions(
-                        sessions = recentSessions,
-                        getTopicsLabels = homeScreenViewModel::getTopicsLabel,
-                        onClick = {}  // Placeholder click handler for session item
-                    )
-                }
+                        // Item 3: RecentSessions section displaying the user's recent quiz sessions.
+                        item {
+                            RecentSessions(
+                                sessions = recentSessions,
+                                getTopicsLabels = homeScreenViewModel::getTopicsLabel,
+                                onClick = {}  // Placeholder click handler for session item
+                            )
+                        }
 
 
-
+                    }
+                } else NewSessionDialog(
+                    onDismiss = { showDialog = false },
+                    topics = topics,
+                    onTopicSelected = homeScreenViewModel::onTopicSelected,
+                    selectedTopics = homeScreenViewModel.selectedTopics,
+                    onQuestionCountChanged = homeScreenViewModel::onQuestionCountChanged,
+                    selectedQuestionCount = homeScreenViewModel.questionCount,
+                    onSubmit = {
+                         homeScreenViewModel.createNewSession(onStartNewSession)
+                    })
             }
         }
-        if (showDialog) {
-            NewSessionDialog(
-                onDismiss = { showDialog = false },
-                topics = topics,
-                onTopicSelected = homeScreenViewModel::onTopicSelected,
-                selectedTopics = homeScreenViewModel.selectedTopics,
-                onQuestionCountChanged = homeScreenViewModel::onQuestionCountChanged,
-                selectedQuestionCount = homeScreenViewModel.questionCount,
-                onSubmit = {
 
-                })
-        }
 
         // LaunchedEffect is used to observe changes in the visible item index and update the currentTopic.
         LaunchedEffect(key1 = remember { derivedStateOf { topicsRowState.firstVisibleItemIndex } }) {
@@ -391,22 +403,27 @@ object HomeScreenImpl : HomeScreen() {
             )
 
             // AnimatedContent for smoothly transitioning between pages.
-            AnimatedContent(targetState = currentPage, label = "") { currentPage ->
-                // Column to arrange session cards vertically with spacing.
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    // Loop through sessions in the current window and create SessionCard for each.
-                    for (index in numberOfPages * currentPage until numberOfPages * currentPage + window.last - 2) {
-                        // Retrieve the session metadata at the current index.
-                        sessions[index].also {
-                            // Display a SessionCard for the current session.
-                            SessionCard(
-                                session = it,
-                                getTopicsLabels = getTopicsLabels,
-                                onClick = onClick
-                            )
+            if(sessions.isNotEmpty()){
+                AnimatedContent(targetState = currentPage, label = "") { currentPage ->
+                    // Column to arrange session cards vertically with spacing.
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        // Loop through sessions in the current window and create SessionCard for each.
+                        for (index in numberOfPages * currentPage until numberOfPages * currentPage + window.last -3) {
+                            // Retrieve the session metadata at the current index.
+                            sessions[index].also {
+                                // Display a SessionCard for the current session.
+                                SessionCard(
+                                    session = it,
+                                    getTopicsLabels = getTopicsLabels,
+                                    onClick = onClick
+                                )
+                            }
                         }
                     }
                 }
+            }
+            else {
+
             }
         }
     }
@@ -576,177 +593,251 @@ object HomeScreenImpl : HomeScreen() {
     override fun NewSessionDialog(
         onDismiss: () -> Unit,
         topics: List<TopicMetadata>,
-        onTopicSelected:(TopicMetadata)->Unit,
-        selectedTopics:StateFlow<List<TopicMetadata>>,
-        selectedQuestionCount : StateFlow<Int>,
-        onQuestionCountChanged:(Int)->Unit,
+        onTopicSelected: (TopicMetadata) -> Unit,
+        selectedTopics: StateFlow<List<TopicMetadata>>,
+        selectedQuestionCount: StateFlow<Int>,
+        onQuestionCountChanged: (Int) -> Unit,
         onSubmit: () -> Unit
     ) {
 
         val selected by selectedTopics.collectAsState()
         val questionCount by selectedQuestionCount.collectAsState()
-        Dialog(
-            onDismissRequest = onDismiss,
-            properties = DialogProperties(dismissOnClickOutside = false, dismissOnBackPress = false)
+
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+                .background(
+                    MaterialTheme.colorScheme.background,
+
+                    ),
+            verticalArrangement = Arrangement.spacedBy(24.dp , Alignment.Bottom), horizontalAlignment = Alignment.Start
         ) {
-            Box(
+
+            item { QuizCreatorHeadline(onDismiss) }
+
+            item {
+                QuizSelectionTopics(
+                    topics = topics,
+                    onTopicSelected = onTopicSelected,
+                    selected = selected
+                )
+            }
+            item {
+                QuizLengthSection(
+                    onQuestionCountChanged = onQuestionCountChanged,
+                    questionCount = questionCount
+                )
+            }
+
+            item {
+                   SubmitQuizButton {
+                       onSubmit()
+                       onDismiss()
+                   }
+            }
+        }
+    }
+    @Composable
+    fun SubmitQuizButton(onClick: () -> Unit){
+        val interactionSource = remember { MutableInteractionSource()}
+        val isPressed by interactionSource.collectIsPressedAsState()
+
+        val scale by animateFloatAsState(
+            targetValue = if (isPressed) 1.0f else 0.95f ,
+            finishedListener = {  }, label = ""
+        )
+        val containerColor by animateColorAsState(
+            targetValue = when (isPressed) {
+                true -> MaterialTheme.colorScheme.primary
+                false -> MaterialTheme.colorScheme.surfaceContainer
+            }, label = ""
+        )
+        val contentColor by animateColorAsState(
+            targetValue = when (isPressed) {
+                true -> MaterialTheme.colorScheme.onPrimaryContainer
+                false -> MaterialTheme.colorScheme.onSurface
+            }, label = ""
+        )
+        Button(
+            onClick = {onClick()},
+            modifier = Modifier
+                .scale(scale)
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(8.dp),
+            interactionSource = interactionSource,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = containerColor ,
+                contentColor = contentColor
+            )
+        ) {
+            Text(text = "Create New Quiz")
+            Icon(imageVector = Icons.Filled.Send, contentDescription = null)
+        }
+    }
+
+    @Composable
+    fun QuizSelectionTopics(topics: List<TopicMetadata>, onTopicSelected: (TopicMetadata) -> Unit, selected:List<TopicMetadata>){
+        val rowCount  = (topics.size+1) /2
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            userScrollEnabled = false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((rowCount * 110).dp + ((rowCount - 1) * 2).dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            items(topics, key = { it.uid }) {
+                TopicCard(
+                    modifier = Modifier,
+                    topicMetadata = it,
+                    onClick = {
+
+                        onTopicSelected(it)
+                    },
+                    isInside = it in selected
+                )
+            }
+        }
+    }
+    @Composable
+    fun QuizCreatorHeadline(onDismiss: () -> Unit){
+        Column(
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+
+                Icon(
+                    imageVector = Icons.Filled.ArrowBackIosNew,
+                    contentDescription = null,
+                    modifier = Modifier.clickable { onDismiss() }
+                )
+
+            Text(
+                text = "Create new Quiz",
+                style = Typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = "You can pick maximum 5 courses",
+                style = Typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
+            )
+        }
+    }
+
+    @OptIn(ExperimentalLayoutApi::class)
+    @Composable
+    fun QuizLengthSection(onQuestionCountChanged: (Int) -> Unit, questionCount: Int) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            Alignment.Start
+        ) {
+            Text(
+                text = "Quiz Length",
+                style = Typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = "Pick the duration of the quiz",
+                style = Typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
+            )
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.8f)
-                    .background(
-                        MaterialTheme.colorScheme.surfaceBright,
-                        RoundedCornerShape(10.dp)
-                    )
+                    .wrapContentHeight(),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(
-                            modifier = Modifier.wrapContentSize(),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                text = "Create new Quiz",
-                                style = Typography.headlineSmall,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                            Text(
-                                text = "You can pick maximum 5 courses",
-                                style = Typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
-                            )
-                        }
-                        IconButton(onClick = onDismiss) {
-                            Icon(
-                                imageVector = Icons.Filled.FullscreenExit,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        horizontalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        items(topics, key = { it.uid }) {
-                            TopicCard(
-                                modifier = Modifier.size(100.dp),
-                                topicMetadata = it,
-                                onClick = {
 
-                                    onTopicSelected(it)
-                                },
-                                isInside = it in selected
-                            )
-                        }
-                    }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        Alignment.Start
-                    ) {
-                        Text(
-                            text = "Quiz Length",
-                            style = Typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onBackground
+                QuizLengthButton(
+                    onSelected = onQuestionCountChanged,
+                    modifier = Modifier.weight(1f, true),
+                    questionCount = 5,
+                    isSelected = questionCount == 5,
+                    lengthType = "Short"
+                )
+                QuizLengthButton(
+                    onSelected = onQuestionCountChanged,
+                    modifier = Modifier.weight(1f, true),
+                    questionCount = 10,
+                    isSelected = questionCount == 10,
+                    lengthType = "Normal"
+                )
+                QuizLengthButton(
+                    onSelected = onQuestionCountChanged,
+                    modifier = Modifier.weight(1f, true),
+                    questionCount = 15,
+                    isSelected = questionCount == 15,
+                    lengthType = "Long"
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun QuizLengthButton(
+        onSelected: (Int) -> Unit,
+        modifier: Modifier,
+        questionCount: Int,
+        isSelected: Boolean,
+        lengthType: String
+    ) {
+        var triggerColorChange by remember { mutableStateOf(isSelected) }
+        val defaultGradient =
+            Pair(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surface)
+        val targetGradient =
+            Pair(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
+        val color1Animation by animateColorAsState(
+            targetValue = if (triggerColorChange && isSelected) targetGradient.first else defaultGradient.first,
+            label = ""
+        )
+        val color2Animation by animateColorAsState(
+            targetValue = if (triggerColorChange && isSelected) targetGradient.second else defaultGradient.second,
+            label = ""
+        )
+        Surface(
+            Modifier
+                .height(50.dp)
+                .wrapContentWidth(Alignment.Start)
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            color1Animation,
+                            color2Animation
                         )
-                        FlowRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            horizontalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            val button1Color by animateColorAsState(
-                                targetValue = if (questionCount == 5) MaterialTheme.colorScheme.secondary.copy(
-                                    0.5f
-                                ) else MaterialTheme.colorScheme.surface
-                            )
-                            val button2Color by animateColorAsState(
-                                targetValue = if (questionCount == 10) MaterialTheme.colorScheme.secondary.copy(
-                                    0.5f
-                                ) else MaterialTheme.colorScheme.surface
-                            )
-                            val button3Color by animateColorAsState(
-                                targetValue = if (questionCount == 15) MaterialTheme.colorScheme.secondary.copy(
-                                    0.5f
-                                ) else MaterialTheme.colorScheme.surface
-                            )
+                    ),
+                    shape = RoundedCornerShape(4.dp)
 
-                            Button(
-                                onClick = { onQuestionCountChanged(5) },
-                                modifier = Modifier.weight(1f, true),
-                                shape = RoundedCornerShape(2.dp),
-                                colors = ButtonDefaults.buttonColors(button1Color)
-                            ) {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(
-                                        4.dp,
-                                        Alignment.CenterVertically
-                                    ), horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(text = "Short", fontSize = 10.sp)
-                                    Text(text = "5 Questions", fontSize = 8.sp)
-                                }
-                            }
-                            Button(
-                                onClick = {onQuestionCountChanged(10) },
-                                modifier = Modifier.weight(1f, true),
-                                shape = RoundedCornerShape(2.dp),
-                                colors = ButtonDefaults.buttonColors(button2Color)
-                            ) {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(
-                                        4.dp,
-                                        Alignment.CenterVertically
-                                    ), horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(text = "Normal", fontSize = 8.sp)
-                                    Text(text = "10 Questions", fontSize = 8.sp)
-                                }
-                            }
-                            Button(
-                                onClick = { onQuestionCountChanged(15) },
-                                modifier = Modifier.weight(1f, true),
-                                shape = RoundedCornerShape(2.dp),
-                                colors = ButtonDefaults.buttonColors(button3Color)
-                            ) {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(
-                                        4.dp,
-                                        Alignment.CenterVertically
-                                    ), horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(text = "Long", fontSize = 10.sp)
-                                    Text(text = "15 Questions", fontSize = 8.sp)
-                                }
-                            }
-                        }
-                    }
-                    Button(
-                        onClick = { onSubmit()
-                                    onDismiss()
-                                  },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(2.dp),
-                    ) {
-                        Text(text = "Create New Quiz")
-                        Icon(imageVector = Icons.Filled.Send, contentDescription = null)
-                    }
+                )
+                .clickable {
+                    if (!isSelected) triggerColorChange = true
+                    // isInsideSwitch = !isInsideSwitch
+                    onSelected(questionCount)
+
                 }
+                .then(modifier),
+            shape = RoundedCornerShape(4.dp),
+            color = Color.Transparent,
+            shadowElevation = 0.dp,
+            tonalElevation = 0.dp
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = lengthType, style = Typography.labelMedium)
+                Text(text = "${questionCount} questions", fontSize = 8.sp)
             }
         }
     }
@@ -761,7 +852,8 @@ object HomeScreenImpl : HomeScreen() {
         var triggerColorChange by remember { mutableStateOf(isInside) }
         val defaultGradient =
             Pair(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surface)
-        val targetGradient = Pair(MaterialTheme.colorScheme.primary , MaterialTheme.colorScheme.secondary)
+        val targetGradient =
+            Pair(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
         val color1Animation by animateColorAsState(
             targetValue = if (triggerColorChange && isInside) targetGradient.first else defaultGradient.first,
             label = ""
@@ -786,8 +878,8 @@ object HomeScreenImpl : HomeScreen() {
 
                 )
                 .clickable {
-                    if(!isInside) triggerColorChange = true
-                   // isInsideSwitch = !isInsideSwitch
+                    if (!isInside) triggerColorChange = true
+                    // isInsideSwitch = !isInsideSwitch
                     onClick(topicMetadata)
 
                 }
@@ -812,12 +904,18 @@ object HomeScreenImpl : HomeScreen() {
                             contentDescription = null
                         )
                     }
-                    Text(text = topicMetadata.label ,  fontSize = 12.sp ,color = MaterialTheme.colorScheme.onBackground.copy(0.75f) , maxLines = 4 , overflow = TextOverflow.Ellipsis)
+                    Text(
+                        text = topicMetadata.label,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(0.75f),
+                        maxLines = 4,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
-                val keyWorkds = topicMetadata.keyWords.split("/").filter { it.isNotBlank() }
+                val keyWords = topicMetadata.keyWords.split("/").filter { it.isNotBlank() }
                 val content = buildString {
-                    keyWorkds.onEachIndexed { index, s ->
-                        if (index != keyWorkds.lastIndex) append(s + ",")
+                    keyWords.onEachIndexed { index, s ->
+                        if (index != keyWords.lastIndex) append(s + ",")
                         else append(s)
                     }
                 }
@@ -829,6 +927,5 @@ object HomeScreenImpl : HomeScreen() {
                 )
             }
         }
-
     }
 }

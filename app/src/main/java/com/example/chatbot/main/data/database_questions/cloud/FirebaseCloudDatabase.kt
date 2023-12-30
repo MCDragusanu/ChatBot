@@ -1,6 +1,6 @@
 package com.example.chatbot.main.data.database_questions.cloud
 
-import com.example.chatbot.main.data.database_questions.entity.QuestionRow
+import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Filter
@@ -37,7 +37,7 @@ class FirebaseCloudDatabase : CloudDataSource {
 
     // Add a list of questions to the cloud database
     override suspend fun addQuestions(
-        questions: List<QuestionRow>,
+        questions: List<Question>,
         source: CloudDataSource.DataSource
     ): Result<Unit> {
         return try {
@@ -95,10 +95,10 @@ class FirebaseCloudDatabase : CloudDataSource {
         }
     }
 
-    override suspend fun getDatabaseContent(source: CloudDataSource.DataSource): Result<Pair<List<TopicMetadata>, List<QuestionRow>>> {
+    override suspend fun getDatabaseContent(source: CloudDataSource.DataSource): Result<Pair<List<TopicMetadata>, List<Question>>> {
         return try {
             var topicsList = listOf<TopicMetadata>()
-            var questionList = listOf<QuestionRow>()
+            var questionList = listOf<Question>()
 
             val job = CoroutineScope(Dispatchers.IO).launch {
                 async {
@@ -115,7 +115,7 @@ class FirebaseCloudDatabase : CloudDataSource {
                     task.await()
 
                     questionList = task.result.documents.map {
-                        it.toObject<QuestionRow>()
+                        it.toObject<Question>()
                             ?: throw NullPointerException("Failed to retrieve topics")
                     }
                 }
@@ -151,14 +151,14 @@ class FirebaseCloudDatabase : CloudDataSource {
         }
     }
 
-    override suspend fun getQuestions(source: CloudDataSource.DataSource): Result<List<QuestionRow>> {
+    override suspend fun getQuestions(source: CloudDataSource.DataSource): Result<List<Question>> {
         return try {
             val job = Firebase.firestore.collection(source.questionCollection).get()
             job.await()
 
             if (job.isSuccessful) {
                 Result.success(job.result.documents.map {
-                    it.toObject<QuestionRow>()
+                    it.toObject<Question>()
                         ?: throw NullPointerException("Failed to convert topic document")
                 })
             } else throw job.exception
@@ -172,7 +172,7 @@ class FirebaseCloudDatabase : CloudDataSource {
     override suspend fun getQuestionsForTopic(
         topic: TopicMetadata,
         source: CloudDataSource.DataSource
-    ): Result<List<QuestionRow>> {
+    ): Result<List<Question>> {
         return try {
             val task = Firebase.firestore.collection(source.questionCollection)
                 .where(Filter.equalTo("topicUid", topic.uid)).get()

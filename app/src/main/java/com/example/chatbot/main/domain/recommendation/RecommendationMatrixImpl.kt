@@ -1,3 +1,5 @@
+import java.lang.Integer.min
+
 class RecommendationMatrixImpl(_buffer:Array<Array<Double>>): RecommendationMatrix(_buffer){
     override fun nerfCoefficient(topicIndex:Int , questionIndex:Int){
         _buffer[topicIndex][questionIndex]--
@@ -20,7 +22,8 @@ class RecommendationMatrixImpl(_buffer:Array<Array<Double>>): RecommendationMatr
     } // true if the value has been changed , false if is not inside
 
     override fun getRecommendedQuestions(topicIndex:Int , amount:Int):List<Int>{
-       return _buffer[topicIndex].sortedBy { -it }.subList(0 , amount).withIndex().map { it.index }
+        val row = _buffer[min(topicIndex , _buffer.size-1)]
+       return row.sortedBy { -it }.subList(0 , min(amount , row.size-1)).withIndex().map { it.index }
     }//return the uids of the questions
 
     override fun updateBufferWithThresholdValue(treshHold:Double){
