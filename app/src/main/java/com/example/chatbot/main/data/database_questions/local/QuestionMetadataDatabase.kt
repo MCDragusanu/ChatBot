@@ -8,7 +8,7 @@ import com.example.chatbot.main.data.database_questions.entity.QuestionMetadata
 import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 
-@Database(entities = [Question::class , QuestionMetadata::class , TopicMetadata::class] , version = 2)
+@Database(entities = [Question::class , QuestionMetadata::class , TopicMetadata::class] , version = 1)
 abstract class QuestionMetadataDatabase:RoomDatabase() {
 
     abstract val dao: QuestionMetadataDao

@@ -4,7 +4,7 @@ import com.example.chatbot.main.data.database_messages.dao.SessionMetadataDao
 import com.example.chatbot.main.data.database_messages.model.Instruction
 import com.example.chatbot.main.data.database_messages.model.Message
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
-import com.example.chatbot.main.data.database_messages.model.ThreadMetadata
+import com.example.chatbot.main.data.database_messages.model.QuizMetadata
 
 /**
  * Implementation of the ConversationRepository interface for handling conversation-related data.
@@ -29,7 +29,7 @@ class ConversationRepositoryImpl(private val conversationDao: SessionMetadataDao
      * @param sessionMetadataUid The UID of the session metadata.
      * @return A list of threads in the specified session.
      */
-    override suspend fun retrieveThreadsForSession(sessionMetadataUid: Long): List<ThreadMetadata> {
+    override suspend fun retrieveThreadsForSession(sessionMetadataUid: Long): List<QuizMetadata> {
         return conversationDao.getAllThreadsForSession(sessionMetadataUid)
     }
 
@@ -72,12 +72,12 @@ class ConversationRepositoryImpl(private val conversationDao: SessionMetadataDao
     /**
      * Adds thread metadata to the local database.
      *
-     * @param threadMetadata The thread metadata to be added.
+     * @param quizMetadata The thread metadata to be added.
      * @return Result<Unit> indicating success or failure.
      */
-    override suspend fun addThreadMetadata(threadMetadata: ThreadMetadata): Result<Unit> {
+    override suspend fun addThreadMetadata(quizMetadata: QuizMetadata): Result<Unit> {
         return try {
-            conversationDao.addThread(threadMetadata)
+            conversationDao.addThread(quizMetadata)
             Result.success(Unit)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -123,7 +123,7 @@ class ConversationRepositoryImpl(private val conversationDao: SessionMetadataDao
      * @param threadUid The UID of the thread.
      * @return The thread corresponding to the UID.
      */
-    override suspend fun retrieveThreadByUid(threadUid: Long): ThreadMetadata? {
+    override suspend fun retrieveThreadByUid(threadUid: Long): QuizMetadata? {
         return conversationDao.getThreadByUid(threadUid)
     }
 

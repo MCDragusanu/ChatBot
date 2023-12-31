@@ -3,7 +3,7 @@ package com.example.chatbot.main.data.database_messages.repository
 import com.example.chatbot.main.data.database_messages.model.Instruction
 import com.example.chatbot.main.data.database_messages.model.Message
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
-import com.example.chatbot.main.data.database_messages.model.ThreadMetadata
+import com.example.chatbot.main.data.database_messages.model.QuizMetadata
 
 /**
  * Repository interface for managing conversations in the local storage database.
@@ -25,7 +25,7 @@ interface ConversationRepository {
      * @param sessionMetadataUid Unique identifier for the session metadata.
      * @return List of thread metadata associated with the specified session.
      */
-    suspend fun retrieveThreadsForSession(sessionMetadataUid: Long): List<ThreadMetadata>
+    suspend fun retrieveThreadsForSession(sessionMetadataUid: Long): List<QuizMetadata>
 
     /**
      * Retrieves session metadata based on its unique identifier.
@@ -56,9 +56,9 @@ interface ConversationRepository {
     /**
      * Adds thread metadata to the local storage.
      *
-     * @param threadMetadata The thread metadata to be added.
+     * @param quizMetadata The thread metadata to be added.
      */
-    suspend fun addThreadMetadata(threadMetadata: ThreadMetadata):Result<Unit>
+    suspend fun addThreadMetadata(quizMetadata: QuizMetadata):Result<Unit>
 
     /**
      * Adds a new question to the local storage.
@@ -77,6 +77,6 @@ interface ConversationRepository {
      */
     suspend fun addSessionsMetadata(sessionMetadata: SessionMetadata): Result<Unit>
     
-    suspend fun retrieveThreadByUid(threadUid: Long): ThreadMetadata?
+    suspend fun retrieveThreadByUid(threadUid: Long): QuizMetadata?
      suspend fun retrieveSessionsByUserUid(uid: String):List<SessionMetadata>
 }

@@ -51,7 +51,7 @@ object RetrieveSessionImpl:RetrieveSession {
                     // Step 6: Create a ConversationThread object and add it to the list of threads
                     threads.add(
                         ConversationThread(
-                            threadMetadata = it,
+                            quizMetadata = it,
                             messages = messages.await(),
                             question = question.await()?:throw Exception("No Question found"),
                             instruction = instruction.await()

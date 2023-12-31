@@ -21,7 +21,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "message_table")
 class Message(
     @PrimaryKey val uid: Long,
-    val threadUid: String,
+    val threadUid: Long,
     val content: String,
     val sender: Int
 ) {

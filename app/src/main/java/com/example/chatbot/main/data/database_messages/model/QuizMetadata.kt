@@ -19,10 +19,16 @@ import androidx.room.PrimaryKey
  * @Entity(tableName = "threads_table")
  * Indicates that instances of this data class will be stored in a table named "threads_table" in the local database.
  */
-@Entity(tableName = "threads_table")
-data class ThreadMetadata(
+@Entity(tableName = "quiz_table")
+data class QuizMetadata(
     @PrimaryKey val uid: Long,
     val sessionUid: Long,
     val questionUid: Int,
-    val instructionUid: Long
-)
+    val instructionUid: Long,
+    val type:String
+){
+    companion object {
+        const val OPEN_ENDED = "OpenEnded"
+        const val MULTI_CHOICE = "MultiChoice"
+    }
+}

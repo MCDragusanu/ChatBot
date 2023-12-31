@@ -12,7 +12,7 @@ import com.example.chatbot.main.data.database_messages.model.SessionMetadata
  * Data Access Object (DAO) for managing session metadata in the local storage database.
  */
 @Dao
-interface SessionMetadataDao : ThreadMetadataDao {
+interface SessionMetadataDao : QuizMetadataDao {
 
     /**
      * Adds a new session metadata to the local storage.

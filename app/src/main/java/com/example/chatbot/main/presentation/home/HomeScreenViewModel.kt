@@ -1,13 +1,11 @@
 package com.example.chatbot.main.presentation.home
 
-import RecommendationMatrix
 import RecommendationMatrixImpl
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatbot.main.data.database_messages.model.Instruction
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
-import com.example.chatbot.main.data.database_messages.model.ThreadMetadata
+import com.example.chatbot.main.data.database_messages.model.QuizMetadata
 import com.example.chatbot.main.data.module.MainModule
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.example.chatbot.main.domain.instruction_factory.GPTResponseFormat
@@ -20,10 +18,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
-import java.util.Date
-import java.util.Random
-import kotlin.math.absoluteValue
 
 
 class HomeScreenViewModel:ViewModel() {
@@ -176,11 +170,12 @@ class HomeScreenViewModel:ViewModel() {
                         )
 
                     // Create thread metadata
-                    val thread = ThreadMetadata(
+                    val thread = QuizMetadata(
                         uid = threadUID,
                         sessionUid = sessionUid,
                         questionUid = it,
-                        instructionUid = instructionUID
+                        instructionUid = instructionUID,
+                        type = questionRow.questionType
                     )
 
                     // Add instruction and thread metadata to the conversation repository

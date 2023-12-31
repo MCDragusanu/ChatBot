@@ -22,8 +22,7 @@ import com.example.chatbot.main.domain.pre_defined_questions.topic8Questions
 import com.example.chatbot.main.domain.pre_defined_questions.topic9Questions
 import com.example.chatbot.main.domain.use_cases.SyncronizeQuestions
 import com.example.chatbot.main.domain.use_cases.SyncronizeTopics
-import com.example.chatbot.main.presentation.game_screen.GameController
-import com.example.chatbot.main.presentation.game_screen.GameScreen
+import com.example.chatbot.main.presentation.game_screen.state_manager.SessionStateManager
 import com.example.chatbot.main.presentation.home.HomeScreenImpl
 import com.example.chatbot.main.presentation.home.HomeScreenViewModel
 import com.example.chatbot.main.presentation.navigation.MainNavigation
@@ -40,7 +39,6 @@ class MainActivity : ComponentActivity() {
         )
 
         lifecycleScope.launch {
-
             SyncronizeTopics.execute(mainModule, this)
             SyncronizeQuestions.execute(mainModule, this)
         }
@@ -49,8 +47,7 @@ class MainActivity : ComponentActivity() {
            ChatBotTheme() {
                MainNavigation(
                    homeScreen = HomeScreenImpl,
-                   gameScreen = GameScreen(),
-                   gameController = viewModel<GameController>().apply { this.setModule(mainModule) },
+                   sessionStateManager = viewModel<SessionStateManager>().apply {  this.setModule(mainModule)},
                    homeScreenViewModel = viewModel<HomeScreenViewModel>().apply {
                        this.setModule(mainModule)
                    })

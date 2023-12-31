@@ -46,7 +46,7 @@ object RetrieveConversationThreadImpl : RetrieveConversationThread {
 
                 // Step 4: Create a ConversationThread object with the retrieved information
                 conversationThread = ConversationThread(
-                    threadMetadata = threadMetadata,
+                    quizMetadata = threadMetadata,
                     messages = messages,
                     instruction = instruction,
                     question = question
