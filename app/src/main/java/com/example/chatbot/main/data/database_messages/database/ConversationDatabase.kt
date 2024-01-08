@@ -10,7 +10,7 @@ import com.example.chatbot.main.data.database_messages.model.Message
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
 import com.example.chatbot.main.data.database_messages.model.QuizMetadata
 
-@Database(entities = [Instruction::class , Message::class , QuizMetadata::class , SessionMetadata::class] , version = 2)
+@Database(entities = [Message::class , QuizMetadata::class , SessionMetadata::class] , version = 2)
 abstract class ConversationDatabase : RoomDatabase() {
 
     abstract val sessionMetadataDao: SessionMetadataDao

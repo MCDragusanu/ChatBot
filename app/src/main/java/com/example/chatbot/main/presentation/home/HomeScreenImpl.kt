@@ -85,8 +85,10 @@ import com.example.chatbot.on_board.presentation.on_board_screen.OnBoardScreenIm
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.lang.Integer.min
 import java.text.SimpleDateFormat
 import java.util.Random
+import kotlin.math.ceil
 import kotlin.streams.toList
 
 object HomeScreenImpl : HomeScreen() {
@@ -153,7 +155,9 @@ object HomeScreenImpl : HomeScreen() {
                             RecentSessions(
                                 sessions = recentSessions,
                                 getTopicsLabels = homeScreenViewModel::getTopicsLabel,
-                                onClick = {}  // Placeholder click handler for session item
+                                onClick = {
+                                    onStartNewSession(it.uid)
+                                }  // Placeholder click handler for session item
                             )
                         }
 
@@ -359,7 +363,7 @@ object HomeScreenImpl : HomeScreen() {
                         .fillMaxWidth(0.75f)
                         .wrapContentHeight(),
                     // Random data for demonstration purposes. Replace with actual data.
-                    Random().ints(25, 0, 3).toList(),
+                    questionsStatus,
                     questionsPerRow = 7
                 )
             }
@@ -374,18 +378,10 @@ object HomeScreenImpl : HomeScreen() {
         getTopicsLabels: (String) -> List<String>,
         onClick: (SessionMetadata) -> Unit
     ) {
-        // Calculate the window size for displaying recent sessions.
-        val windowSize = maxOf(sessions.size - 1, 5)
-        // Create an IntRange representing the window of visible sessions.
-        val window = IntRange(0, maxOf(sessions.size - 1, 5))
 
-        // MutableState for tracking the current page in the session window.
-        var currentPage by remember {
-            mutableIntStateOf(0)
-        }
-
-        // Calculate the total number of pages based on window size.
-        val numberOfPages = sessions.size / windowSize + 1
+        val windowSize = 4
+        val pageCount = sessions.size / windowSize
+        var currentPage by remember { mutableStateOf(0) }
 
         // Column to arrange the contents vertically.
         Column(
@@ -395,25 +391,46 @@ object HomeScreenImpl : HomeScreen() {
         ) {
             // Composable function for displaying the headline of recent sessions.
             RecentSessionHeadline(
-                numberOfPages = numberOfPages,
+                numberOfPages = pageCount,
                 currentPage = currentPage,
                 onPageChanged = {
                     currentPage = it
                 }
             )
 
-            // AnimatedContent for smoothly transitioning between pages.
-            if(sessions.isNotEmpty()){
-                AnimatedContent(targetState = currentPage, label = "") { currentPage ->
-                    // Column to arrange session cards vertically with spacing.
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        // Loop through sessions in the current window and create SessionCard for each.
-                        for (index in numberOfPages * currentPage until numberOfPages * currentPage + window.last -3) {
-                            // Retrieve the session metadata at the current index.
-                            sessions[index].also {
-                                // Display a SessionCard for the current session.
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.Start
+            ) {
+                if (sessions.size <= windowSize) {
+                    sessions.onEach {
+                        SessionCard(
+                            session = it,
+                            getTopicsLabels = getTopicsLabels,
+                            onClick = onClick
+                        )
+                    }
+                } else {
+                    AnimatedContent(targetState = currentPage, label = "") {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            verticalArrangement = Arrangement.spacedBy(
+                                4.dp,
+                                Alignment.CenterVertically
+                            ),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            for (index in it * windowSize until min(
+                                (it * windowSize) + windowSize,
+                                sessions.size - 1
+                            )) {
                                 SessionCard(
-                                    session = it,
+                                    session = sessions[index],
                                     getTopicsLabels = getTopicsLabels,
                                     onClick = onClick
                                 )
@@ -422,11 +439,9 @@ object HomeScreenImpl : HomeScreen() {
                     }
                 }
             }
-            else {
-
-            }
         }
     }
+
 
 
     // Composable function to display the headline of the recent sessions section.
@@ -499,6 +514,7 @@ object HomeScreenImpl : HomeScreen() {
                     // Toggle the expansion state.
                     isExpanded = !isExpanded
                 },
+            shape = RoundedCornerShape(4.dp),
             colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
         ) {
             // Column to arrange the contents of the card vertically.
@@ -525,9 +541,9 @@ object HomeScreenImpl : HomeScreen() {
                             .height(30.dp),
                         // Set color based on the session status.
                         color = when (session.status) {
-                            SessionMetadata.COMPLETED -> Color.Green.copy(alpha = 0.5f)
-                            SessionMetadata.QUITTED -> Color.Red.copy(alpha = 0.5f)
-                            SessionMetadata.STARTED -> Color.Yellow.copy(alpha = 0.5f)
+                            SessionMetadata.COMPLETED -> Color.Green.copy(alpha = 0.75f)
+                            SessionMetadata.QUITTED -> Color.Red.copy(alpha = 0.75f)
+                            SessionMetadata.STARTED -> Color.Yellow.copy(alpha = 0.75f)
                             else -> Color.Transparent
                         }
                     ) {}
@@ -548,41 +564,41 @@ object HomeScreenImpl : HomeScreen() {
                 }
 
                 // AnimatedVisibility to conditionally show content when expanded.
-                AnimatedVisibility(visible = isExpanded) {
-                    // Column for additional content when the card is expanded.
-                    Column(modifier = Modifier.wrapContentSize()) {
-                        // Get the topics associated with the session.
-                        val topics = getTopicsLabels(session.topicsUids)
-                        // Text indicating the content type ("Courses").
-                        Text(
-                            text = "Courses",
-                            style = Typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        // Display each topic as a row with a colored circle and text.
-                        topics.onEach {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                //AnimatedVisibility(visible = isExpanded) {
+                // Column for additional content when the card is expanded.
+                Column(modifier = Modifier.wrapContentSize()) {
+                    // Get the topics associated with the session.
+                    val topics = getTopicsLabels(session.topicsUids)
+                    // Text indicating the content type ("Courses").
+                    Text(
+                        text = "Courses",
+                        style = Typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    // Display each topic as a row with a colored circle and text.
+                    topics.onEach {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            // Colored circle representing the topic.
+                            Surface(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                modifier = Modifier.size(6.dp)
                             ) {
-                                // Colored circle representing the topic.
-                                Surface(
-                                    shape = CircleShape,
-                                    color = MaterialTheme.colorScheme.secondaryContainer,
-                                    modifier = Modifier.size(6.dp)
-                                ) {
-                                    // Empty surface for the circle.
-                                }
-                                // Text displaying the topic label.
-                                Text(
-                                    it,
-                                    style = Typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
-                                )
+                                // Empty surface for the circle.
                             }
+                            // Text displaying the topic label.
+                            Text(
+                                it,
+                                style = Typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onBackground.copy(0.25f)
+                            )
                         }
                     }
                 }
+                //}
             }
         }
     }

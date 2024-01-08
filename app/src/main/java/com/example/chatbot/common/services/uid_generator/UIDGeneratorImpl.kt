@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 class UIDGeneratorImpl: UIDGenerator {
     override fun generateLong(): Long {
-      return Random(System.currentTimeMillis()).nextLong()
+      return System.currentTimeMillis()
     }
 
     override fun generateString(): String {

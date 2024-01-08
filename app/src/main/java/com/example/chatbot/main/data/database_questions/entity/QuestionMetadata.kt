@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "question_metadata_table")
-class QuestionMetadata(val userUid:String= "DEFAULT_USER",
-                       val questionRowUid : Int = 0,
+data class QuestionMetadata(val userUid:String= "DEFAULT_USER",
+                       val questionUid : Long = 0,
                        val currentGrade:Double = -1.0,
                        val weight:Double = 10.0,
                        val status:Int = DEFAULT

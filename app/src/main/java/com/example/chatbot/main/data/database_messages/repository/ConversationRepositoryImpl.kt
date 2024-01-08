@@ -1,5 +1,6 @@
 package com.example.chatbot.main.data.database_messages.repository
 
+import android.util.Log
 import com.example.chatbot.main.data.database_messages.dao.SessionMetadataDao
 import com.example.chatbot.main.data.database_messages.model.Instruction
 import com.example.chatbot.main.data.database_messages.model.Message
@@ -49,9 +50,7 @@ class ConversationRepositoryImpl(private val conversationDao: SessionMetadataDao
      * @param instructionUid The UID of the instruction.
      * @return The instruction corresponding to the UID.
      */
-    override suspend fun retrieveInstructionForThread(instructionUid: Long): Instruction? {
-        return conversationDao.getInstructionByUid(instructionUid)
-    }
+
 
     /**
      * Adds a message to the local database.
@@ -61,6 +60,7 @@ class ConversationRepositoryImpl(private val conversationDao: SessionMetadataDao
      */
     override suspend fun addMessage(message: Message): Result<Unit> {
         return try {
+            Log.d("Test" , "Message UID = ${message.uid}" )
             conversationDao.addMessage(message)
             Result.success(Unit)
         } catch (e: Exception) {
@@ -85,21 +85,7 @@ class ConversationRepositoryImpl(private val conversationDao: SessionMetadataDao
         }
     }
 
-    /**
-     * Adds an instruction to the local database.
-     *
-     * @param instruction The instruction to be added.
-     * @return Result<Unit> indicating success or failure.
-     */
-    override suspend fun addInstruction(instruction: Instruction): Result<Unit> {
-        return try {
-            conversationDao.addInstruction(instruction)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure(e)
-        }
-    }
+
 
     /**
      * Adds session metadata to the local database.

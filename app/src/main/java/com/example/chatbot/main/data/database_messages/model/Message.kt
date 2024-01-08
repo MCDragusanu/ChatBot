@@ -2,6 +2,7 @@ package com.example.chatbot.main.data.database_messages.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlin.properties.Delegates
 
 /**
  * Represents a message entity in the local storage database.
@@ -19,12 +20,15 @@ import androidx.room.PrimaryKey
  * Indicates that instances of this class will be stored in a table named "message_table" in the local database.
  */
 @Entity(tableName = "message_table")
-class Message(
-    @PrimaryKey val uid: Long,
+data class Message(
+
     val threadUid: Long,
     val content: String,
     val sender: Int
 ) {
+   @PrimaryKey(autoGenerate = false)
+    var uid : Long = System.currentTimeMillis()
+
     companion object {
         // Constants representing different message senders
         const val USER = 0
@@ -52,4 +56,10 @@ class Message(
      * @return true if the message is a system message, false otherwise.
      */
     fun isSystemMessage() = this.sender == SYSTEM
+
+     fun asString(): String {
+        return buildString {
+            append("{\n\tcontent : ${content}\n\tsender : ${sender}\n}")
+        }
+    }
 }

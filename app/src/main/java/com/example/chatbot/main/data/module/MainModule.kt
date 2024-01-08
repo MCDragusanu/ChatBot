@@ -15,17 +15,20 @@ import com.example.chatbot.common.services.uid_generator.UIDGeneratorImpl
 import com.example.chatbot.main.data.database_messages.database.ConversationDatabase
 import com.example.chatbot.main.data.database_messages.repository.ConversationRepository
 import com.example.chatbot.main.data.database_messages.repository.ConversationRepositoryImpl
-import com.example.chatbot.main.data.openai.OpenAIClient
+import com.example.chatbot.main.data.openai.OpenAIClientImpl
 import com.example.chatbot.main.data.database_questions.cloud.CloudDataSource
 import com.example.chatbot.main.data.database_questions.cloud.FirebaseCloudDatabase
 import com.example.chatbot.main.data.database_questions.local.QuestionMetadataDatabase
 import com.example.chatbot.main.data.database_questions.local.QuestionRepository
 import com.example.chatbot.main.data.database_questions.local.QuestionRepositoryImpl
+import com.example.chatbot.main.data.openai.OpenAIClient
+import com.example.chatbot.main.data.openai.OpenAITestClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainModule private constructor(val keyFetcher: APIKeyFetcher,
+class MainModule private constructor(isInTestMode:Boolean,
+                                     val keyFetcher: APIKeyFetcher,
                                      val accountManager:AccountManager,
                                      val networkObserver: NetworkObserver,
                                      val uidGenerator: UIDGenerator,
@@ -42,7 +45,7 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
     var openAIClient: OpenAIClient? = null
 
     init {
-        CoroutineScope(Dispatchers.IO).launch {
+      /* if(!isInTestMode)*/ CoroutineScope(Dispatchers.IO).launch {
             val apiKey = keyFetcher.getAPIKey(
                 documentName = APIKeyFetcher.OPEN_AI_DOCUMENT_NAME,
                 fieldName = APIKeyFetcher.OPEN_AI_KEY_FIELD
@@ -53,8 +56,9 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
             }.onSuccess {
                 Log.d("Test", "API Key retrieved!")
             }.getOrNull() ?: "DEFAULT API KEY"
-            openAIClient = OpenAIClient(apiKey)
+            openAIClient = OpenAIClientImpl(apiKey)
         }
+       // else openAIClient = OpenAITestClient()
     }
 
     companion object {
@@ -67,6 +71,7 @@ class MainModule private constructor(val keyFetcher: APIKeyFetcher,
             dataSource: CloudDataSource.DataSource
         ): MainModule {
             return instance ?: MainModule(
+                isInTestMode = inTestMode,
                 keyFetcher = FirestoreKeyFetcher(),
                 accountManager = if (!inTestMode) AccountManagerImpl() else AccountManagerTestImpl(),
                 networkObserver = NetworkObserverImpl(application.applicationContext),

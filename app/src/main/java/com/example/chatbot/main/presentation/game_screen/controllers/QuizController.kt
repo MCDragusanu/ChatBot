@@ -5,9 +5,13 @@ import com.example.chatbot.main.presentation.game_screen.model.QuizEvent
 import com.example.chatbot.main.presentation.game_screen.model.QuizState
 import com.example.chatbot.main.presentation.game_screen.state_manager.SessionStateManager
 import com.example.chatbot.main.presentation.game_screen.layouts.QuizLayout
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 abstract class QuizController {
+
+
 
     /**
      * The parent [SessionStateManager] responsible for managing the overall session state.
@@ -24,6 +28,8 @@ abstract class QuizController {
      */
     protected abstract var quizLayout: QuizLayout
 
+    protected val _screenState = MutableStateFlow(QuizState.PossibleState.Default)
+    val screenState = _screenState.asStateFlow()
     /**
      * Sets the parent [SessionStateManager] for this controller.
      *
@@ -68,4 +74,5 @@ abstract class QuizController {
      * @return The [QuizLayout] instance.
      */
     fun getLayout() = quizLayout
+    abstract fun getQuestion(): String
 }

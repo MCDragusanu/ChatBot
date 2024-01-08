@@ -1,5 +1,6 @@
 package com.example.chatbot.main.data.openai
 
+import android.util.Log
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
@@ -34,12 +35,21 @@ class ChatCompletionRequestBuilder {
             },
             content = it.content
          )
-      } + ChatMessage(role = ChatRole.User, content = currentUserMessage.content)
+      } + ChatMessage(role = when {
+         currentUserMessage.isSystemMessage() -> ChatRole.System
+         currentUserMessage.isSentByUser() -> ChatRole.User
+         else -> ChatRole.Assistant
+      }, content = currentUserMessage.content)
 
+      Log.d("Conversation" , "Chat Completion conversation")
+      (conversationHistory+currentUserMessage).onEach {
+
+         Log.d("Conversation" , it.asString())
+      }
       // Create and return the ChatCompletionRequest using the configured messages and the GPT-3.5 Turbo model
       return chatCompletionRequest {
          messages = content
-         model = OpenAIClient.model
+         model = OpenAIClientImpl.model
       }
    }
 }

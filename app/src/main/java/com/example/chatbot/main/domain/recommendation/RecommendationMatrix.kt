@@ -3,8 +3,8 @@
  *
  * @param _buffer Two-dimensional array representing the recommendation coefficients between topics and questions.
  */
-abstract class RecommendationMatrix(protected val _buffer: Array<Array<Double>>) {
-
+abstract class RecommendationMatrix(protected val _buffer: Array<Array<Pair<Double,Long>>>) {
+    //TODO("Matei :: de refacut functia asta sa respecte tipul din recommendation")
     /**
      * Applies a nerfing coefficient to the specified entry in the matrix.
      *
@@ -14,7 +14,7 @@ abstract class RecommendationMatrix(protected val _buffer: Array<Array<Double>>)
     abstract fun nerfCoefficient(topicIndex: Int, questionIndex: Int)
 
     /**
-     * Applies a buffing coefficient to the specified entry in the matrix.
+     * Applies a buffing coefficient to the speciwfied entry in the matrix.
      *
      * @param topicIndex Index of the topic.
      * @param questionIndex Index of the question.
@@ -47,7 +47,7 @@ abstract class RecommendationMatrix(protected val _buffer: Array<Array<Double>>)
      * @param amount Number of recommended questions to retrieve.
      * @return List of question indices recommended for the specified topic.
      */
-    abstract fun getRecommendedQuestions(topicIndex: Int, amount: Int): List<Int>
+    abstract fun getRecommendedQuestions(topicIndex: Int, amount: Int): List<Long>
 
     /**
      * Updates all elements in the matrix with a threshold value.

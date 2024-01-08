@@ -43,7 +43,7 @@ interface QuestionMetadataDao {
      * Retrieves a question by its unique identifier (UID) from the database.
      */
     @Query("SELECT * from question_table where questionUid = :questionUid")
-    suspend fun getQuestionByUid(questionUid: Int): Question?
+    suspend fun getQuestionByUid(questionUid: Long): Question?
 
     /**
      * Adds metadata for a question to the database.
@@ -66,8 +66,8 @@ interface QuestionMetadataDao {
     /**
      * Retrieves metadata for a specific question and user from the database.
      */
-    @Query("SELECT * from question_metadata_table where userUid = :userUid AND questionRowUid = :uid")
-    suspend fun getMetadataForQuestion(uid: Int, userUid: String): QuestionMetadata?
+    @Query("SELECT * from question_metadata_table where userUid = :userUid AND questionUid = :uid")
+    suspend fun getMetadataForQuestion(uid: Long, userUid: String): QuestionMetadata?
 
     /**
      * Retrieves all metadata for questions associated with a specific topic and user from the database.
@@ -75,7 +75,7 @@ interface QuestionMetadataDao {
     @Query(
         "SELECT question_metadata_table.*\n" +
                 "FROM question_metadata_table\n" +
-                "JOIN question_table ON question_metadata_table.questionRowUid = question_table.uid\n" +
+                "JOIN question_table ON question_metadata_table.questionUid = question_table.uid\n" +
                 "WHERE question_table.topicUid = :topicUid AND userUid = :userUid "
     )
     suspend fun getAllMetadataForTopic(topicUid: Int, userUid: String): List<QuestionMetadata>
@@ -113,19 +113,19 @@ interface QuestionMetadataDao {
     /**
      * Retrieves the count of metadata entries associated with a specific question from the database.
      */
-    @Query("SELECT COUNT(uid) FROM question_metadata_table where questionRowUid = :uid")
-    suspend fun metadataCountForQuestion(uid: Int): Int
+    @Query("SELECT COUNT(uid) FROM question_metadata_table where questionUid = :uid")
+    suspend fun metadataCountForQuestion(uid: Long): Int
 
     /**
      * Checks if metadata already exists for a specific question in the database.
      */
     suspend fun metadataAlreadyExists(questionMetadata: QuestionMetadata): Boolean {
-        val count = metadataCountForQuestion(questionMetadata.questionRowUid)
+        val count = metadataCountForQuestion(questionMetadata.questionUid)
         return count != 0
     }
 
     @Query("SELECT COUNT(uid) from question_table where uid = :uid")
-    suspend fun getQuestionCount(uid: Int): Int
+    suspend fun getQuestionCount(uid: Long): Int
     suspend fun questionAlreadyExists(question: Question): Boolean {
         val count = getQuestionCount(question.uid)
         return count != 0
@@ -133,6 +133,8 @@ interface QuestionMetadataDao {
 
     @Query("SELECT * from topic_metadata_table")
     suspend fun getAllTopics(): List<TopicMetadata>
+    @Delete
+   suspend fun removeQuestionMetadata(metadata: QuestionMetadata)
 
 
 }

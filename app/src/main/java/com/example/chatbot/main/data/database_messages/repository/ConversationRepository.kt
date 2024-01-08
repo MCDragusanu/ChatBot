@@ -37,13 +37,6 @@ interface ConversationRepository {
 
 
 
-    /**
-     * Retrieves an instruction based on the unique identifier of the associated thread.
-     *
-     * @param instructionUid Unique identifier for the question associated with the thread.
-     * @return Instruction object if found, otherwise null.
-     */
-    suspend fun retrieveInstructionForThread(instructionUid: Long): Instruction?
 
     /**
      * Adds a new message to the local storage.
@@ -60,14 +53,7 @@ interface ConversationRepository {
      */
     suspend fun addThreadMetadata(quizMetadata: QuizMetadata):Result<Unit>
 
-    /**
-     * Adds a new question to the local storage.
-     *
-     * @param question The question to be added.
-     * @return Result indicating success or failure of the operation.
-     */
 
-    suspend fun addInstruction(instruction: Instruction): Result<Unit>
 
     /**
      * Adds session metadata to the local storage.

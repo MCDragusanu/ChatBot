@@ -1,5 +1,6 @@
 package com.example.chatbot.main.presentation.game_screen.model
 
+import com.example.chatbot.main.data.database_messages.model.Message
 import com.example.chatbot.main.domain.instruction_factory.GPTResponse
 
 sealed class QuizEvent {
@@ -15,4 +16,6 @@ sealed class QuizEvent {
 
     // Represents the completion of the quiz with a final grade.
     class GameCompleted(val finalGrade: Double) : QuizEvent()
+
+    class ConversationInit(val message: Message) : QuizEvent()
 }

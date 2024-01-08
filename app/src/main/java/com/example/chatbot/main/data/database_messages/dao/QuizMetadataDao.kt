@@ -11,7 +11,7 @@ import com.example.chatbot.main.data.database_messages.model.QuizMetadata
  * Data Access Object (DAO) for managing thread metadata in the local storage database.
  */
 @Dao
-interface QuizMetadataDao : MessageDao, InstructionDao {
+interface QuizMetadataDao : MessageDao {
 
     /**
      * Adds a new thread metadata to the local storage.
@@ -46,15 +46,7 @@ interface QuizMetadataDao : MessageDao, InstructionDao {
      */
     @Query("SELECT * from quiz_table where sessionUid = :sessionUid")
     suspend fun getAllThreadsForSession(sessionUid: Long): List<QuizMetadata>
-
-    /**
-     * Deletes a thread and all associated messages and instruction from the local storage.
-     *
-     * @param quizMetadata The thread metadata to be deleted.
-     */
-    @Transaction
-    suspend fun deleteThread(quizMetadata: QuizMetadata) {
-        clearMessagesForThread(quizMetadata.uid)
-        deleteInstructionByUid(quizMetadata.instructionUid)
-    }
 }
+
+
+

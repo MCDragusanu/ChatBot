@@ -22,43 +22,46 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
     override suspend fun addQuestionMetadata(questionMetadata: QuestionMetadata) {
         if (!questionMetadataDao.metadataAlreadyExists(questionMetadata)) {
             questionMetadataDao.addMetadata(questionMetadata)
-        } else throw Exception("Primary key collision for questionMetadata with pk = ${questionMetadata.questionRowUid}")
+        } else throw Exception("Primary key collision for questionMetadata with pk = ${questionMetadata.questionUid}")
     }
 
-    override suspend fun removeQuestionMetadata(metadata: Question){
-        questionMetadataDao.removeQuestion(metadata)
+    override suspend fun removeQuestionMetadata(metadata: QuestionMetadata){
+        questionMetadataDao.removeQuestionMetadata(metadata)
     }
 
-    override suspend fun updateQuestionMetadata(metadata: Question) {
-        questionMetadataDao.updateQuestion(metadata)
+    override suspend fun updateQuestionMetadata(metadata: QuestionMetadata) {
+        Log.d("Grade" , "Updating metadata with uid = ${metadata.uid} for question with uid = ${metadata.questionUid} , status = ${metadata.status} and content = ${getQuestionByUid(metadata.questionUid)}, ")
+        questionMetadataDao.updateMetadata(metadata)
     }
 
     override suspend fun getAllMetadataForTopic(topicUid: Int , userUid: String): List<QuestionMetadata> {
         return questionMetadataDao.getAllMetadataForTopic(topicUid , userUid)
     }
 
-    override suspend fun getMetadataByQuestionUid(uid: Int, userUid: String): QuestionMetadata? {
-        return questionMetadataDao.getMetadataForQuestion(uid, userUid)
+    override suspend fun getMetadataByQuestionUid(questionUid: Long, userUid: String): QuestionMetadata? {
+        return questionMetadataDao.getMetadataForQuestion(questionUid, userUid)
     }
 
     override suspend fun buildWeightMatrix(
-        topics: List<Int>,
+
         userUid: String
-    ): Array<Array<Double>> {
+    ): Array<Array<Pair<Double , Long>>> {
         try {
-            val array = mutableListOf<Deferred<Array<Double>>>()
+            val array = mutableListOf<Deferred<Array<Pair<Double , Long>>>>()
             val job = CoroutineScope(Dispatchers.IO).launch {
-                topics.onEach { topicUid ->
+                getAllTopics().onEach { topicUid ->
                     val values = async {
-                        questionMetadataDao.getAllMetadataForTopic(topicUid, userUid)
-                            .map { it.weight }
+                        questionMetadataDao.getAllMetadataForTopic(topicUid.uid, userUid)
+                            .map { Pair( it.weight , it.questionUid ) }
                             .toTypedArray()
                     }
+                    Log.d("Debug" , "TopicUid = $topicUid -> questionUids : ${values.await().map { it.second }.toString()}" )
                     array += values
                 }
             }
             job.join()
             val result = array.awaitAll()
+
             result.onEach {
 
                 Log.d("Test", it.toString())
@@ -68,6 +71,7 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
             e.printStackTrace()
             return emptyArray()
         }
+
     }
 
     override suspend fun noTopicsCached(): Boolean {
@@ -89,7 +93,7 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
         return questionMetadataDao.getAllTopics()
     }
 
-    override suspend fun getQuestionByUid(questionUid: Int): Question? {
+    override suspend fun getQuestionByUid(questionUid: Long): Question? {
         return questionMetadataDao.getQuestionByUid(questionUid)
     }
 }

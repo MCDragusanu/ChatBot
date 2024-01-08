@@ -19,6 +19,10 @@ class MultiChoiceController() : QuizController() {
     }
 
     override fun onEvent(event: QuizEvent) {
+
+    }
+
+    override fun getQuestion(): String {
         TODO("Not yet implemented")
     }
 }

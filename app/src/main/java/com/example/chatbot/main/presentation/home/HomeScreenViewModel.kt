@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
 import com.example.chatbot.main.data.database_messages.model.QuizMetadata
+import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.module.MainModule
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.example.chatbot.main.domain.instruction_factory.GPTResponseFormat
 import com.example.chatbot.main.domain.pre_defined_questions.predefinedTopics
+import com.example.chatbot.main.domain.pre_defined_questions.topic1Questions
+import com.example.chatbot.main.domain.pre_defined_questions.topic2Questions
+import com.example.chatbot.main.domain.pre_defined_questions.topic6Questions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,26 +108,30 @@ class HomeScreenViewModel:ViewModel() {
                 // Build the coefficient matrix
                 val recommendationMatrix = RecommendationMatrixImpl(
                     module.questionRepository.buildWeightMatrix(
-                        _selectedTopics.value.map { it.uid },
                         module.currentUser.uid
                     )
                 )
 
                 // Temp value to store the question UIDs
-                val pickedQuestion = mutableListOf<Int>()
+                val pickedQuestion = mutableListOf<Long>()
 
                 // Determine the amount of questions per topic
                 val questionAmountPerTopic = if (_selectedTopics.value.isNotEmpty())
                     _questionCount.value / _selectedTopics.value.size else _questionCount.value
 
                 // Append all the questions
-                _selectedTopics.value.onEach {
+                _selectedTopics.value.onEach { topicMetadata->
+                    Log.d("Debug" , "Picked Topic = " + topicMetadata.label)
                     pickedQuestion += recommendationMatrix.getRecommendedQuestions(
-                        it.uid,
+                         topicMetadata.uid,
                         questionAmountPerTopic
                     )
                 }
 
+                pickedQuestion.onEach{
+
+                    Log.d("Debug" , "QuestionUid picked = $it")
+                }
                 // Generate a new session UID
                 val sessionUid = module.uidGenerator.generateLong()
 
@@ -169,19 +177,16 @@ class HomeScreenViewModel:ViewModel() {
                             threadUID
                         )
 
-                    // Create thread metadata
+                    // Create quiz metadata
                     val thread = QuizMetadata(
                         uid = threadUID,
                         sessionUid = sessionUid,
-                        questionUid = it,
-                        instructionUid = instructionUID,
+                        questionUid = questionRow.uid,
+
                         type = questionRow.questionType
                     )
 
-                    // Add instruction and thread metadata to the conversation repository
-                    module.conversationRepository.addInstruction(instruction).onFailure {
-                        it.printStackTrace()
-                    }
+
 
                     module.conversationRepository.addThreadMetadata(thread).onFailure {
                         it.printStackTrace()

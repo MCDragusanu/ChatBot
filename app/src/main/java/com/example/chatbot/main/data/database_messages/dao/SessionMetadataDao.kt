@@ -61,10 +61,5 @@ interface SessionMetadataDao : QuizMetadataDao {
      *
      * @param session The session metadata to be deleted.
      */
-    @Transaction
-    suspend fun deleteSession(session: SessionMetadata) {
-        getAllThreadsForSession(session.uid).onEach {
-            deleteThread(it)
-        }
-    }
+
 }

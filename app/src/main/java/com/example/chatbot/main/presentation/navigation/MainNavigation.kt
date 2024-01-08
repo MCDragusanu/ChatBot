@@ -1,6 +1,8 @@
 package com.example.chatbot.main.presentation.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +26,7 @@ object MainNavigation {
         NavHost(navController = navController, startDestination = homeScreen.dest) {
             composable(route = homeScreen.dest,) {
                 homeScreen.Main(homeScreenViewModel = homeScreenViewModel, onStartNewSession = {
+                    Log.d("Navigation" , "Nav to sessionUid = $it")
                     navController.navigate(GameLayoutContainer.dest + "/$it")
                 })
             }
@@ -34,9 +37,15 @@ object MainNavigation {
 
                 })
             ) {
+
                 val sessionUid = it.arguments?.getLong("sessionUid") ?: -1
-                sessionStateManager.initGame(sessionUid)
-                GameLayoutContainer(sessionStateManager)
+                Log.d("Navigation" , "Landed to sessionUid = $it")
+                LaunchedEffect(key1 = true){
+                    sessionStateManager.initGame(sessionUid)
+                }
+                GameLayoutContainer(sessionStateManager , onBackIsPressed = {
+                    navController.popBackStack()
+                })
             }
         }
     }

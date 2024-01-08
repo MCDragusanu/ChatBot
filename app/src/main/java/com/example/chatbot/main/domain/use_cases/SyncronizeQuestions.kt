@@ -31,12 +31,12 @@ object SyncronizeQuestions {
                     scope.async {
                         // Check if there is no metadata linked to the question for the current user
                         if (module.questionRepository.getMetadataByQuestionUid(
-                                question.questionUid,
+                                question.uid,
                                 module.currentUser.uid
                             ) == null
                         ) {
                             // Create new metadata for the question
-                            val metadata = QuestionMetadata(userUid = module.currentUser.uid, questionRowUid = question.uid)
+                            val metadata = QuestionMetadata(userUid = module.currentUser.uid, questionUid = question.uid)
                             // Insert the metadata into the metadata table
                             module.questionRepository.addQuestionMetadata(metadata)
                         }

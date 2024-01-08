@@ -10,13 +10,13 @@ interface QuestionRepository {
     // Questions
     suspend fun addQuestionRow(question: Question)
     suspend fun addQuestionMetadata(questionMetadata: QuestionMetadata)
-    suspend fun removeQuestionMetadata(metadata: Question)
-    suspend fun updateQuestionMetadata(metadata: Question)
+    suspend fun removeQuestionMetadata(metadata: QuestionMetadata)
+    suspend fun updateQuestionMetadata(metadata: QuestionMetadata)
     suspend fun getAllMetadataForTopic(topicUid: Int, userUid: String): List<QuestionMetadata>
-    suspend fun getMetadataByQuestionUid(uid: Int, userUid: String): QuestionMetadata?
+    suspend fun getMetadataByQuestionUid(questionUid: Long, userUid: String): QuestionMetadata?
 
     // Weight Matrix
-    suspend fun buildWeightMatrix(topics: List<Int>, userUid: String): Array<Array<Double>>
+    suspend fun buildWeightMatrix(userUid: String): Array<Array<Pair<Double , Long>>>
 
     // Caching
     suspend fun noTopicsCached(): Boolean
@@ -26,7 +26,7 @@ interface QuestionRepository {
     suspend fun addTopic(topic: TopicMetadata)
     suspend fun getAllTopics(): List<TopicMetadata>
 
-    suspend fun getQuestionByUid(questionUid:Int):Question?
+    suspend fun getQuestionByUid(questionUid:Long):Question?
 
     fun getInstructionFactory() : InstructionFactory{
         return InstructionFactory()

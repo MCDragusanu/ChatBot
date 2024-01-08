@@ -10,8 +10,9 @@ package com.example.chatbot.main.domain.instruction_factory
  */
 sealed class GPTResponseFormat(
     val preamble: String,
-    val fields: List<FieldDescriptor>,
-    val className: String
+  //  val fields: List<FieldDescriptor>,
+    val ending : String,
+   // val className: String
 ) {
     /**
      * Represents a field descriptor in the response format.
@@ -29,10 +30,27 @@ sealed class GPTResponseFormat(
      * The default response format for the GPT interview game.
      */
     object DefaultFormat : GPTResponseFormat(
-        "Let's play a game where you are interviewing a person. You will be given the question itself " +
-                "and the objectively correct answer. Your duty is to moderate the conversation about the " +
-                "topic given. The rule of the game is to respond with a JSON object with this FIXED structure",
-        listOf(
+        preamble = "Moderation Guidelines for Quiz Game:\n" +
+                "\n" +
+                "As the quiz game moderator, when responding to questions and correct answers, follow this precise format:\n" +
+                "\n" +
+                "Response Structure:\n" +
+                "\n" +
+                "Every response MUST start and end with these specific Letters: F for follow up , S for suggestion , and E for ending" +
+                "Use the corresponding Letter based on the context.\n" +
+                "\n" +
+                "If the user requests hints, respond ONLY with <suggestion>" +
+                "If the user provides a correct answer, respond ONLY with <ending> and NO additional tags.\n" +
+                "Response Examples:\n" +
+                "\n" +
+                "<follow-up> Your response to the user's message - this will be the default response type</follow-up>\n" +
+                "<suggestion> Guide the user towards the correct answer</suggestion>\n" +
+                "<ending> Grade (1-10) and a final comment separated like this: grade/comment, use only '/'</ending>\n" +
+                "Important Reminder:\n" +
+                "Ensure that EVERY response has the appropriate opening and closing tags like XML. Use <suggestion> for hints. If the user provides a correct answer, respond ONLY with <ending>. Consistency is CRUCIAL for effective moderation.",ending = ""
+        /*     ,
+
+        fields = listOf(
             FieldDescriptor(
                 "message",
                 "string",
@@ -51,17 +69,12 @@ sealed class GPTResponseFormat(
                         "answer the question and finish the game"
             )
         ),
-        "DEFAULT"
+        ending ="",
+        className = "DEFAULT"*/
     )
 }
 
-/**
- * Represents a response in the GPT interview game.
- * @property message The response message.
- * @property currentGrade The grade given to the current conversation.
- * @property isFinished Flag indicating if the game is finished.
- * @property className The class name associated with this response.
- */
+
 
 
 

@@ -1,6 +1,7 @@
 package com.example.chatbot.main.presentation.game_screen.layouts
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.example.chatbot.main.presentation.game_screen.controllers.QuizController
 
 /**
@@ -16,5 +17,5 @@ interface QuizLayout {
      * @param onCompletion Callback function to be executed when the quiz is completed.
      */
     @Composable
-    operator fun invoke(controller: QuizController, onCompletion: () -> Unit)
+    operator fun invoke(modifier : Modifier,questionIndex:Int, controller: QuizController, onCompletion: () -> Unit)
 }

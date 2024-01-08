@@ -11,12 +11,11 @@ import androidx.room.PrimaryKey
  * @property uid Unique identifier for the instruction. Each instruction has a distinct identifier.
  * @property content The content of the instruction, providing detailed guidance or information.
  *
- * @Entity(tableName = "instruction_table")
  * Indicates that instances of this class will be stored in a table named "instruction_table" in the local database.
  */
-@Entity(tableName = "instruction_table")
+
 class Instruction(
-    @PrimaryKey val uid: Long,
+    val uid: Long,
     val threadUid:Long,
     val content: String
 )

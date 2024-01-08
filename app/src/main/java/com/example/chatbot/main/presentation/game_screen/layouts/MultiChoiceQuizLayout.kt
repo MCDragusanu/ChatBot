@@ -1,8 +1,19 @@
 package com.example.chatbot.main.presentation.game_screen.layouts
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.chatbot.common.ui.util.Destination
 import com.example.chatbot.main.presentation.game_screen.controllers.QuizController
 import com.example.chatbot.main.presentation.game_screen.model.QuizState
@@ -22,15 +33,17 @@ object MultiChoiceQuizLayout : Destination("MultiChoiceQuizScreen"), QuizLayout 
      * @param onCompletion Callback function to be executed when the quiz is completed.
      */
     @Composable
-    override fun invoke(controller: QuizController, onCompletion: () -> Unit) {
+    override fun invoke(modifier: Modifier, questionIndex:Int,controller: QuizController, onCompletion: () -> Unit) {
         // Collect the current state of the multi-choice quiz from the controller's state flow.
         val _state by controller.presentState().collectAsState()
 
         // Safely cast the state to the specific type for multi-choice quizzes.
         val currentState = _state as QuizState.MultiChoiceQuizState?
 
-        // TODO: Implement UI composition based on the currentState and handle user interactions.
-        // Use the currentState to determine the content and behavior of the multi-choice quiz screen.
-        // Optionally, call onCompletion when the quiz is completed.
+
+        LaunchedEffect(key1 = true){
+            controller.loadResources()
+        }
+
     }
 }
