@@ -42,7 +42,7 @@ interface QuestionMetadataDao {
     /**
      * Retrieves a question by its unique identifier (UID) from the database.
      */
-    @Query("SELECT * from question_table where questionUid = :questionUid")
+    @Query("SELECT * from question_table where uid = :questionUid")
     suspend fun getQuestionByUid(questionUid: Long): Question?
 
     /**
@@ -125,7 +125,7 @@ interface QuestionMetadataDao {
     }
 
     @Query("SELECT COUNT(uid) from question_table where uid = :uid")
-    suspend fun getQuestionCount(uid: Long): Int
+    suspend fun getQuestionCount(uid: Long):Int
     suspend fun questionAlreadyExists(question: Question): Boolean {
         val count = getQuestionCount(question.uid)
         return count != 0

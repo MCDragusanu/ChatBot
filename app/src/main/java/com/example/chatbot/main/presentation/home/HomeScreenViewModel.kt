@@ -10,10 +10,7 @@ import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.module.MainModule
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.example.chatbot.main.domain.instruction_factory.GPTResponseFormat
-import com.example.chatbot.main.domain.pre_defined_questions.predefinedTopics
-import com.example.chatbot.main.domain.pre_defined_questions.topic1Questions
-import com.example.chatbot.main.domain.pre_defined_questions.topic2Questions
-import com.example.chatbot.main.domain.pre_defined_questions.topic6Questions
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -98,7 +95,8 @@ class HomeScreenViewModel:ViewModel() {
         val ids = s.split('/').filter { it.isNotBlank() }.map { it.toInt() }
 
         // Return the labels of predefined topics whose UIDs match the extracted IDs.
-        return predefinedTopics.filter { it.uid in ids }.map { it.label }
+        //return predefinedTopics.filter { it.uid in ids }.map { it.label }
+        return listOf("" , "sajhjs")
     }
 
     fun createNewSession(onNewSessionCreated: (Long) -> Unit) {
