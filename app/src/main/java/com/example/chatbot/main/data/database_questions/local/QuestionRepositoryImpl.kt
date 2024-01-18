@@ -96,4 +96,8 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
     override suspend fun getQuestionByUid(questionUid: Long): Question? {
         return questionMetadataDao.getQuestionByUid(questionUid)
     }
+
+    override suspend fun getTopicName(topicUid:Int): String {
+        return questionMetadataDao.getTopicNameByUid(topicUid)
+    }
 }

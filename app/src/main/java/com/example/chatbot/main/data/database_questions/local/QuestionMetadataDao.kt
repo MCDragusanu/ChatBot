@@ -135,6 +135,8 @@ interface QuestionMetadataDao {
     suspend fun getAllTopics(): List<TopicMetadata>
     @Delete
    suspend fun removeQuestionMetadata(metadata: QuestionMetadata)
+   @Query("SELECT label from topic_metadata_table where uid = :topicUid")
+    fun getTopicNameByUid(topicUid: Int): String
 
 
 }

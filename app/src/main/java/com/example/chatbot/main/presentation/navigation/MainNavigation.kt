@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.chatbot.main.presentation.credit_screen.CreditScreen
 import com.example.chatbot.main.presentation.game_screen.layouts.GameLayoutContainer
 import com.example.chatbot.main.presentation.game_screen.state_manager.SessionStateManager
 import com.example.chatbot.main.presentation.home.HomeScreen
@@ -28,6 +29,8 @@ object MainNavigation {
                 homeScreen.Main(homeScreenViewModel = homeScreenViewModel, onStartNewSession = {
                     Log.d("Navigation" , "Nav to sessionUid = $it")
                     navController.navigate(GameLayoutContainer.dest + "/$it")
+                }, goToCreditScreen = {
+                    navController.navigate(CreditScreen.dest)
                 })
             }
             composable(
@@ -46,6 +49,11 @@ object MainNavigation {
                 GameLayoutContainer(sessionStateManager , onBackIsPressed = {
                     navController.popBackStack()
                 })
+            }
+            composable(route = CreditScreen.dest){
+                CreditScreen.Main {
+                    navController.popBackStack()
+                }
             }
         }
     }

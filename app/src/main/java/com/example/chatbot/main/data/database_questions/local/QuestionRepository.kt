@@ -31,4 +31,6 @@ interface QuestionRepository {
     fun getInstructionFactory() : InstructionFactory{
         return InstructionFactory()
     }
+
+    suspend fun getTopicName(topicUid:Int): String
 }

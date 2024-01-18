@@ -87,6 +87,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.lang.Integer.min
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Random
 import kotlin.math.ceil
 import kotlin.streams.toList
@@ -94,7 +95,7 @@ import kotlin.streams.toList
 object HomeScreenImpl : HomeScreen() {
     @Composable
     // The Main function represents the main content of the home screen.
-    override fun Main(homeScreenViewModel: HomeScreenViewModel, onStartNewSession: (Long) -> Unit) {
+    override fun Main(homeScreenViewModel: HomeScreenViewModel, goToCreditScreen:()->Unit,onStartNewSession: (Long) -> Unit) {
         // Collect the state of topics from the ViewModel as a Composable State.
         val topics by homeScreenViewModel.topics.collectAsState()
 
@@ -136,7 +137,7 @@ object HomeScreenImpl : HomeScreen() {
                             Headline(
                                 currentUser = homeScreenViewModel.getCurrentUser(),
                                 onAccountClicked = {},  // Placeholder click handler for account action
-                                onSettingsClicked = {}  // Placeholder click handler for settings action
+                                onSettingsClicked = {goToCreditScreen()}  // Placeholder click handler for settings action
                             )
                         }
 
@@ -533,6 +534,12 @@ object HomeScreenImpl : HomeScreen() {
                     horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.Start),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val date = Date(session.timestamp)
+                    // Define the desired date format
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+
+                    // Format the date using the specified format
+                    val formattedDate = dateFormat.format(date)
                     // Surface for the session status indicator bar.
                     Surface(
                         shape = RoundedCornerShape(4.dp),
@@ -557,8 +564,7 @@ object HomeScreenImpl : HomeScreen() {
                                 else -> ""
                             }
                         } on ${
-                            SimpleDateFormat("mm/dd/yyyy").format(session.timestamp)
-                        }",
+                           formattedDate}",
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -603,6 +609,23 @@ object HomeScreenImpl : HomeScreen() {
         }
     }
 
+    fun getMonthName(index:Int):String{
+        return when(index){
+            0->"Jan"
+            1->"Feb"
+            2->"March"
+            3->"Apr"
+            4->"May"
+            5->"Jun"
+            6->"Jul"
+            7->"Aug"
+            8->"Sep"
+            9->"Oct"
+            10->"Nov"
+            11->"Dec"
+            else->""
+        }
+    }
 
     @OptIn(ExperimentalLayoutApi::class)
     @Composable

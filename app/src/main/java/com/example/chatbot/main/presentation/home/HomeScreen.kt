@@ -19,7 +19,7 @@ abstract class HomeScreen : com.example.chatbot.common.ui.util.Destination("Home
      * @param onStartNewSession Callback to be invoked when starting a new session.
      */
     @Composable
-    abstract fun Main(homeScreenViewModel: HomeScreenViewModel, onStartNewSession: (Long) -> Unit)
+    abstract fun Main(homeScreenViewModel: HomeScreenViewModel, goToCreditScreen:()->Unit,onStartNewSession: (Long) -> Unit)
 
     /**
      * Abstract function to define the headline component of the home screen.

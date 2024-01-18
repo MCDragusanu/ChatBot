@@ -17,5 +17,6 @@ sealed class QuizEvent {
     // Represents the completion of the quiz with a final grade.
     class GameCompleted(val finalGrade: Double) : QuizEvent()
 
+    class QuizSubmission:QuizEvent()
     class ConversationInit(val message: Message) : QuizEvent()
 }

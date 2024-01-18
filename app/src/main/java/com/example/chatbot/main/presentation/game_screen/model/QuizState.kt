@@ -12,8 +12,18 @@ sealed class QuizState() {
         Completed
     }
     // Represents the state of a multiple-choice quiz.
-    data class MultiChoiceQuizState(val question: Question, val currentPickedAnswer: Int , val isLoading:Boolean ) : QuizState()
+    data class MultiChoiceQuizState(val questionContent: String ,
+                                    val questionUid:Long,
+                                    val topicUid:Int,
+                                    val topicName : String,
+                                    val allAnswers:List<String>,
+                                    val correctAnswerIndex : Int,
+                                    val currentPickedAnswer: Int ,
+                                    val isLoading:Boolean ) : QuizState(){
+                                        fun isCorrect() = correctAnswerIndex == currentPickedAnswer
+                                    }
+
 
     // Represents the state of an open-ended quiz.
-    data class OpenEndedQuizState(val question: Question, val conversation: List<Message>) : QuizState()
+    data class OpenEndedQuizState(val question: Question, val topicName:String,val conversation: List<Message>) : QuizState()
 }

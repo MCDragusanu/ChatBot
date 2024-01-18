@@ -55,13 +55,13 @@ class OpenEndedQuestionController() : QuizController() {
 
 
             val question = async { retrieveQuestion() }.await()
-
+            val topicName = parent.module.questionRepository.getTopicName(question.topicUid)
             if (!conversation.any { it.isSystemMessage() }) {
                 val instruction = createNewInstruction(question)
 
                 sendInstructionMessage(instruction, onSuccess = {
                     // Update the quiz state with the loaded question and conversation messages.
-                    _state.update { QuizState.OpenEndedQuizState(question, conversation,) }
+                    _state.update { QuizState.OpenEndedQuizState(question,  topicName,conversation,) }
                     _screenState.update { QuizState.PossibleState.Default }
                 }, onFailure = { _screenState.update { QuizState.PossibleState.FailedToLoad } })
             }
@@ -72,7 +72,7 @@ class OpenEndedQuestionController() : QuizController() {
                     _screenState.update { QuizState.PossibleState.Completed }
             }
 
-            _state.update { QuizState.OpenEndedQuizState(question, conversation,) }
+            _state.update { QuizState.OpenEndedQuizState(question, parent.module.questionRepository.getTopicName(question.topicUid),conversation,) }
             _screenState.update { QuizState.PossibleState.Default }
             Log.d("Test", _screenState.value.name)
         }

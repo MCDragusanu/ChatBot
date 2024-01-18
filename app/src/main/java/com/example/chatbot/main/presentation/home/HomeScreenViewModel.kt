@@ -93,10 +93,10 @@ class HomeScreenViewModel:ViewModel() {
     fun getTopicsLabel(s: String): List<String> {
         // Split the input string into a list of topic UIDs and filter out blank entries.
         val ids = s.split('/').filter { it.isNotBlank() }.map { it.toInt() }
-
+        val result = _topics.value.filter { it.uid in ids  }.map { it.label }
         // Return the labels of predefined topics whose UIDs match the extracted IDs.
         //return predefinedTopics.filter { it.uid in ids }.map { it.label }
-        return listOf("" , "sajhjs")
+        return result
     }
 
     fun createNewSession(onNewSessionCreated: (Long) -> Unit) {

@@ -12,6 +12,7 @@ import com.example.chatbot.common.ui.theme.ChatBotTheme
 import com.example.chatbot.main.data.module.MainModule
 import com.example.chatbot.main.data.database_questions.cloud.CloudDataSource
 import com.example.chatbot.main.data.database_questions.entity.Question
+import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.example.chatbot.main.domain.use_cases.SyncronizeQuestions
 import com.example.chatbot.main.domain.use_cases.SyncronizeTopics
 import com.example.chatbot.main.presentation.game_screen.state_manager.SessionStateManager
@@ -29,8 +30,9 @@ class MainActivity : ComponentActivity() {
             dataSource = CloudDataSource.DataSource.ProjectDatabase,
             currentUser = User()
         )
-        addQuestionToDatabase(mainModule)
+
         lifecycleScope.launch {
+           // this@MainActivity.addTopics(mainModule)
             SyncronizeTopics.execute(mainModule, this)
             SyncronizeQuestions.execute(mainModule, this)
         }
@@ -61,51 +63,66 @@ class MainActivity : ComponentActivity() {
         )
     }*/
 
-    fun addQuestionToDatabase(module: MainModule) {
-        var questionUid: Long = 9999
-        val questions = listOf<Question>(
-            Question(
-                uid = ++questionUid,
-                questionContent = "What are the main types of text\n based digital content",
-                incorrectAnswers = buildString {
+ suspend fun addTopics(module: MainModule) {
+     val topics by lazy {
+         listOf<TopicMetadata>(
+             TopicMetadata(
+                 uid = 1,
+                 label = "Types and formats of digital contentTypes and formats of digital content",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(
+                 uid = 2,
+                 label = "Artificial Intelligence (AI) Generated Content",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(
+                 uid = 3,
 
-                    listOf("","",""
-                      /*aici puneti raspunsurile incorecte*/
-                    ).onEach {
-                        /*aici nu modificati*/
-                        append(it)
-                        append("/")
-                    }
+                 label = "Accessibility incorporation in digital content",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(
+                 uid = 4,
+                 label = "Virtual reality, augmented reality and mixed reality",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(
+                 uid = 5,
+                 label = "Digital content on personal, professional, and open platforms",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(
+                 uid = 6,
+                 label = "Data visualisation, Data manipulation, Data attribution",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(
+                 uid = 7,
+                 label = "SEO and digital marketing",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(
+                 uid = 8,
+                 label = "Protection techniques and mechanisms for copyrighting",
+                 keyWords = "",
+                 imageUid = -1
+             ),
+             TopicMetadata(uid = 9, label = "Licences", keyWords = "", imageUid = -1)
+         )
+     }
+     topics.onEach {
 
-                },
-                correctAnswer = "articles, blog posts, ebooks, and whitepapers.",
-                topicUid = 3,
-                questionType = Question.MULTICHOICE
-            ),
-            Question(
-                uid = ++questionUid,
-                questionContent = "How can user generated content be leveraged to benefit a brand's digital marketing strategy",
-                incorrectAnswers = buildString {
-                    listOf("","",""
-                       ).onEach {
-                        append(it)
-                        append("/")
-                    }
-                },
-                topicUid = 3,
-                correctAnswer = "User generated content provides genuine feedback and testimonials from real customers, which can enhance the brand's credibility and build trust with potential customers",
-            )
-
-        )
-        lifecycleScope.launch {
-            questions.onEach {
-                Log.d("Test", "topicUId = ${it.topicUid} , questionUid = ${it.uid} , incorrectAnswer = ${it.incorrectAnswers}  ,correctAnswer = ${it.correctAnswer}")
-            }
-            module.cloudDataSource.addQuestions(questions, module.source)
-        }
-
-    }
-
+         module.cloudDataSource.addTopic(it , module.source)
+     }
+ }
 }
 
 
