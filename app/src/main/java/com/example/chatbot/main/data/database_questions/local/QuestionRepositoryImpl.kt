@@ -20,9 +20,9 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
     }
 
     override suspend fun addQuestionMetadata(questionMetadata: QuestionMetadata) {
-        if (!questionMetadataDao.metadataAlreadyExists(questionMetadata)) {
+        //if (!questionMetadataDao.metadataAlreadyExists(questionMetadata)) {
             questionMetadataDao.addMetadata(questionMetadata)
-        } else throw Exception("Primary key collision for questionMetadata with pk = ${questionMetadata.questionUid}")
+       // } else throw Exception("Primary key collision for questionMetadata with pk = ${questionMetadata.questionUid}")
     }
 
     override suspend fun removeQuestionMetadata(metadata: QuestionMetadata){
@@ -79,7 +79,7 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
     }
 
     override suspend fun noQuestionsCached(): Boolean {
-        return questionMetadataDao.getQuestionCount() == 0
+     return  questionMetadataDao.getQuestionCount() == 0
     }
 
     override suspend fun addTopic(topic: TopicMetadata) {
@@ -99,5 +99,9 @@ class QuestionRepositoryImpl(private val questionMetadataDao: QuestionMetadataDa
 
     override suspend fun getTopicName(topicUid:Int): String {
         return questionMetadataDao.getTopicNameByUid(topicUid)
+    }
+
+    override suspend fun noMetadataGenerated(userUid: String): Boolean {
+        return questionMetadataDao.getAllMetadataForUser(userUid) == 0
     }
 }

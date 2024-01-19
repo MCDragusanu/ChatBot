@@ -42,11 +42,13 @@ object OnBoardNavGraph {
         splashScreenViewModel: SplashScreenViewModel,
         onCompletedAuth: (String) -> Unit
     ) {
+        //TODO fix crashing when navigating backwards
+
         // Create a navigation controller to manage navigation between Composables.
         val navController = rememberNavController()
 
         // Define the navigation flow using Jetpack Compose's NavHost and composable functions.
-        NavHost(navController, startDestination = loginScreen.dest) {
+        NavHost(navController, startDestination = splashScreen.dest) {
             composable(splashScreen.dest) {
                 // Display the splash screen and handle navigation to other screens.
                 splashScreen.Main(

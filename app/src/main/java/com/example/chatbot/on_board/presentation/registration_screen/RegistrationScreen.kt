@@ -109,7 +109,7 @@ abstract class RegistrationScreen : Destination("RegistrationScreen") {
      * @param onClick A callback function to handle the click event of the "Forgot Password" button.
      */
     @Composable
-    abstract fun RegisterButton(modifier: Modifier, onClick: () -> Unit)
+    abstract fun RegisterButton(modifier: Modifier, state: StateFlow<UIState>, onClick: () -> Unit)
 
 
 

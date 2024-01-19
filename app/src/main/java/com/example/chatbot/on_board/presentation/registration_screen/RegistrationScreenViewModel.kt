@@ -29,7 +29,7 @@ abstract class RegistrationScreenViewModel : ViewModel() {
     val lastNameFieldState = _lastNameFieldState.asStateFlow()
 
     protected val _firstNameFieldState = MutableStateFlow(TextFieldState())
-    val firstNameFieldState = _lastNameFieldState.asStateFlow()
+    val firstNameFieldState = _firstNameFieldState.asStateFlow()
 
     // State flows for email, password, terms, and UI components.
     protected val _emailFieldState = MutableStateFlow(TextFieldState())

@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material3.MaterialTheme
+import com.example.chatbot.common.ui.theme.ChatBotTheme
 import com.example.chatbot.main.MainActivity
 import com.example.chatbot.on_board.data.module.OnBoardModule
 import com.example.chatbot.on_board.presentation.login_screen.LoginScreenImpl
@@ -17,6 +19,8 @@ import com.example.chatbot.on_board.presentation.registration_screen.Registratio
 import com.example.chatbot.on_board.presentation.registration_screen.RegistrationScreenViewModelImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenImpl
 import com.example.chatbot.on_board.presentation.splash_screen.SplashScreenViewModelImpl
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 
 /**
  * The main activity for the onboarding process.
@@ -26,8 +30,9 @@ class OnBoardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         // Create an OnBoardModule with test mode enabled.
-        val onBoardModule = OnBoardModule.getModule(isInTestMode = false)
+        val onBoardModule = OnBoardModule.getModule(isInTestMode = false , this)
 
         // Initialize the LoginScreenViewModel and set the OnBoardModule dependency.
         val loginScreenViewModel by viewModels<LoginScreenViewModelImpl>().apply {
@@ -52,18 +57,21 @@ class OnBoardActivity : ComponentActivity() {
 
         // Set the content view for the activity.
         setContent {
+            ChatBotTheme {
+
+                OnBoardNavGraph.Main(
+                    loginScreenViewModel = loginScreenViewModel,
+                    loginScreen = LoginScreenImpl,
+                    registrationScreen = RegistrationScreenImpl,
+                    registrationScreenViewModel = registrationScreenViewModel,
+                    onBoardScreen = OnBoardScreenImpl,
+                    onBoardViewModel = onBoardViewModel,
+                    splashScreen = SplashScreenImpl,
+                    splashScreenViewModel = splashScreenViewModel,
+                    onCompletedAuth = { startMainActivity(it) }
+                )
+            }
             // The Composable content for the OnBoardActivity can be defined here.
-            OnBoardNavGraph.Main(
-                loginScreenViewModel = loginScreenViewModel,
-                loginScreen = LoginScreenImpl,
-                registrationScreen = RegistrationScreenImpl,
-                registrationScreenViewModel = registrationScreenViewModel,
-                onBoardScreen = OnBoardScreenImpl,
-                onBoardViewModel = onBoardViewModel,
-                splashScreen = SplashScreenImpl,
-                splashScreenViewModel = splashScreenViewModel,
-                onCompletedAuth = { startMainActivity(it) }
-            )
         }
     }
 

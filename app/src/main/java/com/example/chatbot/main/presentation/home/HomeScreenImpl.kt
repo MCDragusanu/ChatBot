@@ -135,7 +135,7 @@ object HomeScreenImpl : HomeScreen() {
                         // Item 1: Headline section displaying user information and action buttons.
                         item {
                             Headline(
-                                currentUser = homeScreenViewModel.getCurrentUser(),
+                                currentUser = homeScreenViewModel.currentUser.collectAsState().value?:User(),
                                 onAccountClicked = {},  // Placeholder click handler for account action
                                 onSettingsClicked = {goToCreditScreen()}  // Placeholder click handler for settings action
                             )

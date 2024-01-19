@@ -4,6 +4,7 @@ import RecommendationMatrixImpl
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatbot.common.databases.user_database.User
 import com.example.chatbot.main.data.database_messages.model.SessionMetadata
 import com.example.chatbot.main.data.database_messages.model.QuizMetadata
 import com.example.chatbot.main.data.database_questions.entity.Question
@@ -40,6 +41,8 @@ class HomeScreenViewModel:ViewModel() {
     private val _questionCount = MutableStateFlow<Int>(10)
     val questionCount = _questionCount.asStateFlow()
 
+    private val _currentUser:MutableStateFlow<User?> = MutableStateFlow(null)
+    val currentUser = _currentUser.asStateFlow()
     // Function to set the MainModule instance.
     fun setModule(newModule: MainModule) {
         // Assign the new MainModule instance to the class property.
@@ -52,22 +55,24 @@ class HomeScreenViewModel:ViewModel() {
                 module.questionRepository.getAllTopics()
             }
             _recentSessions.update {
-                module.conversationRepository.retrieveSessionsByUserUid(module.currentUser.uid)
+                module.conversationRepository.retrieveSessionsByUserUid(module.currentUserUid)
             }
+            //TODO check network connection
+            _currentUser.update { module.userRepositoryImpl.getUserByUid(module.currentUserUid?:"").getOrNull()?:User() }
         }
     }
 
 
 
     // Function to retrieve the current user from the MainModule.
-    fun getCurrentUser() = module.currentUser
+
 
     // Function to get questions metadata for a specific topic.
     // Returns a Flow emitting a list of integers representing question statuses.
     fun getQuestionsMetadataForTopic(topicUid: Int): Flow<List<Int>> = flow {
         // Emit the list of question statuses for the specified topic and current user.
         emit(
-            module.questionRepository.getAllMetadataForTopic(topicUid, module.currentUser.uid)
+            module.questionRepository.getAllMetadataForTopic(topicUid, module.currentUserUid)
                 .map { it.status }
         )
     }
@@ -93,7 +98,11 @@ class HomeScreenViewModel:ViewModel() {
     fun getTopicsLabel(s: String): List<String> {
         // Split the input string into a list of topic UIDs and filter out blank entries.
         val ids = s.split('/').filter { it.isNotBlank() }.map { it.toInt() }
-        val result = _topics.value.filter { it.uid in ids  }.map { it.label }
+        val result = mutableListOf<String>()
+        ids.onEach {id->
+            val label = _topics.value.find { it.uid == id}
+            result.add(label?.label?:"")
+        }
         // Return the labels of predefined topics whose UIDs match the extracted IDs.
         //return predefinedTopics.filter { it.uid in ids }.map { it.label }
         return result
@@ -106,7 +115,7 @@ class HomeScreenViewModel:ViewModel() {
                 // Build the coefficient matrix
                 val recommendationMatrix = RecommendationMatrixImpl(
                     module.questionRepository.buildWeightMatrix(
-                        module.currentUser.uid
+                        module.currentUserUid
                     )
                 )
 
@@ -153,7 +162,7 @@ class HomeScreenViewModel:ViewModel() {
                 // Create a new session metadata
                 val session = SessionMetadata(
                     uid = sessionUid,
-                    userUid = module.currentUser.uid,
+                    userUid = module.currentUserUid,
                     status = SessionMetadata.STARTED,
                     timestamp = System.currentTimeMillis(),
                     topicsUids = topicsSelectedField,

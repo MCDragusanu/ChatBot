@@ -121,11 +121,11 @@ class SessionStateManager : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val metadata = module.questionRepository.getMetadataByQuestionUid(
                 quizMetadata.questionUid,
-                module.currentUser.uid
+                module.currentUserUid
             )
             if (metadata == null) {
                 val newMetadata = QuestionMetadata(
-                    module.currentUser.uid,
+                    module.currentUserUid,
                     quizMetadata.uid,
                     grade,
                     weight = if (grade >= 7) 10.0 else 9.0

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
@@ -51,43 +52,64 @@ import com.example.chatbot.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import md_theme_light_primary
 
 object OnBoardScreenImpl: OnBoardScreen() {
-    class Feature (val imageId: Int , val titleId:Int, val bodyId: Int)
-    {
-        companion object{
-            val list = listOf(Feature(R.drawable.poza1,R.string.onboard_feature1_title,R.string.onboard_feature1_body),
-                Feature(R.drawable.poza2,R.string.onboard_feature2_title,R.string.onboard_feature2_body),
-                Feature(R.drawable.poza3,R.string.onboard_feature3_title,R.string.onboard_feature3_body))
+    class Feature(val imageId: Int, val titleId: Int, val bodyId: Int) {
+        companion object {
+            val list = listOf(
+                Feature(
+                    R.drawable.poza1,
+                    R.string.onboard_feature1_title,
+                    R.string.onboard_feature1_body
+                ),
+                Feature(
+                    R.drawable.poza2,
+                    R.string.onboard_feature2_title,
+                    R.string.onboard_feature2_body
+                ),
+                Feature(
+                    R.drawable.poza3,
+                    R.string.onboard_feature3_title,
+                    R.string.onboard_feature3_body
+                )
+            )
         }
     }
+
     @Composable
     override fun Main(viewModel: OnBoardViewModel, onRegister: () -> Unit) {
         Box(modifier = Modifier.fillMaxSize())
         {
-            Image(painter = painterResource(R.drawable.black_background),contentDescription = null, contentScale = ContentScale.Crop,modifier = Modifier.fillMaxSize())
-            foreground(viewModel,onRegister)
+            Image(
+                painter = painterResource(R.drawable.black_background),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            foreground(viewModel, onRegister)
         }
 
     }
+
     @Composable
     override fun FeaturesCarousel(modifier: Modifier, onItemChanges: (Int) -> Unit) {
         //cauta LazyRow care va contine toate acele carduri cu imagini
         val state = rememberLazyListState()
         LazyRow(state = state) {
-                items(Feature.list,key = {it.imageId})
-                {
-                    FeatureCard(modifier = Modifier.fillParentMaxWidth() ,it)
-                }
+            items(Feature.list, key = { it.imageId })
+            {
+                FeatureCard(modifier = Modifier.fillParentMaxWidth(), it)
+            }
         }
-        LaunchedEffect(key1 = state.firstVisibleItemIndex )
+        LaunchedEffect(key1 = state.firstVisibleItemIndex)
         {
             onItemChanges(state.firstVisibleItemIndex)
         }
 
 
-
     }
+
     @Composable
     fun FeatureCard(modifier: Modifier, feature: Feature) {
         Card(
@@ -95,7 +117,7 @@ object OnBoardScreenImpl: OnBoardScreen() {
             colors = CardDefaults.cardColors(containerColor = Color.Transparent)
 
         ) {
-            Column(modifier = Modifier.padding(16.dp)){
+            Column(modifier = Modifier.padding(16.dp)) {
                 Image(painter = painterResource(feature.imageId), contentDescription = null)
                 Text(
                     text = stringResource(feature.titleId),
@@ -113,7 +135,6 @@ object OnBoardScreenImpl: OnBoardScreen() {
             }
         }
     }
-
 
 
     @Composable
@@ -164,8 +185,8 @@ object OnBoardScreenImpl: OnBoardScreen() {
     }
 
 
-
-    @Composable fun foreground(viewModel: OnBoardViewModel, onRegister: () -> Unit){
+    @Composable
+    fun foreground(viewModel: OnBoardViewModel, onRegister: () -> Unit) {
 
         val currentItem = MutableStateFlow(0)
         val scope = rememberCoroutineScope()
@@ -174,11 +195,11 @@ object OnBoardScreenImpl: OnBoardScreen() {
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            FeaturesCarousel (modifier= Modifier
+        ) {
+            FeaturesCarousel(modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),onItemChanges = {
-                scope.launch{currentItem.emit(it)}
+                .wrapContentHeight(), onItemChanges = {
+                scope.launch { currentItem.emit(it) }
 
             })
             ItemSlider(
@@ -186,7 +207,7 @@ object OnBoardScreenImpl: OnBoardScreen() {
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 currentItem = currentItem,
-                numberOfItems = 3 ,
+                numberOfItems = 3,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             )
@@ -200,19 +221,17 @@ object OnBoardScreenImpl: OnBoardScreen() {
 
     @Composable
     override fun RegisterButton(modifier: Modifier, onClick: () -> Unit) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Button(
-                onClick = onClick
-            )
-                    {
-                        Text(text = "Register Now")
-                    }
+
+        Button(
+            onClick = onClick,
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp),
+            colors = ButtonDefaults.buttonColors(md_theme_light_primary)
+        )
+        {
+            Text(text = "Register Now")
         }
     }
+
 }
 
 

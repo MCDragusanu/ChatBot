@@ -14,6 +14,8 @@ import com.example.chatbot.R
 import com.example.chatbot.common.services.account_manager.AccountErrors
 import com.example.chatbot.common.ui.util.SnackbarEvent
 import com.example.chatbot.common.ui.util.UIState
+import com.example.chatbot.main.domain.use_cases.SyncronizeQuestions
+import com.example.chatbot.main.domain.use_cases.SyncronizeTopics
 import com.example.chatbot.on_board.data.auth.AuthError
 import com.example.chatbot.on_board.domain.EmailValidator
 import kotlinx.coroutines.Dispatchers
@@ -136,7 +138,7 @@ class LoginScreenViewModelImpl:LoginScreenViewModel() {
 
             module.authService.loginUser(_emailState.value.content, _passwordState.value.content)
                 .onFailure { onLoginError(it) }
-                .onSuccess {
+                .onSuccess {uid->
 
                     _emailState.update { it.copy(state = UIState.Completed, errorCode = null) }
 
@@ -144,11 +146,29 @@ class LoginScreenViewModelImpl:LoginScreenViewModel() {
 
                     _loginBtnState.update { UIState.Completed }
 
+                    viewModelScope.launch(Dispatchers.IO){
+                        SyncronizeQuestions.execute(
+                            module.cloudDataSource,
+                            uid,
+                            module.dataSource,
+                            module.questionRepository,
+                            this
+                        )
+                        SyncronizeTopics.execute(
+                            module.cloudDataSource,
+                            module.dataSource,
+                            module.questionRepository,
+                            this
+                        )
+                    }.invokeOnCompletion {
+                        viewModelScope.launch(Dispatchers.Main) {
+
+                            onCompletedLogin(uid)
+                        }
+                    }
                     // Switching context because current one is set to IO .
                     // onCompletedLogin will be called from UI Layer which will cause an error beacause UI must run only in Main context
-                    viewModelScope.launch(Dispatchers.Main) {
-                        onCompletedLogin(it)
-                    }
+
                 }
         }
     }

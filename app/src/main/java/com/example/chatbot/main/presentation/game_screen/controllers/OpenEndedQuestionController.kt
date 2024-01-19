@@ -66,7 +66,7 @@ class OpenEndedQuestionController() : QuizController() {
                 }, onFailure = { _screenState.update { QuizState.PossibleState.FailedToLoad } })
             }
 
-            val metadata = parent.module.questionRepository.getMetadataByQuestionUid(question.uid , parent.module.currentUser.uid)
+            val metadata = parent.module.questionRepository.getMetadataByQuestionUid(question.uid , parent.module.currentUserUid)
             metadata?.let {
                 if(it.status ==QuestionMetadata.COMPLETED)
                     _screenState.update { QuizState.PossibleState.Completed }

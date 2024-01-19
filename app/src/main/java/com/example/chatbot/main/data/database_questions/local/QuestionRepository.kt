@@ -33,4 +33,6 @@ interface QuestionRepository {
     }
 
     suspend fun getTopicName(topicUid:Int): String
+
+    suspend fun noMetadataGenerated (userUid: String):Boolean
 }

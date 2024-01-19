@@ -1,5 +1,6 @@
 package com.example.chatbot.main.data.database_questions.cloud
 
+import android.util.Log
 import com.example.chatbot.main.data.database_questions.entity.Question
 import com.example.chatbot.main.data.database_questions.entity.TopicMetadata
 import com.google.firebase.Firebase
@@ -128,7 +129,7 @@ class FirebaseCloudDatabase : CloudDataSource {
             }
 
             job.join()
-
+Log.d("Test" ,"retrieved ${topicsList.size} topics and ${questionList.size} questions")
             return Result.success(Pair(topicsList, questionList))
 
         } catch (e: Exception) {

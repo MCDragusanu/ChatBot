@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -45,13 +46,17 @@ import com.example.chatbot.common.ui.util.UIState
 import com.example.chatbot.common.ui.theme.Typography
 import kotlinx.coroutines.flow.StateFlow
 import androidx.compose.foundation.layout.Arrangement
-
+import md_theme_dark_onSurface
+import md_theme_dark_primaryContainer
+import md_theme_light_onSurface
+import md_theme_light_primary
+import md_theme_light_primaryContainer
 
 
 object LoginScreenImpl:LoginScreen() {
 
     @Composable
-    fun NormalTextComponent(value: String){
+    fun NormalTextComponent(value: String) {
         Text(
             text = value,
             modifier = Modifier
@@ -64,8 +69,9 @@ object LoginScreenImpl:LoginScreen() {
             textAlign = TextAlign.Center
         )
     }
+
     @Composable
-    fun HeadingTextComponent(value: String){
+    fun HeadingTextComponent(value: String) {
         Text(
             text = value,
             modifier = Modifier
@@ -82,24 +88,28 @@ object LoginScreenImpl:LoginScreen() {
     }
 
     @Composable
-    fun LoginCard(modifier: Modifier,
-                  emailState: StateFlow<TextFieldState>,
-                  onEmailChanged: (String) -> Unit,
-                  passwordState: StateFlow<TextFieldState>,
-                  onPasswordChanged: (String) -> Unit,
-                  onForgotPasswordClick: () -> Unit,
-                  buttonLoginState: StateFlow<UIState>,
-                  onButtonLoginClick: () -> Unit,
-                  onRegister: () -> Unit){
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xAA143D7A)),
-            border = BorderStroke(0.7f.dp, color = Color(0xFF39ECF8))
+    fun LoginCard(
+        modifier: Modifier,
+        emailState: StateFlow<TextFieldState>,
+        onEmailChanged: (String) -> Unit,
+        passwordState: StateFlow<TextFieldState>,
+        onPasswordChanged: (String) -> Unit,
+        onForgotPasswordClick: () -> Unit,
+        buttonLoginState: StateFlow<UIState>,
+        onButtonLoginClick: () -> Unit,
+        onRegister: () -> Unit
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
         ) {
             Column(
-                    modifier = Modifier.padding(12.dp)
-            ){ Spacer(modifier = Modifier.height(8.dp))
+                modifier = Modifier.padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
 
                 NormalTextComponent(value = stringResource(id = R.string.hey))
                 HeadingTextComponent(value = stringResource(id = R.string.login_into_acc))
@@ -111,28 +121,44 @@ object LoginScreenImpl:LoginScreen() {
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 PasswordTextField(
-                    Modifier.fillMaxWidth().wrapContentWidth(),
+                    Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(),
                     state = passwordState,
                     onValueChanged = onPasswordChanged
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 ForgotPasswordButton(
-                    Modifier.fillMaxWidth().wrapContentWidth(),
+                    Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(),
                     onClick = onForgotPasswordClick
                 )
                 Spacer(modifier = Modifier.height(50.dp))
                 LoginButton(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                     state = buttonLoginState
                 ) {
                     onButtonLoginClick()
                 }
-                RegisterButton(modifier = Modifier.fillMaxWidth().wrapContentHeight(), onClick = onRegister)
-            }  }
+                Spacer(modifier = Modifier.height(16.dp))
+                RegisterButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(), onClick = onRegister
+                )
+            }
+        }
     }
 
     @Composable
-    override fun Main(viewModel: LoginScreenViewModel, onLoginCompleted: (String) -> Unit, onRegister: () -> Unit) {
+    override fun Main(
+        viewModel: LoginScreenViewModel,
+        onLoginCompleted: (String) -> Unit,
+        onRegister: () -> Unit
+    ) {
 
         val snackbarHostState = SnackbarHostState()
 
@@ -144,112 +170,107 @@ object LoginScreenImpl:LoginScreen() {
         //in this case it will show / hide the dialog for the password reset
         var showForgotPasswordDialog by remember { mutableStateOf(false) }
 
-        Box(
+
+
+        Scaffold(
             modifier = Modifier
-                .fillMaxWidth()
-        )
-        {
-            Image(
-                painter = painterResource(id = R.drawable.bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillBounds // Adjust this based on your image requirements
-            )
+                .fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.background,
+            snackbarHost = {
+                currentEvent?.let { event ->
+                    //?.let means that will be executed only if the val is not null
+                    // a more elegant way to handle the case if the val can be null
+                    SnackbarHost(snackbarHostState) {
+                        when (event.eventType) {
+                            //here we change the color of the snackbar based on the event type
+                            SnackbarEvent.EventType.Error -> {
+                                Snackbar(
+                                    modifier = Modifier,
+                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                    snackbarData = it
+                                )
+                            }
 
-            Scaffold(
-                modifier = Modifier
-                    .fillMaxSize(),
-                containerColor = Color.Transparent,
-                snackbarHost = {
-                    currentEvent?.let { event ->
-                        //?.let means that will be executed only if the val is not null
-                        // a more elegant way to handle the case if the val can be null
-                        SnackbarHost(snackbarHostState) {
-                            when (event.eventType) {
-                                //here we change the color of the snackbar based on the event type
-                                SnackbarEvent.EventType.Error -> {
-                                    Snackbar(
-                                        modifier = Modifier,
-                                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                                        snackbarData = it
-                                    )
-                                }
+                            SnackbarEvent.EventType.Popup -> {
+                                Snackbar(
+                                    modifier = Modifier,
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    snackbarData = it
+                                )
+                            }
 
-                                SnackbarEvent.EventType.Popup -> {
-                                    Snackbar(
-                                        modifier = Modifier,
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        snackbarData = it
-                                    )
-                                }
-
-                                SnackbarEvent.EventType.Confirmation -> {
-                                    Snackbar(
-                                        modifier = Modifier,
-                                        containerColor = Color.Green,
-                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        snackbarData = it
-                                    )
-                                }
+                            SnackbarEvent.EventType.Confirmation -> {
+                                Snackbar(
+                                    modifier = Modifier,
+                                    containerColor = Color.Green,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    snackbarData = it
+                                )
                             }
                         }
                     }
-                },
-                contentColor = MaterialTheme.colorScheme.onBackground,
+                }
+            },
+            contentColor = MaterialTheme.colorScheme.onBackground,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize().padding(it).padding(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)
-                ) {
-                    Headline()
-                    LoginCard(modifier = Modifier,
-                        emailState = viewModel.emailState,
-                        onEmailChanged = viewModel :: onEmailChanged,
-                        onPasswordChanged = viewModel :: onPasswordChanged,
-                        onForgotPasswordClick = {
-                                                showForgotPasswordDialog = true
-                        },
-                        buttonLoginState = viewModel.loginBtnState,
-                        passwordState = viewModel.passwordState,
-                        onRegister = onRegister,
-                        onButtonLoginClick = {
-                            viewModel.onLoginIsPressed(onLoginCompleted)
-                        }
-                        )
-                }
-            }
-
-            if (showForgotPasswordDialog) {
-                ForgotPasswordDialog(
-                    modifier = Modifier.fillMaxSize().padding(16.dp),
-                    emailFieldState = viewModel.passwordResetEmailField,
-                    sendResetPasswordEmailButtonState = viewModel.passwordResetButton,
-                    onDismiss = {
-                        //onDismiss is called when the dialog closes
-                        showForgotPasswordDialog = false
+                Headline()
+                LoginCard(modifier = Modifier,
+                    emailState = viewModel.emailState,
+                    onEmailChanged = viewModel::onEmailChanged,
+                    onPasswordChanged = viewModel::onPasswordChanged,
+                    onForgotPasswordClick = {
+                        showForgotPasswordDialog = true
                     },
-                    onEmailChanged = viewModel::onResetPasswordEmaiLChanged,
-                    onSendEmail = {
-                        viewModel.sendPasswordResetEmail {
-                            //if a function is given as last argument you can use this syntax
-                            //after the task is completed we close the dialogue
-                            showForgotPasswordDialog = false
-                        }
-                    })
+                    buttonLoginState = viewModel.loginBtnState,
+                    passwordState = viewModel.passwordState,
+                    onRegister = onRegister,
+                    onButtonLoginClick = {
+                        viewModel.onLoginIsPressed(onLoginCompleted)
+                    }
+                )
             }
-            //Launch effect will trigger a coroutine that is triggered whenever the argument you provide has changed
-            LaunchedEffect(currentEvent) {
-                //whenever currentEvent changes , we check it the event is not null
-                if (currentEvent != null) {
-                    //if event is not null show the snackbar
-                    snackbarHostState.showSnackbar(message = currentEvent!!.message)
-                }
+        }
+
+        if (showForgotPasswordDialog) {
+            ForgotPasswordDialog(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                emailFieldState = viewModel.passwordResetEmailField,
+                sendResetPasswordEmailButtonState = viewModel.passwordResetButton,
+                onDismiss = {
+                    //onDismiss is called when the dialog closes
+                    showForgotPasswordDialog = false
+                },
+                onEmailChanged = viewModel::onResetPasswordEmaiLChanged,
+                onSendEmail = {
+                    viewModel.sendPasswordResetEmail {
+                        //if a function is given as last argument you can use this syntax
+                        //after the task is completed we close the dialogue
+                        showForgotPasswordDialog = false
+                    }
+                })
+        }
+        //Launch effect will trigger a coroutine that is triggered whenever the argument you provide has changed
+        LaunchedEffect(currentEvent) {
+            //whenever currentEvent changes , we check it the event is not null
+            if (currentEvent != null) {
+                //if event is not null show the snackbar
+                snackbarHostState.showSnackbar(message = currentEvent!!.message)
             }
         }
     }
+
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -268,7 +289,9 @@ object LoginScreenImpl:LoginScreen() {
                 textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
-                modifier = Modifier.fillMaxWidth().width(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .width(20.dp),
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
                 label = { Text("Email") },
@@ -281,7 +304,11 @@ object LoginScreenImpl:LoginScreen() {
                     AnimatedVisibility(currentState.state.isCompleted()) {
                         //Animates and displays what's inside the block when the boolean is true
                         //Show a checkmark when the email is correct
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Icon(
+                            Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                     AnimatedVisibility(currentState.state.isError()) {
                         Icon(Icons.Filled.Warning, contentDescription = null)
@@ -318,26 +345,38 @@ object LoginScreenImpl:LoginScreen() {
                 textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
-                modifier = Modifier.fillMaxWidth().width(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .width(20.dp),
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
-                visualTransformation = if (passwordIsHidden)  VisualTransformation.None else PasswordVisualTransformation(),  // to show ****** when is hidden else tghe content
+                visualTransformation = if (passwordIsHidden) VisualTransformation.None else PasswordVisualTransformation(),  // to show ****** when is hidden else tghe content
                 label = { Text("Password") },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(id = R.color.blue),
                     unfocusedBorderColor = colorResource(id = R.color.blue),
                 ),
-                leadingIcon = { Icon(imageVector = Icons.Filled.Lock, contentDescription = null, ) },
+                leadingIcon = { Icon(imageVector = Icons.Filled.Lock, contentDescription = null,) },
                 trailingIcon = {
                     AnimatedVisibility(passwordIsHidden && !currentState.state.isCompleted()) {
                         //Animates and displays what's inside the block when the boolean is true
-                        Icon(Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.clickable { passwordIsHidden = false })
+                        Icon(
+                            Icons.Filled.Visibility,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { passwordIsHidden = false })
                     }
                     AnimatedVisibility(!passwordIsHidden) {
-                        Icon(Icons.Filled.VisibilityOff, contentDescription = null,modifier = Modifier.clickable { passwordIsHidden = true })
+                        Icon(
+                            Icons.Filled.VisibilityOff,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { passwordIsHidden = true })
                     }
                     AnimatedVisibility(currentState.state.isCompleted()) {
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Icon(
+                            Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             )
@@ -358,7 +397,7 @@ object LoginScreenImpl:LoginScreen() {
             when {
                 state.isCompleted() -> Color.Green
                 state.isError() -> MaterialTheme.colorScheme.errorContainer
-                else -> MaterialTheme.colorScheme.primaryContainer
+                else ->MaterialTheme.colorScheme.primaryContainer
             }, label = ""
         ) // Animate the container color based on state
 
@@ -366,15 +405,19 @@ object LoginScreenImpl:LoginScreen() {
             when {
                 state.isCompleted() -> Color.White
                 state.isError() -> MaterialTheme.colorScheme.onErrorContainer
-                else -> MaterialTheme.colorScheme.onPrimaryContainer
+                else -> if (isSystemInDarkTheme()) md_theme_dark_onSurface else md_theme_light_onSurface
             }, label = ""
         ) // Animate the content color based on state
 
-        Button(onClick = {
-            if (!state.isLoading()) {
-                onClick()
-            }// with these we prevent the user from triggering the login when the task is already being processed
-        }, modifier = modifier, colors = ButtonDefaults.buttonColors(containerColor, contentColor)) {
+        Button(
+            onClick = {
+                if (!state.isLoading()) {
+                    onClick()
+                }// with these we prevent the user from triggering the login when the task is already being processed
+            },
+            modifier = modifier,
+            colors = ButtonDefaults.buttonColors(containerColor, contentColor)
+        ) {
             AnimatedContent(
                 state,
                 label = ""
@@ -392,7 +435,11 @@ object LoginScreenImpl:LoginScreen() {
                     }
 
                     UIState.Loading -> {
-                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth().height(2.dp))
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(2.dp)
+                        )
                         //Be creative
                         //TODO::Come up with interesting animations for loading
                     }
@@ -427,7 +474,9 @@ object LoginScreenImpl:LoginScreen() {
     @Composable
     override fun Headline() {
         Column(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -464,12 +513,19 @@ object LoginScreenImpl:LoginScreen() {
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                    .background(MaterialTheme.colorScheme.tertiaryContainer, shape = RoundedCornerShape(15.dp)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(
+                        MaterialTheme.colorScheme.tertiaryContainer,
+                        shape = RoundedCornerShape(15.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
-                    modifier = Modifier.wrapContentSize().padding(16.dp),
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom)
                 ) {
@@ -481,12 +537,16 @@ object LoginScreenImpl:LoginScreen() {
 
 
                     EmailTextField(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         emailFieldState,
                         onValueChanged = onEmailChanged
                     )
 
-                    ForgotPasswordDialogButton(modifier = Modifier.fillMaxWidth().wrapContentHeight(), onClick = {
+                    ForgotPasswordDialogButton(modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(), onClick = {
                         if (!btnState.isLoading()) onSendEmail()
                     })
                 }
@@ -527,21 +587,23 @@ object LoginScreenImpl:LoginScreen() {
             Text("Send Email")
         }
     }
-@Composable
+
+    @Composable
     override fun RegisterButton(modifier: Modifier, onClick: () -> Unit) {
-        Text(
-            text = buildAnnotatedString {
-                append("Don't have an Account? ")
-                withStyle(
-                    style = SpanStyle(
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontSize = 16.sp
-                    )
-                ) {
-                    append("Create Now!")
-                }
-            }, modifier = Modifier
-                .clickable { onClick() }, textAlign = TextAlign.End
-        )
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .clickable { onClick() },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(
+                8.dp,
+                Alignment.CenterHorizontally
+            )) {
+
+            Text(
+                text = "Don't have an Account? "
+            )
+            Text(text = "Create Now"  , color = MaterialTheme.colorScheme.primary)
+        }
     }
 }

@@ -57,8 +57,8 @@ interface CloudDataSource {
      * @param questionCollection The name of the collection where questions are stored.
      */
     sealed class DataSource(val topicCollection: String, val questionCollection: String) {
-        object ProjectDatabase : DataSource("Project Topic Collection", "Project Question Collection")
-        object ProductionDatabase : DataSource("Production Topic Collection", "Production Question Collection")
+        data object ProjectDatabase : DataSource("Project Topic Collection", "Project Question Collection")
+        data object ProductionDatabase : DataSource("Production Topic Collection", "Production Question Collection")
     }
 }
 

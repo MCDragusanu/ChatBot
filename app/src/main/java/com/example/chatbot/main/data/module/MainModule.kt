@@ -3,6 +3,8 @@ package com.example.chatbot.main.data.module
 import android.app.Application
 import android.util.Log
 import com.example.chatbot.common.databases.user_database.User
+import com.example.chatbot.common.databases.user_database.UserRepository
+import com.example.chatbot.common.databases.user_database.UserRepositoryImpl
 import com.example.chatbot.common.services.account_manager.AccountManager
 import com.example.chatbot.common.services.account_manager.AccountManagerImpl
 import com.example.chatbot.common.services.account_manager.AccountManagerTestImpl
@@ -38,7 +40,8 @@ class MainModule private constructor(isInTestMode:Boolean,
                                      val questionMetadataDatabase: QuestionMetadataDatabase,
                                      val questionRepository:QuestionRepository,
                                      val cloudDataSource: CloudDataSource,
-                                     val currentUser:User = User()
+                                     val userRepositoryImpl: UserRepository = UserRepositoryImpl(),
+                                     val currentUserUid:String = User().uid
 
 
     ) {
@@ -67,7 +70,7 @@ class MainModule private constructor(isInTestMode:Boolean,
         fun getInstance(
             inTestMode: Boolean,
             application: Application,
-            currentUser: User,
+            currentUserUid: String?,
             dataSource: CloudDataSource.DataSource
         ): MainModule {
             return instance ?: MainModule(
@@ -90,7 +93,7 @@ class MainModule private constructor(isInTestMode:Boolean,
                     ).sessionMetadataDao
                 ),
                 cloudDataSource = FirebaseCloudDatabase(),
-                currentUser = currentUser
+                currentUserUid =currentUserUid?:User().uid
             )
         }
     }

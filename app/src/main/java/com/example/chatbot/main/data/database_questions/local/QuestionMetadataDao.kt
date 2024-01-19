@@ -138,5 +138,8 @@ interface QuestionMetadataDao {
    @Query("SELECT label from topic_metadata_table where uid = :topicUid")
     fun getTopicNameByUid(topicUid: Int): String
 
+    @Query("Select Count(uid) from question_metadata_table where userUid = :userUid")
+    fun getAllMetadataForUser(userUid: String): Int
+
 
 }

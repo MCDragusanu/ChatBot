@@ -3,14 +3,19 @@ package com.example.chatbot.on_board.presentation.registration_screen
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.chatbot.R
+import com.example.chatbot.common.databases.user_database.User
 import com.example.chatbot.common.ui.util.SnackbarEvent
 import com.example.chatbot.common.ui.util.UIState
+import com.example.chatbot.main.data.database_questions.local.QuestionRepository
+import com.example.chatbot.main.domain.use_cases.SyncronizeQuestions
+import com.example.chatbot.main.domain.use_cases.SyncronizeTopics
 import com.example.chatbot.on_board.data.auth.AuthError
 import com.example.chatbot.on_board.domain.EmailValidator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
 
@@ -27,7 +32,7 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
     }
 
     override fun onFirstNameChanged(newFirstName: String) {
-        this._lastNameFieldState.update { it.copy(content = newFirstName) }
+        this._firstNameFieldState.update { it.copy(content = newFirstName) }
     }
     override fun onLastNameChanged(newLastName: String) {
         this._lastNameFieldState.update { it.copy(content = newLastName) }
@@ -44,27 +49,64 @@ class RegistrationScreenViewModelImpl:RegistrationScreenViewModel() {
         _emailFieldState.update { it.copy(errorCode = null, state = UIState.Enabled) }
 
         //checking the text fields input
-        val inputIsValid = inputIsValid(_emailFieldState.value.content, passwordFieldState.value.content,_termsIsChecked.value)
+        val inputIsValid = inputIsValid(
+            _emailFieldState.value.content,
+            passwordFieldState.value.content,
+            _termsIsChecked.value
+        )
 
         //we only start the registration process if the input is valid
         if (inputIsValid) viewModelScope.launch(Dispatchers.IO) {
             //putting btnRegister in loading state
-            _btnRegister.update{ UIState.Loading }
+            _btnRegister.update { UIState.Loading }
 
-            module.authService.registerUser(_emailFieldState.value.content, _passwordFieldState.value.content)
+            module.authService.registerUser(
+                _emailFieldState.value.content,
+                _passwordFieldState.value.content
+            )
                 .onFailure { onError(it) }
-                .onSuccess {
+                .onSuccess {uid->
 
                     _emailFieldState.update { it.copy(state = UIState.Completed, errorCode = null) }
 
-                    _passwordFieldState.update { it.copy(state = UIState.Completed, errorCode = null) }
+                    _passwordFieldState.update {
+                        it.copy(
+                            state = UIState.Completed,
+                            errorCode = null
+                        )
+                    }
 
                     _btnRegister.update { UIState.Completed }
 
-                    // Switching context because current one is set to IO .
-                    // onCompletedRegistration will be called from UI Layer which will cause an error beacause UI must run only in Main context
-                    viewModelScope.launch(Dispatchers.Main) {
-                        onCompletedRegistration(it)
+                    val user = User(
+                        uid = uid,
+                        email = _emailFieldState.value.content,
+                        firstName = _firstNameFieldState.value.content,
+                        lastName = _lastNameFieldState.value.content,
+                        isEmailVerified = false,
+                        occupation = _occupationFieldState.value.content,
+                        dateOfCreation = Date().toString()
+                    )
+                    viewModelScope.launch(Dispatchers.IO) {
+                        module.userRepository.addUser(user)
+                        SyncronizeQuestions.execute(
+                            module.cloudDataSource,
+                            uid,
+                            module.dataSource,
+                            module.questionRepository,
+                            this
+                        )
+                        SyncronizeTopics.execute(
+                            module.cloudDataSource,
+                            module.dataSource,
+                            module.questionRepository,
+                            this
+                        )
+                    }.invokeOnCompletion {
+
+                        viewModelScope.launch(Dispatchers.Main) {
+                            onCompletedRegistration(uid)
+                        }
                     }
                 }
         }

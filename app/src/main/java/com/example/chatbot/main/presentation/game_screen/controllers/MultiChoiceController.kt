@@ -75,7 +75,7 @@ class MultiChoiceController() : QuizController() {
         _quizState.value?.let {state->
             parent.viewModelScope.launch {
 
-               val metadata =  parent.module.questionRepository.getMetadataByQuestionUid(questionUid =state.questionUid , userUid = parent.module.currentUser.uid)
+               val metadata =  parent.module.questionRepository.getMetadataByQuestionUid(questionUid =state.questionUid , userUid = parent.module.currentUserUid)
                 if(metadata != null){
                     val updated = metadata.copy(currentGrade = if(isCorrect) 10.0 else 1.0,status = if(isCorrect) QuestionMetadata.COMPLETED else QuestionMetadata.WRONG).apply { this.uid = metadata.uid }
                    parent.module.questionRepository.updateQuestionMetadata(updated)

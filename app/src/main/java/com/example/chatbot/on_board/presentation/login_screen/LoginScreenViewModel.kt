@@ -39,7 +39,7 @@ abstract class LoginScreenViewModel : ViewModel() {
 
     // Channel for delivering SnackBar events.
     protected val _snackbarChannel = Channel<SnackbarEvent?>()
-    val snackbarChannel = _snackbarChannel.consumeAsFlow()
+    val snackbarChannel = _snackbarChannel .consumeAsFlow()
 
     // StateFlow to manage the state of the login button.
     protected val _loginBtnState = MutableStateFlow(UIState.Enabled)

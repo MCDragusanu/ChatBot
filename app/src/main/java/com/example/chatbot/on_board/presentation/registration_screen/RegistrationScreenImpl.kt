@@ -1,6 +1,8 @@
 package com.example.chatbot.on_board.presentation.registration_screen
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,27 +23,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.WorkOutline
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -137,109 +146,93 @@ object RegistrationScreenImpl:RegistrationScreen() {
         val currentEvent by viewModel.snackbarChannel.collectAsState(null)
 
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
             // Background Image
-            Image(
-                painter = painterResource(id = R.drawable.black_background),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-            )
-            Headline()
 
-            // Partea de Register
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
 
-            )
-            {
-                // Middle Card
-                Card(
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom)
+
+            ) {
+                Headline()
+                // Email Text Field
+                EmailTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(), // Seteaza inaltimea pentru a se adapta continutului
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                        ,
+                    state = viewModel.emailFieldState,
+                    onValueChanged = viewModel::onEmailChanged
+                )
 
-                ){
-                    Column(
+                // Password Text Field
+                PasswordTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        ,
+                    state = viewModel.passwordFieldState,
+                    onValueChanged = viewModel::onPasswordChanged
+                )
+
+                // First Name and Last Name Text Fields
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    FirstNameTextField(
                         modifier = Modifier
-                            .padding(16.dp)
+                            .weight(1f, true)
+                            ,
+                        state = viewModel.firstNameFieldState,
+                        onValueChanged = viewModel::onFirstNameChanged
+                    )
 
-                    ) {
-                        // Email Text Field
-                        EmailTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            state = viewModel.emailFieldState,
-                            onValueChanged = viewModel::onEmailChanged
-                        )
-
-                        // Password Text Field
-                        PasswordTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            state = viewModel.passwordFieldState,
-                            onValueChanged = viewModel::onPasswordChanged
-                        )
-
-                        // First Name and Last Name Text Fields
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            FirstNameTextField(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 8.dp),
-                                state = viewModel.firstNameFieldState,
-                                onValueChanged = viewModel::onFirstNameChanged
-                            )
-
-                            LastNameTextField(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 8.dp),
-                                state = viewModel.lastNameFieldState,
-                                onValueChanged = viewModel::onLastNameChanged
-                            )
-                        }
-
-                        // Occupation Text Field
-                        OccupationTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            state = viewModel.occupationFieldState,
-                            onValueChanged = viewModel::onOccupationChanged
-                        )
-
-                        // Register Button
-                        RegisterButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp),
-                            onClick = { /* Handle button click */ }
-                        )
-                    }
+                    LastNameTextField(
+                        modifier = Modifier
+                            .weight(1f, true),
+                        state = viewModel.lastNameFieldState,
+                        onValueChanged = viewModel::onLastNameChanged
+                    )
                 }
+
+                // Occupation Text Field
+                OccupationTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        ,
+                    state = viewModel.occupationFieldState,
+                    onValueChanged = viewModel::onOccupationChanged
+                )
+
+                // Register Button
+                RegisterButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    onClick = { viewModel.onRegister(onCompletedRegistration) },
+                    state = viewModel.btnRegister
+                )
             }
         }
     }
+
+
 
     // ...
 
     @Composable
     override fun Headline() {
         Column(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.Start
         ) {
 
             Text(
@@ -247,22 +240,23 @@ object RegistrationScreenImpl:RegistrationScreen() {
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+
                 )
             )
             Text(
                 text = stringResource(id = R.string.create_account),
                 style = TextStyle(
                     fontSize = 16.sp,
-                    color = Color.White
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Image(
-                painter = painterResource(id = R.drawable.registrationscreen),
-                contentDescription = null,
-                modifier = Modifier.size(100.dp)
-            )
+            Row(modifier = Modifier.fillMaxWidth() , horizontalArrangement = Arrangement.Center){
+                Image(
+                    painter = painterResource(id = R.drawable.registrationscreen),
+                    contentDescription = null,
+                    modifier = Modifier.size(200.dp)
+                )
+            }
         }
     }
 
@@ -283,10 +277,12 @@ object RegistrationScreenImpl:RegistrationScreen() {
                 textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
-                modifier = Modifier.fillMaxWidth().width(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .width(20.dp),
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
-                label = { Text("Email") },
+                label = { Text("Email",color = MaterialTheme.colorScheme.onBackground) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(id = R.color.blue),
                     unfocusedBorderColor = colorResource(id = R.color.blue),
@@ -317,9 +313,6 @@ object RegistrationScreenImpl:RegistrationScreen() {
         }
     }
 
-    fun onPasswordVisibilityToggle(passwordVisibilityState: MutableState<Boolean>) {
-        passwordVisibilityState.value = !passwordVisibilityState.value
-    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -341,11 +334,13 @@ object RegistrationScreenImpl:RegistrationScreen() {
                 textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
-                modifier = Modifier.fillMaxWidth().width(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .width(20.dp),
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
-                visualTransformation = if (passwordIsHidden) VisualTransformation.None else PasswordVisualTransformation(),  // to show ****** when is hidden else tghe content
-                label = { Text("Password") },
+                visualTransformation = if (!passwordIsHidden) VisualTransformation.None else PasswordVisualTransformation(),  // to show ****** when is hidden else tghe content
+                label = { Text("Password", color = MaterialTheme.colorScheme.onBackground) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = colorResource(id = R.color.blue),
                     unfocusedBorderColor = colorResource(id = R.color.blue),
@@ -355,13 +350,13 @@ object RegistrationScreenImpl:RegistrationScreen() {
                     AnimatedVisibility(passwordIsHidden && !currentState.state.isCompleted()) {
                         //Animates and displays what's inside the block when the boolean is true
                         Icon(
-                            Icons.Filled.Visibility,
+                            Icons.Filled.VisibilityOff,
                             contentDescription = null,
                             modifier = Modifier.clickable { passwordIsHidden = false })
                     }
                     AnimatedVisibility(!passwordIsHidden) {
                         Icon(
-                            Icons.Filled.VisibilityOff,
+                            Icons.Filled.Visibility,
                             contentDescription = null,
                             modifier = Modifier.clickable { passwordIsHidden = true })
                     }
@@ -402,15 +397,17 @@ object RegistrationScreenImpl:RegistrationScreen() {
                 textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp),
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
-                label = { Text("First Name") },
+                label = { Text("First Name", fontSize = 8.sp) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = colorResource(id = R.color.blue),
                     unfocusedBorderColor = colorResource(id = R.color.blue)
                 ),
-                leadingIcon = { Icon(imageVector = Icons.Filled.Person, contentDescription = null) },
+                leadingIcon = { Icon(imageVector = Icons.Filled.Person, contentDescription = null ) },
                 trailingIcon = {
                     AnimatedVisibility(currentState.state.isCompleted()) {
                         Icon(
@@ -450,10 +447,12 @@ object RegistrationScreenImpl:RegistrationScreen() {
                 textStyle = Typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 value = currentState.content,
                 onValueChange = onValueChanged,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp),
                 isError = currentState.state.isError(),
                 enabled = !currentState.state.isLoading(),
-                label = { Text("Last Name") },
+                label = { Text("Last Name" , fontSize = 8.sp) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = colorResource(id = R.color.blue),
                     unfocusedBorderColor = colorResource(id = R.color.blue)
@@ -541,24 +540,50 @@ object RegistrationScreenImpl:RegistrationScreen() {
         val isChecked by state.collectAsState()
 
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .wrapContentHeight()
+                .clickable {
+                    //showPolicy = !showPolicy
+                } ,
+            horizontalArrangement = Arrangement.Start ,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Checkbox(
-                checked = isChecked,
-                onCheckedChange = { newCheckedState ->
-                    onStateChanged(newCheckedState)
-                },
-                modifier = Modifier.padding(end = 8.dp)
+            val containerColor by animateColorAsState(
+                targetValue = if (isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.errorContainer
+            )
+            val contentColor by animateColorAsState(targetValue = if (isChecked) MaterialTheme.colorScheme.onPrimary else  MaterialTheme.colorScheme.onErrorContainer)
+
+
+            Surface(
+                modifier = Modifier.wrapContentSize(align = Alignment.Center) ,
+                // border = BorderStroke(3.dp , containerColor) ,
+                color = containerColor ,
+                shape = RoundedCornerShape(4.dp),
+            ) {
+                AnimatedVisibility(visible = isChecked) {
+                    Icon(
+                        imageVector = Icons.Filled.Check ,
+                        contentDescription = null ,
+                        tint = contentColor ,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+                AnimatedVisibility(visible = !isChecked) {
+                    Icon(
+                        imageVector = Icons.Filled.WarningAmber ,
+                        contentDescription = null ,
+                        tint = contentColor ,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                if (!isChecked) "You must agree with he terms in order to continue" else "I agree with the Terms of Use" ,
+                color = contentColor
             )
 
-            Text(
-                text = "I agree to the Terms of Use",
-                modifier = Modifier.clickable { onStateChanged(!isChecked) },
-                color = MaterialTheme.colorScheme.onBackground
-            )
         }
     }
 
@@ -619,31 +644,81 @@ object RegistrationScreenImpl:RegistrationScreen() {
         )
     }
 
-    @Composable
-    override fun RegisterButton(modifier: Modifier, onClick: () -> Unit) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.button_image),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(100.dp) // Set the size as per your requirement
-                    .clip(CircleShape) // You can use other shapes or remove the clip
-            )
 
-            Button(
-                onClick = onClick,
-                modifier = modifier // Added modifier parameter to the Button
-            ) {
-                Text(text = "Create My Account")
+    @Composable
+    override fun RegisterButton(modifier: Modifier, state: StateFlow<UIState>, onClick: () -> Unit) {
+        val state by state.collectAsState()
+        val containerColor by animateColorAsState(
+            when {
+                state.isCompleted() -> Color.Green
+                state.isError() -> MaterialTheme.colorScheme.errorContainer
+                else -> MaterialTheme.colorScheme.primaryContainer
+            }, label = ""
+        ) // Animate the container color based on state
+
+        val contentColor by animateColorAsState(
+            when {
+                state.isCompleted() -> Color.White
+                state.isError() -> MaterialTheme.colorScheme.onErrorContainer
+                else -> MaterialTheme.colorScheme.onPrimaryContainer
+            }, label = ""
+        ) // Animate the content color based on state
+
+        Button(onClick = {
+            if (!state.isLoading()) {
+                onClick()
+            }// with these we prevent the user from triggering the login when the task is already being processed
+        }, modifier = modifier, colors = ButtonDefaults.buttonColors(containerColor, contentColor)) {
+            AnimatedContent(
+                state,
+                label = ""
+            ) { state -> // with these we update the content of the button based on it's state
+                when (state) {
+                    UIState.Error -> {
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Retry")
+                            Icon(imageVector = Icons.Filled.Refresh, contentDescription = null)
+                        }
+                    }
+
+                    UIState.Loading -> {
+                        LinearProgressIndicator(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(2.dp))
+                        //Be creative
+                        //TODO::Come up with interesting animations for loading
+                    }
+
+                    UIState.Completed -> {
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text("Account Created!")
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                        }
+                    }
+
+                    else -> {
+                        //We don't care about the other stwates
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text("Register Now!")
+                            Icon(imageVector = Icons.Filled.Login, contentDescription = null)
+                        }
+                    }
+                }
             }
         }
     }
-
-
 }
 
 
