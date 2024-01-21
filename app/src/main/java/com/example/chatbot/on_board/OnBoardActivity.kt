@@ -30,7 +30,6 @@ class OnBoardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         // Create an OnBoardModule with test mode enabled.
         val onBoardModule = OnBoardModule.getModule(isInTestMode = false , this)
 
